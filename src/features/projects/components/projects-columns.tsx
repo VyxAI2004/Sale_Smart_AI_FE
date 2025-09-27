@@ -21,7 +21,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
       />
     ),
     meta: {
-      className: cn('sticky md:table-cell start-0 z-10 rounded-tl-[inherit]'),
+      className: cn('sticky md:table-cell start-0 z-10 rounded-tl-[inherit] bg-background'),
     },
     cell: ({ row }) => (
       <Checkbox
@@ -202,7 +202,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     header: 'Actions',
     cell: ({ row }) => <DataTableRowActions row={row} />,
     meta: {
-      className: cn('sticky md:table-cell end-0 z-10 rounded-tr-[inherit]'),
+      className: cn('sticky md:table-cell end-0 z-10 rounded-tr-[inherit] bg-background'),
     },
   },
 ]

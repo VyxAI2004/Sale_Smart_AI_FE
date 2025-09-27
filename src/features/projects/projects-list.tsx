@@ -53,7 +53,7 @@ export function Projects() {
                     variant="ghost" 
                     size="sm"
                     onClick={() => setIsFullWidth(!isFullWidth)}
-                    className="h-8 w-8 p-0"
+                    className="h-8 w-8 p-0 hidden md:flex"
                   >
                     {isFullWidth ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
                   </Button>
@@ -89,7 +89,7 @@ export function Projects() {
                   variant="ghost" 
                   size="sm"
                   onClick={() => setIsFullWidth(!isFullWidth)}
-                  className="h-8 w-8 p-0"
+                  className="h-8 w-8 p-0 hidden md:flex"
                 >
                   {isFullWidth ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
                 </Button>
