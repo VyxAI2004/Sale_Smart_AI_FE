@@ -5,6 +5,9 @@ export * from './data/schema';
 export * from './constants/project.constants';
 export * from './data/data';
 
+// Components
+export { ProjectDetail } from './project-detail';
+
 // Hooks
 export * from './hooks/use-project-form';
 
