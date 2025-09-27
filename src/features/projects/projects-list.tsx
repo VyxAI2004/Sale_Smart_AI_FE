@@ -6,12 +6,14 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { ProjectsDialogs } from './components/projects-dialogs'
 import { ProjectsPrimaryButtons } from './components/projects-primary-buttons'
 import { ProjectsProvider } from './components/projects-provider'
 import { ProjectsTable } from './components/projects-table'
 import { ProjectApi, type ProjectApiResponse } from './api/project-api'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Maximize2, Minimize2 } from 'lucide-react'
 
 const route = getRouteApi('/_authenticated/projects/')
 
@@ -20,6 +22,7 @@ export function Projects() {
   const navigate = route.useNavigate()
   const [projects, setProjects] = useState<ProjectApiResponse[]>([])
   const [loading, setLoading] = useState(true)
+  const [isFullWidth, setIsFullWidth] = useState(false)
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -43,12 +46,29 @@ export function Projects() {
         <Header fixed>
           <Search />
           <div className='ms-auto flex items-center space-x-4'>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setIsFullWidth(!isFullWidth)}
+                    className="h-8 w-8 p-0"
+                  >
+                    {isFullWidth ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isFullWidth ? 'Thu nhỏ bảng' : 'Mở rộng bảng'}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <ThemeSwitch />
             <ConfigDrawer />
             <ProfileDropdown />
           </div>
         </Header>
-        <Main>
+        <Main fluid={isFullWidth}>
           <div className="flex items-center justify-center min-h-[400px]">
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
@@ -62,13 +82,30 @@ export function Projects() {
       <Header fixed>
         <Search />
         <div className='ms-auto flex items-center space-x-4'>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => setIsFullWidth(!isFullWidth)}
+                  className="h-8 w-8 p-0"
+                >
+                  {isFullWidth ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isFullWidth ? 'Thu nhỏ bảng' : 'Mở rộng bảng'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <ThemeSwitch />
           <ConfigDrawer />
           <ProfileDropdown />
         </div>
       </Header>
 
-      <Main>
+      <Main fluid={isFullWidth}>
         <div className='mb-2 flex flex-wrap items-center justify-between space-y-2'>
           <div>
             <h2 className='text-2xl font-bold tracking-tight'>Projects</h2>
