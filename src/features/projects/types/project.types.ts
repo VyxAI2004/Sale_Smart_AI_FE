@@ -20,7 +20,7 @@ export interface Project {
   product_images?: string[];
 }
 
-export type ProjectStatus = 'draft' | 'active' | 'paused' | 'completed' | 'archived';
+export type ProjectStatus = 'draft' | 'ready' | 'running' | 'paused' | 'completed' | 'archived';
 
 export type PipelineType = 'standard' | 'advanced' | 'custom';
 
@@ -34,6 +34,7 @@ export interface ProjectFormErrors {
   name?: string;
   target_product_name?: string;
   target_budget_range?: string;
+  assigned_to?: string;
   [key: string]: string | undefined;
 }
 

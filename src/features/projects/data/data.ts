@@ -6,8 +6,14 @@ export const statuses = [
     bgColor: 'bg-yellow-50',
   },
   {
-    value: 'active',
-    label: 'Active',
+    value: 'ready',
+    label: 'Ready',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-50',
+  },
+  {
+    value: 'running',
+    label: 'Running',
     color: 'text-green-600',
     bgColor: 'bg-green-50',
   },
@@ -20,8 +26,8 @@ export const statuses = [
   {
     value: 'completed',
     label: 'Completed',
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-50',
   },
   {
     value: 'archived',

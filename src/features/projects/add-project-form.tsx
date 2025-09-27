@@ -16,6 +16,8 @@ import { Search } from '@/components/search';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { ConfigDrawer } from '@/components/config-drawer';
 import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const AddProjectForm = () => {
   const {
@@ -29,7 +31,18 @@ const AddProjectForm = () => {
   } = useProjectForm();
 
   const handleDiscard = () => {
+    if (isSubmitting) return;
+    
+    // Check if form has unsaved changes
+    const hasChanges = JSON.stringify(formData) !== JSON.stringify(resetForm);
+    
+    if (hasChanges) {
+      const confirmed = confirm('Are you sure you want to discard all changes?');
+      if (!confirmed) return;
+    }
+    
     resetForm();
+    toast.info('Form has been reset');
   };
 
   return (
@@ -60,7 +73,14 @@ const AddProjectForm = () => {
               disabled={isSubmitting}
               className="px-6"
             >
-              Save Draft
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Draft'
+              )}
             </Button>
             <Button 
               variant="outline" 
@@ -75,7 +95,14 @@ const AddProjectForm = () => {
               disabled={isSubmitting}
               className="px-6"
             >
-              {isSubmitting ? 'Publishing...' : 'Publish'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Publishing...
+                </>
+              ) : (
+                'Publish'
+              )}
             </Button>
           </div>
         </div>

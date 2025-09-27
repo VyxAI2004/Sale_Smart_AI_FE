@@ -10,11 +10,11 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { type Project } from '../data/schema'
+import { type ProjectApiResponse } from '../api/project-api'
 import { useProjects } from './projects-provider'
 
 type DataTableRowActionsProps = {
-  row: Row<Project>
+  row: Row<ProjectApiResponse>
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
@@ -45,8 +45,8 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
               <Edit size={16} />
             </DropdownMenuShortcut>
           </DropdownMenuItem>
-          
-          {project.status === 'active' ? (
+
+          {project.status === 'ready' ? (
             <DropdownMenuItem
               onClick={() => {
                 setCurrentRow(project)

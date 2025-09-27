@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { getRouteApi } from '@tanstack/react-router'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
@@ -9,13 +10,52 @@ import { ProjectsDialogs } from './components/projects-dialogs'
 import { ProjectsPrimaryButtons } from './components/projects-primary-buttons'
 import { ProjectsProvider } from './components/projects-provider'
 import { ProjectsTable } from './components/projects-table'
-import { mockProjects } from './data/projects'
+import { ProjectApi, type ProjectApiResponse } from './api/project-api'
+import { Loader2 } from 'lucide-react'
 
 const route = getRouteApi('/_authenticated/projects/')
 
 export function Projects() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
+  const [projects, setProjects] = useState<ProjectApiResponse[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await ProjectApi.list({ limit: 10 })
+        setProjects(response.items || [])
+      } catch (_error) {
+        // Failed to fetch projects, use empty array
+        setProjects([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchProjects()
+  }, [])
+
+  if (loading) {
+    return (
+      <ProjectsProvider>
+        <Header fixed>
+          <Search />
+          <div className='ms-auto flex items-center space-x-4'>
+            <ThemeSwitch />
+            <ConfigDrawer />
+            <ProfileDropdown />
+          </div>
+        </Header>
+        <Main>
+          <div className="flex items-center justify-center min-h-[400px]">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        </Main>
+      </ProjectsProvider>
+    )
+  }
 
   return (
     <ProjectsProvider>
@@ -33,13 +73,13 @@ export function Projects() {
           <div>
             <h2 className='text-2xl font-bold tracking-tight'>Projects</h2>
             <p className='text-muted-foreground'>
-              Manage your projects and track their progress here.
+              Manage your projects and track their progress here. ({projects.length} total)
             </p>
           </div>
           <ProjectsPrimaryButtons />
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12'>
-          <ProjectsTable data={mockProjects} search={search} navigate={navigate} />
+          <ProjectsTable data={projects} search={search} navigate={navigate} />
         </div>
       </Main>
 

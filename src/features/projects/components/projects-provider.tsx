@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import { type Project } from '../data/schema'
+import { type ProjectApiResponse } from '../api/project-api'
 
 type ProjectsDialogType = 'add' | 'edit' | 'delete' | 'archive'
 
 type ProjectsContextType = {
   open: ProjectsDialogType | null
   setOpen: (str: ProjectsDialogType | null) => void
-  currentRow: Project | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<Project | null>>
+  currentRow: ProjectApiResponse | null
+  setCurrentRow: React.Dispatch<React.SetStateAction<ProjectApiResponse | null>>
 }
 
 const ProjectsContext = React.createContext<ProjectsContextType | null>(null)
 
 export function ProjectsProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useDialogState<ProjectsDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<Project | null>(null)
+  const [currentRow, setCurrentRow] = useState<ProjectApiResponse | null>(null)
 
   return (
     <ProjectsContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>

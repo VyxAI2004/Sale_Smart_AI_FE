@@ -1,11 +1,14 @@
 import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import type { ProjectFormData, ProjectFormErrors } from '../types/project.types';
 import { DEFAULT_FORM_DATA } from '../constants/project.constants';
+import { ProjectService } from '../services/project-service';
 
 export const useProjectForm = () => {
   const [formData, setFormData] = useState<ProjectFormData>(DEFAULT_FORM_DATA);
   const [errors, setErrors] = useState<ProjectFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (field: keyof ProjectFormData, value: unknown) => {
     setFormData(prev => ({
@@ -22,22 +25,26 @@ export const useProjectForm = () => {
   };
 
   const validateForm = (): boolean => {
+    const validationErrors = ProjectService.validateProjectData(formData);
+    
     const newErrors: ProjectFormErrors = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Tên dự án là bắt buộc';
-    }
-    
-    if (!formData.target_product_name.trim()) {
-      newErrors.target_product_name = 'Tên sản phẩm mục tiêu là bắt buộc';
-    }
-
-    if (formData.target_budget_range && isNaN(Number(formData.target_budget_range))) {
-      newErrors.target_budget_range = 'Ngân sách phải là số';
-    }
+    validationErrors.forEach((error, index) => {
+      if (error.includes('name')) {
+        newErrors.name = error;
+      } else if (error.includes('product')) {
+        newErrors.target_product_name = error;
+      } else if (error.includes('budget')) {
+        newErrors.target_budget_range = error;
+      } else if (error.includes('assign')) {
+        newErrors.assigned_to = error;
+      } else {
+        // Generic error
+        newErrors[`error_${index}`] = error;
+      }
+    });
     
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return validationErrors.length === 0;
   };
 
   const handleSubmit = async () => {
@@ -46,12 +53,14 @@ export const useProjectForm = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      // TODO: Replace with actual API call
-      alert('Dự án đã được tạo thành công!');
+      // Create project via service (includes toast notifications)
+      await ProjectService.createProject(formData);
+      
+      // Navigate to projects list or project detail
+      navigate({ to: '/projects' });
+      
     } catch (_error) {
-      alert('Có lỗi xảy ra khi tạo dự án');
+      // Error handling is done in service layer
     } finally {
       setIsSubmitting(false);
     }
@@ -61,12 +70,11 @@ export const useProjectForm = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // TODO: Replace with actual API call
-      alert('Đã lưu bản nháp!');
+      // Create draft project via service (includes toast notifications)
+      await ProjectService.createDraftProject(formData);
+      
     } catch (_error) {
-      alert('Có lỗi xảy ra khi lưu bản nháp');
+      // Error handling is done in service layer
     } finally {
       setIsSubmitting(false);
     }

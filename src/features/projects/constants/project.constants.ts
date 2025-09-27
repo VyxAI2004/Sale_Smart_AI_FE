@@ -20,16 +20,16 @@ export const CURRENCIES: SelectOption[] = [
 ];
 
 export const CRAWL_SCHEDULES: SelectOption[] = [
-  { value: 'daily', label: 'Hàng ngày' },
-  { value: 'weekly', label: 'Hàng tuần' },
-  { value: 'monthly', label: 'Hàng tháng' },
-  { value: 'custom', label: 'Tùy chỉnh' },
+  { value: 'daily', label: 'Daily' },
+  { value: 'weekly', label: 'Weekly' },
+  { value: 'monthly', label: 'Monthly' },
+  { value: 'custom', label: 'Custom' },
 ];
 
 export const PIPELINE_TYPES: SelectOption[] = [
-  { value: 'standard', label: 'Tiêu chuẩn' },
-  { value: 'advanced', label: 'Nâng cao' },
-  { value: 'custom', label: 'Tùy chỉnh' },
+  { value: 'standard', label: 'Standard' },
+  { value: 'advanced', label: 'Advanced' },
+  { value: 'custom', label: 'Custom' },
 ];
 
 export const STATUS_OPTIONS: StatusOption[] = [
@@ -39,9 +39,9 @@ export const STATUS_OPTIONS: StatusOption[] = [
     color: 'bg-yellow-100 text-yellow-800' 
   },
   { 
-    value: 'active', 
-    label: 'Active', 
-    color: 'bg-green-100 text-green-800' 
+    value: 'ready', 
+    label: 'Ready', 
+    color: 'bg-blue-100 text-blue-800' 
   },
   { 
     value: 'paused', 

@@ -2,7 +2,8 @@ import { z } from 'zod'
 
 export const projectStatusSchema = z.union([
   z.literal('draft'),
-  z.literal('active'), 
+  z.literal('ready'), 
+  z.literal('running'),
   z.literal('paused'),
   z.literal('completed'),
   z.literal('archived'),

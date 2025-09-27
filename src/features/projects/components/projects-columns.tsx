@@ -3,12 +3,10 @@ import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
-import { LongText } from '@/components/long-text'
-import { statuses } from '../data/data'
-import { type Project } from '../data/schema'
+import { type ProjectApiResponse } from '../api/project-api'
 import { DataTableRowActions } from './data-table-row-actions'
 
-export const projectsColumns: ColumnDef<Project>[] = [
+export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -39,23 +37,35 @@ export const projectsColumns: ColumnDef<Project>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Project Name' />
+      <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ row }) => (
-      <div className="flex flex-col ps-3">
-        <LongText className='max-w-48 font-medium'>{row.getValue('name')}</LongText>
-        <LongText className='max-w-48 text-xs text-muted-foreground'>
-          {row.original.target_product_name}
-        </LongText>
+      <div className="font-medium">
+        {row.getValue('name')}
       </div>
     ),
-    meta: {
-      className: cn(
-        'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
-      ),
-    },
-    enableSorting: true,
+  },
+  {
+    accessorKey: 'description',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Description' />
+    ),
+    cell: ({ row }) => (
+      <div className="max-w-[200px] truncate">
+        {row.getValue('description') || '-'}
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'target_product_name',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Product' />
+    ),
+    cell: ({ row }) => (
+      <div>
+        {row.getValue('target_product_name') || '-'}
+      </div>
+    ),
   },
   {
     accessorKey: 'status',
@@ -63,32 +73,16 @@ export const projectsColumns: ColumnDef<Project>[] = [
       <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const status = statuses.find(
-        (status) => status.value === row.getValue('status')
-      )
-
-      if (!status) return null
-
+      const status = row.getValue('status') as string
       return (
-        <Badge variant="outline" className={cn(status.color, status.bgColor)}>
-          {status.label}
+        <Badge variant="outline" className="capitalize">
+          {status}
         </Badge>
       )
     },
-    filterFn: (row, id, value) => value.includes(row.getValue(id)),
-    enableSorting: true,
-  },
-  {
-    accessorKey: 'target_product_category',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Category' />
-    ),
-    cell: ({ row }) => (
-      <LongText className='max-w-32'>
-        {row.getValue('target_product_category') || '-'}
-      </LongText>
-    ),
-    enableSorting: true,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: 'target_budget_range',
@@ -96,42 +90,42 @@ export const projectsColumns: ColumnDef<Project>[] = [
       <DataTableColumnHeader column={column} title='Budget' />
     ),
     cell: ({ row }) => {
-      const budget = row.getValue('target_budget_range') as number
+      const budget = row.getValue('target_budget_range') as string
       const currency = row.original.currency
-      
-      if (!budget) return '-'
-      
       return (
-        <span className="font-medium">
-          {new Intl.NumberFormat('vi-VN').format(budget)} {currency}
-        </span>
+        <div>
+          {budget ? `${budget} ${currency || ''}` : '-'}
+        </div>
       )
     },
-    enableSorting: true,
   },
   {
     accessorKey: 'pipeline_type',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Pipeline' />
+      <DataTableColumnHeader column={column} title='Pipeline Type' />
     ),
-    cell: ({ row }) => (
-      <Badge variant="secondary">
-        {row.getValue('pipeline_type')}
-      </Badge>
-    ),
-    enableSorting: true,
+    cell: ({ row }) => {
+      const type = row.getValue('pipeline_type') as string
+      return (
+        <Badge variant="secondary" className="capitalize">
+          {type || '-'}
+        </Badge>
+      )
+    },
   },
   {
-    accessorKey: 'crawl_schedule',
+    accessorKey: 'assigned_to',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Schedule' />
+      <DataTableColumnHeader column={column} title='Assigned To' />
     ),
-    cell: ({ row }) => (
-      <span className="text-sm">
-        {row.getValue('crawl_schedule') || '-'}
-      </span>
-    ),
-    enableSorting: true,
+    cell: ({ row }) => {
+      const assignedTo = row.original.assigned_to
+      return (
+        <div>
+          {assignedTo ? `User ${assignedTo}` : '-'}
+        </div>
+      )
+    },
   },
   {
     accessorKey: 'deadline',
@@ -139,16 +133,55 @@ export const projectsColumns: ColumnDef<Project>[] = [
       <DataTableColumnHeader column={column} title='Deadline' />
     ),
     cell: ({ row }) => {
-      const deadline = row.getValue('deadline') as Date
-      if (!deadline) return '-'
-      
+      const deadline = row.getValue('deadline') as string
       return (
-        <span className="text-sm">
-          {deadline.toLocaleDateString('vi-VN')}
-        </span>
+        <div>
+          {deadline ? new Date(deadline).toLocaleDateString() : '-'}
+        </div>
       )
     },
-    enableSorting: true,
+  },
+  {
+    accessorKey: 'crawl_schedule',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Schedule' />
+    ),
+    cell: ({ row }) => {
+      const schedule = row.getValue('crawl_schedule') as string
+      return (
+        <div className="capitalize">
+          {schedule || '-'}
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: 'next_crawl_at',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Next Crawl' />
+    ),
+    cell: ({ row }) => {
+      const nextCrawl = row.getValue('next_crawl_at') as string
+      return (
+        <div>
+          {nextCrawl ? new Date(nextCrawl).toLocaleDateString() : '-'}
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: 'updated_at',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Updated' />
+    ),
+    cell: ({ row }) => {
+      const date = row.getValue('updated_at') as string
+      return (
+        <div>
+          {date ? new Date(date).toLocaleDateString() : '-'}
+        </div>
+      )
+    },
   },
   {
     accessorKey: 'created_at',
@@ -156,20 +189,20 @@ export const projectsColumns: ColumnDef<Project>[] = [
       <DataTableColumnHeader column={column} title='Created' />
     ),
     cell: ({ row }) => {
-      const date = row.getValue('created_at') as Date
+      const date = row.getValue('created_at') as string
       return (
-        <span className="text-sm text-muted-foreground">
-          {date.toLocaleDateString('vi-VN')}
-        </span>
+        <div>
+          {date ? new Date(date).toLocaleDateString() : '-'}
+        </div>
       )
     },
-    enableSorting: true,
   },
   {
     id: 'actions',
+    header: 'Actions',
     cell: ({ row }) => <DataTableRowActions row={row} />,
     meta: {
-      className: 'sticky end-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+      className: cn('sticky md:table-cell end-0 z-10 rounded-tr-[inherit]'),
     },
   },
 ]

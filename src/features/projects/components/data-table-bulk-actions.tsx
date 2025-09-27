@@ -1,8 +1,8 @@
 import { type Table } from '@tanstack/react-table'
-import { type Project } from '../data/schema'
+import { type ProjectApiResponse } from '../api/project-api'
 
 interface DataTableBulkActionsProps {
-  table: Table<Project>
+  table: Table<ProjectApiResponse>
 }
 
 export function DataTableBulkActions({ table }: DataTableBulkActionsProps) {
