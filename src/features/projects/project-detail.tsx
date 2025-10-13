@@ -12,15 +12,7 @@ import { Maximize2, Minimize2, Loader2 } from 'lucide-react'
 
 // Dashboard Components
 import { ProjectHeader } from './components/dashboard/project-header'
-import { 
-  ProductCountCard, 
-  ConfidenceScoreCard, 
-  RecommendedPriceCard, 
-  MarketPositionCard 
-} from './components/dashboard/kpi-card'
-import { ProductSourcesCard } from './components/dashboard/product-sources-card'
-import { CompetitorProductsCard } from './components/dashboard/competitor-products-card'
-import { PriceAnalysisCard } from './components/dashboard/price-analysis-card'
+import { ProjectDetailTabs } from './components/dashboard/project-detail-tabs'
 
 // API & Types
 import { ProjectDetailApi } from './api/project-detail-api'
@@ -167,57 +159,15 @@ export function ProjectDetail() {
           onTriggerCrawl={handleTriggerCrawl}
         />
         
-        <div className="space-y-6">
-          {/* KPI Cards Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <ProductCountCard 
-              value={project?.analytics?.total_products || null}
-              trend={project?.analytics?.trends.products_growth}
-              isLoading={isLoading}
-            />
-            <ConfidenceScoreCard 
-              value={project?.price_analysis?.confidence_score ? project.price_analysis.confidence_score * 100 : null}
-              isLoading={isLoading}
-            />
-            <RecommendedPriceCard 
-              value={project?.price_analysis?.recommended_price || null}
-              currency={project?.currency}
-              isLoading={isLoading}
-            />
-            <MarketPositionCard 
-              value={project?.analytics?.market_position || null}
-              isLoading={isLoading}
-            />
-          </div>
-
-          {/* Main Content Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Price Analysis - Takes 2 columns */}
-            <div className="lg:col-span-2">
-              <PriceAnalysisCard 
-                analysis={project?.price_analysis || null}
-                isLoading={isLoading}
-              />
-            </div>
-
-            {/* Product Sources */}
-            <div>
-              <ProductSourcesCard 
-                sources={project?.product_sources || null}
-                isLoading={isLoading}
-                onTriggerCrawl={handleTriggerCrawl}
-              />
-            </div>
-          </div>
-
-          {/* Competitor Products Row */}
-          <div className="grid grid-cols-1 gap-6">
-            <CompetitorProductsCard 
-              products={project?.competitor_products || null}
-              isLoading={isLoading}
-            />
-          </div>
-        </div>
+        <ProjectDetailTabs 
+          project={project}
+          isLoading={isLoading}
+          onProjectUpdate={(updates) => {
+            if (project) {
+              setProject({ ...project, ...updates })
+            }
+          }}
+        />
       </Main>
     </div>
   )

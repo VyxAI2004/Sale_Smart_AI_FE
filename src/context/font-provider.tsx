@@ -24,7 +24,8 @@ export function FontProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const applyFont = (font: string) => {
       const root = document.documentElement
-      root.classList.forEach((cls) => {
+      // iterate over a static copy because we're mutating the live DOMTokenList
+      Array.from(root.classList).forEach((cls) => {
         if (cls.startsWith('font-')) root.classList.remove(cls)
       })
       root.classList.add(`font-${font}`)
@@ -44,7 +45,9 @@ export function FontProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <FontContext value={{ font, setFont, resetFont }}>{children}</FontContext>
+    <FontContext.Provider value={{ font, setFont, resetFont }}>
+      {children}
+    </FontContext.Provider>
   )
 }
 
