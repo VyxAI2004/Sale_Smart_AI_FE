@@ -58,3 +58,20 @@ export function getPageNumbers(currentPage: number, totalPages: number) {
 
   return rangeWithDots
 }
+
+/**
+ * Format currency value
+ */
+export function formatCurrency(value: number, currency: string = 'VND'): string {
+  if (currency === 'VND') {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+    }).format(value);
+  }
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+}

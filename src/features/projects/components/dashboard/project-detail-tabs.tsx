@@ -11,6 +11,9 @@ import {
   Activity,
   TrendingUp,
   FolderCog2Icon,
+  Search,
+  MessageSquare,
+  Shield,
 } from 'lucide-react'
 
 // Import tab components
@@ -20,6 +23,9 @@ import { CompetitorProductsCard } from './competitor-products-card'
 import { ProjectDetailsCard } from './project-details-card'
 import { TeamManagementCard } from './team-management-card'
 import { AnalyticsCard } from './analytics-card'
+
+// Import new product components
+import { ProductsList, CrawlerInterface, ReviewsList, TrustScoreCard } from '@/features/products'
 
 import type { ProjectDetailData } from '../../types/project-detail.types'
 
@@ -39,22 +45,30 @@ export function ProjectDetailTabs({
   return (
   <div className="w-full space-y-6">
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid w-full grid-cols-6 lg:w-fit lg:grid-cols-none lg:flex">
+      <TabsList className="grid w-full grid-cols-6 lg:w-fit lg:grid-cols-none lg:flex flex-wrap">
         <TabsTrigger value="overview" className="flex items-center gap-2">
           <LayoutDashboard className="w-4 h-4" />
           <span className="hidden sm:inline">Overview</span>
         </TabsTrigger>
-        <TabsTrigger value="settings" className="flex items-center gap-2">
-          <FolderCog2Icon className="w-4 h-4" />
-          <span className="hidden sm:inline">Project</span>
+        <TabsTrigger value="products" className="flex items-center gap-2">
+          <ShoppingCart className="w-4 h-4" />
+          <span className="hidden sm:inline">Products</span>
+        </TabsTrigger>
+        <TabsTrigger value="crawler" className="flex items-center gap-2">
+          <Search className="w-4 h-4" />
+          <span className="hidden sm:inline">Crawler</span>
+        </TabsTrigger>
+        <TabsTrigger value="reviews" className="flex items-center gap-2">
+          <MessageSquare className="w-4 h-4" />
+          <span className="hidden sm:inline">Reviews</span>
+        </TabsTrigger>
+        <TabsTrigger value="trust-score" className="flex items-center gap-2">
+          <Shield className="w-4 h-4" />
+          <span className="hidden sm:inline">Trust Score</span>
         </TabsTrigger>
         <TabsTrigger value="analytics" className="flex items-center gap-2">
           <BarChart3 className="w-4 h-4" />
           <span className="hidden sm:inline">Analytics</span>
-        </TabsTrigger>
-        <TabsTrigger value="products" className="flex items-center gap-2">
-          <ShoppingCart className="w-4 h-4" />
-          <span className="hidden sm:inline">Products</span>
         </TabsTrigger>
         <TabsTrigger value="sources" className="flex items-center gap-2">
           <Database className="w-4 h-4" />
@@ -63,6 +77,10 @@ export function ProjectDetailTabs({
         <TabsTrigger value="team" className="flex items-center gap-2">
           <Users className="w-4 h-4" />
           <span className="hidden sm:inline">Team</span>
+        </TabsTrigger>
+        <TabsTrigger value="settings" className="flex items-center gap-2">
+          <FolderCog2Icon className="w-4 h-4" />
+          <span className="hidden sm:inline">Project</span>
         </TabsTrigger>
       </TabsList>
         {/* Overview Tab */}
@@ -169,14 +187,52 @@ export function ProjectDetailTabs({
 
         {/* Products Tab */}
         <TabsContent value="products" className="space-y-6 mt-6">
-          <CompetitorProductsCard 
-            products={project?.competitor_products || []} 
-            isLoading={isLoading}
+          {project?.id ? (
+            <ProductsList 
+              projectId={project.id}
+              onViewProduct={(productId) => {
+                // Navigate to product detail if needed
+                console.log('View product:', productId)
+              }}
+            />
+          ) : (
+            <div className="text-center text-muted-foreground py-8">
+              {isLoading ? 'Loading project...' : 'Project ID not available'}
+            </div>
+          )}
+        </TabsContent>
+
+        {/* Crawler Tab */}
+        <TabsContent value="crawler" className="mt-6">
+          {project?.id && (
+            <CrawlerInterface 
+              projectId={project.id}
+              onCrawlComplete={() => {
+                // Refresh data after crawl
+                console.log('Crawl completed')
+              }}
           />
-          <PriceAnalysisCard 
-            analysis={project?.price_analysis || null} 
-            isLoading={isLoading}
-          />
+          )}
+        </TabsContent>
+
+        {/* Reviews Tab - Note: This shows reviews for a selected product */}
+        <TabsContent value="reviews" className="mt-6">
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Select a product from the Products tab to view its reviews and analysis.
+            </p>
+            {/* TODO: Add product selector or integrate with product detail view */}
+          </div>
+        </TabsContent>
+
+        {/* Trust Score Tab - Note: This shows trust score for a selected product */}
+        <TabsContent value="trust-score" className="mt-6">
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Select a product from the Products tab to view its trust score.
+            </p>
+            {/* TODO: Add product selector or integrate with product detail view */}
+          </div>
         </TabsContent>
 
         {/* Analytics Tab */}

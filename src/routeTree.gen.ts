@@ -42,6 +42,7 @@ import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_auth
 import { Route as AuthenticatedProjectsAddRouteImport } from './routes/_authenticated/projects/add'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects/$projectId'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
+import { Route as AuthenticatedProductsProductIdCrawlRouteImport } from './routes/_authenticated/products/$productId/crawl'
 
 const ClerkRouteRoute = ClerkRouteRouteImport.update({
   id: '/clerk',
@@ -218,6 +219,12 @@ const AuthenticatedErrorsErrorRoute =
     path: '/errors/$error',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedProductsProductIdCrawlRoute =
+  AuthenticatedProductsProductIdCrawlRouteImport.update({
+    id: '/products/$productId/crawl',
+    path: '/products/$productId/crawl',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/clerk': typeof ClerkAuthenticatedRouteRouteWithChildren
@@ -251,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/products/$productId/crawl': typeof AuthenticatedProductsProductIdCrawlRoute
 }
 export interface FileRoutesByTo {
   '/clerk': typeof ClerkAuthenticatedRouteRouteWithChildren
@@ -282,6 +290,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/products/$productId/crawl': typeof AuthenticatedProductsProductIdCrawlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -318,6 +327,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/products/$productId/crawl': typeof AuthenticatedProductsProductIdCrawlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -353,6 +363,7 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/tasks'
     | '/users'
+    | '/products/$productId/crawl'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/clerk'
@@ -384,6 +395,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tasks'
     | '/users'
+    | '/products/$productId/crawl'
   id:
     | '__root__'
     | '/_authenticated'
@@ -419,6 +431,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
+    | '/_authenticated/products/$productId/crawl'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -668,6 +681,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedErrorsErrorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/products/$productId/crawl': {
+      id: '/_authenticated/products/$productId/crawl'
+      path: '/products/$productId/crawl'
+      fullPath: '/products/$productId/crawl'
+      preLoaderRoute: typeof AuthenticatedProductsProductIdCrawlRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -709,6 +729,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProjectsIndexRoute: typeof AuthenticatedProjectsIndexRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
+  AuthenticatedProductsProductIdCrawlRoute: typeof AuthenticatedProductsProductIdCrawlRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -723,6 +744,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProjectsIndexRoute: AuthenticatedProjectsIndexRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
+  AuthenticatedProductsProductIdCrawlRoute:
+    AuthenticatedProductsProductIdCrawlRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

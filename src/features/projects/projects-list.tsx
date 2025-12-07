@@ -27,7 +27,7 @@ export function Projects() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await ProjectApi.list({ limit: 10 })
+        const response = await ProjectApi.getMyProjects({ limit: 10 })
         setProjects(response.items || [])
       } catch (_error) {
         // Failed to fetch projects, use empty array
