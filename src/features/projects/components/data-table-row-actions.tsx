@@ -1,6 +1,7 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { type Row } from '@tanstack/react-table'
-import { Trash2, Edit, Archive, Play, Pause } from 'lucide-react'
+import { Trash2, Edit, Archive, Play, Pause, Eye } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -34,6 +35,17 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' className='w-[160px]'>
+          <DropdownMenuItem asChild>
+            <Link to="/projects/$projectId" params={{ projectId: project.id }}>
+              View Details
+              <DropdownMenuShortcut>
+                <Eye size={16} />
+              </DropdownMenuShortcut>
+            </Link>
+          </DropdownMenuItem>
+          
+          <DropdownMenuSeparator />
+          
           <DropdownMenuItem
             onClick={() => {
               setCurrentRow(project)
