@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useProducts } from '@/hooks/use-products';
+import { useProducts } from '../hooks/use-products';
 import { ProductsTable } from './products-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

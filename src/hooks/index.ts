@@ -1,12 +1,11 @@
 /**
  * Centralized hooks exports
+ * 
+ * Note: Product-related hooks have been moved to features/products
+ * These exports are kept for backward compatibility
+ * New code should import from '@/features/products' instead
  */
-export * from './use-products';
-export * from './use-product-crawler';
-export * from './use-reviews';
-export * from './use-review-analysis';
-export * from './use-trust-score';
-export * from './use-product-ai';
+export * from '@/features/products/hooks';
 
 
 

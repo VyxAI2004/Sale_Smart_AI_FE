@@ -18,8 +18,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, ExternalLink, Star, TrendingUp, Download } from 'lucide-react';
-import type { Product } from '@/types/product.types';
-import { useDeleteProduct } from '@/hooks/use-products';
+import type { Product } from '../types/product.types';
+import { useDeleteProduct } from '../hooks/use-products';
 import { formatCurrency } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 
@@ -118,7 +118,7 @@ export function ProductsTable({ products, projectId, onView, onEdit }: ProductsT
                 </TableCell>
                 <TableCell>{product.review_count || 0}</TableCell>
                 <TableCell>
-                  {product.trust_score !== undefined ? (
+                  {product.trust_score != null && typeof product.trust_score === 'number' ? (
                     <div className="flex items-center gap-1">
                       <TrendingUp className="h-4 w-4" />
                       <span className="font-semibold">{product.trust_score.toFixed(1)}</span>

@@ -76,5 +76,3 @@ export interface ProductUpdate {
   data_source?: string;
 }
 
-
-

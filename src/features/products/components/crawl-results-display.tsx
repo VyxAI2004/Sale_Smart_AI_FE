@@ -16,8 +16,8 @@ import {
   Loader2
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useCreateProduct } from '@/hooks/use-products';
-import type { ProductCreate } from '@/types/product.types';
+import { useCreateProduct } from '../hooks/use-products';
+import type { ProductCreate } from '../types/product.types';
 
 interface CrawlResultsDisplayProps {
   productUrls: string[];

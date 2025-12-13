@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ProductAIApi } from '@/apis/product-ai.api';
-import type { ProductSearchResponse, PlatformEnum } from '@/types/product-ai.types';
+import { ProductAIApi } from '../api/product-ai.api';
+import type { ProductSearchResponse, PlatformEnum } from '../types/product-ai.types';
 import { toast } from 'sonner';
 
 /**
@@ -47,6 +47,4 @@ export const useProductAISearchMutation = () => {
     },
   });
 };
-
-
 

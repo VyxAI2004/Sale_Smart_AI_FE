@@ -145,5 +145,3 @@ export interface AnalysisStatisticsResponse {
   average_sentiment_score: number;
 }
 
-
-

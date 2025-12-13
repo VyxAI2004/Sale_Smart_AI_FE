@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ReviewAnalysisApi } from '@/apis/review-analysis.api';
+import { ReviewAnalysisApi } from '../api/review-analysis.api';
 import type {
   ReviewAnalysis,
   ReviewAnalysisListResponse,
   ReviewAnalysisCreate,
   ReviewAnalysisUpdate,
   AnalysisStatisticsResponse,
-} from '@/types/review.types';
+} from '../types/review.types';
 import { toast } from 'sonner';
 
 /**
@@ -143,6 +143,4 @@ export const useDeleteAnalysis = () => {
     },
   });
 };
-
-
 

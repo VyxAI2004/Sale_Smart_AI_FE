@@ -63,5 +63,3 @@ export interface ProductsByScoreRangeResponse {
   limit: number;
 }
 
-
-

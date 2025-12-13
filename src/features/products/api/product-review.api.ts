@@ -5,7 +5,7 @@ import type {
   ProductReviewCreate,
   ProductReviewUpdate,
   ReviewStatisticsResponse,
-} from '@/types/review.types';
+} from '../types/review.types';
 
 export class ProductReviewApi {
   private static readonly BASE_PATH = '/products';
@@ -125,6 +125,4 @@ export class ProductReviewApi {
     return response.data;
   }
 }
-
-
 

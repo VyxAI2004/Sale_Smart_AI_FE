@@ -5,7 +5,7 @@ import type {
   ReviewAnalysisCreate,
   ReviewAnalysisUpdate,
   AnalysisStatisticsResponse,
-} from '@/types/review.types';
+} from '../types/review.types';
 
 export class ReviewAnalysisApi {
   private static readonly BASE_PATH = '/products';
@@ -102,6 +102,4 @@ export class ReviewAnalysisApi {
     await http.delete(`${this.BASE_PATH}/${productId}/analyses/${analysisId}`);
   }
 }
-
-
 

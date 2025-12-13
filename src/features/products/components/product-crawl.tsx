@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from '@tanstack/react-router';
-import { useProduct } from '@/hooks/use-products';
-import { useCrawlReviews } from '@/hooks/use-product-crawler';
-import { useAnalyzeProductReviews } from '@/hooks/use-reviews';
+import { useProduct } from '../hooks/use-products';
+import { useCrawlReviews } from '../hooks/use-product-crawler';
+import { useAnalyzeProductReviews } from '../hooks/use-reviews';
 import { ReviewsList } from './reviews-list';
 import { TrustScoreCard } from './trust-score-card';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

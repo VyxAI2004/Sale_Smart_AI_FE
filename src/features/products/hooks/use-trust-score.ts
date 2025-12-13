@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { TrustScoreApi } from '@/apis/trust-score.api';
+import { TrustScoreApi } from '../api/trust-score.api';
 import type {
   ProductTrustScore,
   TrustScoreDetailResponse,
   TopTrustedProductsResponse,
   ProductsByScoreRangeResponse,
-} from '@/types/trust-score.types';
+} from '../types/trust-score.types';
 import { toast } from 'sonner';
 
 /**
@@ -96,6 +96,4 @@ export const useProductsByScoreRange = (params: {
     queryFn: () => TrustScoreApi.getByScoreRange(params),
   });
 };
-
-
 

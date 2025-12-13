@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useReviews, useReviewStatistics } from '@/hooks/use-reviews';
+import { useReviews, useReviewStatistics } from '../hooks/use-reviews';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

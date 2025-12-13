@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ProductReviewApi } from '@/apis/product-review.api';
+import { ProductReviewApi } from '../api/product-review.api';
 import type {
   ProductReview,
   ProductReviewListResponse,
   ProductReviewCreate,
   ProductReviewUpdate,
   ReviewStatisticsResponse,
-} from '@/types/review.types';
+} from '../types/review.types';
 import { toast } from 'sonner';
 
 /**
@@ -53,6 +53,14 @@ export const useUnanalyzedReviews = (productId: string | undefined, limit?: numb
 /**
  * Get review by ID
  */
+export const useReview = (productId: string | undefined, reviewId: string | undefined) => {
+  return useQuery<ProductReview>({
+    queryKey: ['review', productId, reviewId],
+    queryFn: () => ProductReviewApi.getById(productId!, reviewId!),
+    enabled: !!productId && !!reviewId,
+  });
+};
+
 /**
  * Analyze product reviews mutation
  */
@@ -71,14 +79,6 @@ export const useAnalyzeProductReviews = () => {
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to analyze reviews');
     },
-  });
-};
-
-export const useReview = (productId: string | undefined, reviewId: string | undefined) => {
-  return useQuery<ProductReview>({
-    queryKey: ['review', productId, reviewId],
-    queryFn: () => ProductReviewApi.getById(productId!, reviewId!),
-    enabled: !!productId && !!reviewId,
   });
 };
 
@@ -148,6 +148,4 @@ export const useDeleteReview = () => {
     },
   });
 };
-
-
 

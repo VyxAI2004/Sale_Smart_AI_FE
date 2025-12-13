@@ -1,4 +1,4 @@
-import { useProduct } from '@/hooks/use-products';
+import { useProduct } from '../hooks/use-products';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -94,7 +94,7 @@ export function ProductDetail({ productId }: ProductDetailProps) {
                 </div>
               )}
 
-              {product.trust_score !== undefined && (
+              {product.trust_score != null && typeof product.trust_score === 'number' && (
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
                   <span className="text-lg font-semibold">Trust Score: {product.trust_score.toFixed(1)}</span>
