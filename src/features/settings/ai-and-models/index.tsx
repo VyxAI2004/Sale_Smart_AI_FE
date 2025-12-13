@@ -11,13 +11,12 @@ import { AddUserModelDialog } from './add-user-model-dialog'
 import { ModelsList } from './models-list'
 import { CreateModelDialog } from './create-model-dialog'
 import { isSuperAdmin } from '@/utils/jwt'
-import { UserAIModelApi } from '@/apis/user-ai-model.api'
 import type { UserAIModelCreate } from '@/types/user-ai-model.types'
 import { toast } from 'sonner'
 
 export default function SettingsAIAndModels() {
   const { userModels, isLoading, fetchUserModels, createOrUpdateUserModel, deleteUserModel } = useUserAiModels()
-  const { models, fetchMyModels, activateModel, deactivateModel, removeModel, createModel } = useAiModels()
+  const { models, fetchMyModels, activateModel, deactivateModel, removeModel } = useAiModels()
   const { hasPermission, isLoading: isLoadingPermissions, permissions } = usePermissions()
   const isSuperAdminUser = isSuperAdmin()
   const hasManagePermission = hasPermission('manage_ai_models')
@@ -108,7 +107,7 @@ export default function SettingsAIAndModels() {
                     </p>
                   </div>
                   <div className='flex items-center gap-2'>
-                    <Button variant='secondary' size='sm' onClick={() => setOpenCreateModel(true)}>
+                    <Button variant='default' size='sm' onClick={() => setOpenCreateModel(true)}>
                       Create Model
                     </Button>
                   </div>
@@ -143,8 +142,8 @@ export default function SettingsAIAndModels() {
                 )}
               </div>
               <div className='flex items-center gap-2'>
-                <Button variant='secondary' size='sm' onClick={() => setOpenAdd(true)}>
-                  Add Configuration
+                <Button variant='default' size='sm' onClick={() => setOpenAdd(true)}>
+                  Add API Key
                 </Button>
               </div>
             </div>

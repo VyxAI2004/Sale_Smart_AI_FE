@@ -163,8 +163,8 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
               >
                 Cancel
               </Button>
-              <Button type='submit' disabled={isLoadingModels}>
-                Add Configuration
+              <Button type='submit' disabled={isLoadingModels} variant='default'>
+                Add API Key
               </Button>
             </DialogFooter>
           </form>
