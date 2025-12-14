@@ -7,4 +7,5 @@ export { FindProductWorkflow } from './find-product-workflow';
 export { AISearchResultsCard } from './ai-search-results-card';
 export { ReviewsList } from './reviews-list';
 export { TrustScoreCard } from './trust-score-card';
+export { AutoDiscoveryStream } from './auto-discovery-stream';
 

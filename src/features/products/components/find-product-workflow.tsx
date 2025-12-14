@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
@@ -29,11 +30,13 @@ import {
   Shield,
   ArrowRight,
   Circle,
-  ArrowLeft
+  ArrowLeft,
+  Zap
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { CrawlResultsDisplay } from './crawl-results-display';
 import { AISearchResultsCard } from './ai-search-results-card';
+import { AutoDiscoveryStream } from './auto-discovery-stream';
 import type { PlatformEnum, ProductSearchResponse } from '../types/product-ai.types';
 
 interface FindProductWorkflowProps {
@@ -49,6 +52,7 @@ interface StepStatus {
 }
 
 export function FindProductWorkflow({ projectId, onComplete }: FindProductWorkflowProps) {
+  const [activeTab, setActiveTab] = useState<'manual' | 'auto'>('auto');
   const [currentStep, setCurrentStep] = useState<WorkflowStep>('search');
   const [searchUrl, setSearchUrl] = useState('');
   const [maxProducts, setMaxProducts] = useState(10);
@@ -311,6 +315,153 @@ export function FindProductWorkflow({ projectId, onComplete }: FindProductWorkfl
 
   const canGoBack = currentStepIndex > 0;
 
+  return (
+    <div className="space-y-6">
+      {/* Tab Selector */}
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'manual' | 'auto')} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 lg:w-fit">
+          <TabsTrigger value="auto" className="flex items-center gap-2">
+            <Zap className="w-4 h-4" />
+            <span>Auto Discovery</span>
+          </TabsTrigger>
+          <TabsTrigger value="manual" className="flex items-center gap-2">
+            <Search className="w-4 h-4" />
+            <span>Manual Workflow</span>
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Auto Discovery Tab */}
+        <TabsContent value="auto" className="mt-6">
+          <AutoDiscoveryStream 
+            projectId={projectId}
+            onComplete={() => {
+              if (onComplete) {
+                onComplete();
+              }
+            }}
+          />
+        </TabsContent>
+
+        {/* Manual Workflow Tab */}
+        <TabsContent value="manual" className="mt-6">
+          <ManualWorkflowContent
+            projectId={projectId}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            searchUrl={searchUrl}
+            setSearchUrl={setSearchUrl}
+            maxProducts={maxProducts}
+            setMaxProducts={setMaxProducts}
+            productUrls={productUrls}
+            setProductUrls={setProductUrls}
+            searchUrls={searchUrls}
+            setSearchUrls={setSearchUrls}
+            selectedPlatform={selectedPlatform}
+            setSelectedPlatform={setSelectedPlatform}
+            aiSearchResult={aiSearchResult}
+            setAiSearchResult={setAiSearchResult}
+            stepStatuses={stepStatuses}
+            setStepStatuses={setStepStatuses}
+            crawlSearch={crawlSearch}
+            aiSearch={aiSearch}
+            productsData={productsData}
+            refetchProducts={refetchProducts}
+            handleAutoAnalyze={handleAutoAnalyze}
+            handleAutoCalculate={handleAutoCalculate}
+            handleAISearch={handleAISearch}
+            handleUseSearchUrl={handleUseSearchUrl}
+            handleCopySearchUrl={handleCopySearchUrl}
+            handleCrawlSearch={handleCrawlSearch}
+            getStepIcon={getStepIcon}
+            getStepLabel={getStepLabel}
+            getStepDescription={getStepDescription}
+            steps={steps}
+            currentStepIndex={currentStepIndex}
+            progress={progress}
+            handleBack={handleBack}
+            canGoBack={canGoBack}
+            onComplete={onComplete}
+          />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+// Manual Workflow Content Component
+interface ManualWorkflowContentProps {
+  projectId: string;
+  currentStep: WorkflowStep;
+  setCurrentStep: (step: WorkflowStep) => void;
+  searchUrl: string;
+  setSearchUrl: (url: string) => void;
+  maxProducts: number;
+  setMaxProducts: (max: number) => void;
+  productUrls: string[];
+  setProductUrls: (urls: string[]) => void;
+  searchUrls: string[];
+  setSearchUrls: (urls: string[]) => void;
+  selectedPlatform: PlatformEnum;
+  setSelectedPlatform: (platform: PlatformEnum) => void;
+  aiSearchResult: ProductSearchResponse | null;
+  setAiSearchResult: (result: ProductSearchResponse | null) => void;
+  stepStatuses: Record<WorkflowStep, StepStatus>;
+  setStepStatuses: (statuses: Record<WorkflowStep, StepStatus>) => void;
+  crawlSearch: any;
+  aiSearch: any;
+  productsData: any;
+  refetchProducts: () => void;
+  handleAutoAnalyze: (productIds: string[]) => Promise<void>;
+  handleAutoCalculate: (productIds: string[]) => Promise<void>;
+  handleAISearch: () => Promise<void>;
+  handleUseSearchUrl: (url: string) => void;
+  handleCopySearchUrl: (url: string) => Promise<void>;
+  handleCrawlSearch: () => Promise<void>;
+  getStepIcon: (step: WorkflowStep, status: StepStatus['status']) => JSX.Element;
+  getStepLabel: (step: WorkflowStep) => string;
+  getStepDescription: (step: WorkflowStep) => string;
+  steps: WorkflowStep[];
+  currentStepIndex: number;
+  progress: number;
+  handleBack: () => void;
+  canGoBack: boolean;
+  onComplete?: () => void;
+}
+
+function ManualWorkflowContent({
+  currentStep,
+  setCurrentStep,
+  searchUrl,
+  setSearchUrl,
+  maxProducts,
+  setMaxProducts,
+  productUrls,
+  setProductUrls,
+  selectedPlatform,
+  setSelectedPlatform,
+  aiSearchResult,
+  setAiSearchResult,
+  stepStatuses,
+  crawlSearch,
+  aiSearch,
+  productsData,
+  refetchProducts,
+  handleAutoAnalyze,
+  handleAutoCalculate,
+  handleAISearch,
+  handleUseSearchUrl,
+  handleCopySearchUrl,
+  handleCrawlSearch,
+  getStepIcon,
+  getStepLabel,
+  getStepDescription,
+  steps,
+  currentStepIndex,
+  progress,
+  handleBack,
+  canGoBack,
+  onComplete,
+}: ManualWorkflowContentProps) {
   return (
     <div className="space-y-6">
       {/* Progress Header */}
