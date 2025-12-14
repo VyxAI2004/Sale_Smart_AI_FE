@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from '@tanstack/react-router';
 import { useProduct } from '../hooks/use-products';
 import { useCrawlReviews } from '../hooks/use-product-crawler';
-import { useAnalyzeProductReviews } from '../hooks/use-reviews';
 import { ReviewsList } from './reviews-list';
 import { TrustScoreCard } from './trust-score-card';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, MessageSquare, CheckCircle2, XCircle, ArrowLeft, ExternalLink, Brain } from 'lucide-react';
+import { Loader2, MessageSquare, CheckCircle2, XCircle, ArrowLeft, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { Header } from '@/components/layout/header';
 import { Main } from '@/components/layout/main';
@@ -24,7 +23,6 @@ export function ProductCrawl() {
   const navigate = useNavigate();
   const { data: product, isLoading: isLoadingProduct, error: productError } = useProduct(productId);
   const crawlReviews = useCrawlReviews();
-  const analyzeReviews = useAnalyzeProductReviews();
   const [reviewLimit, setReviewLimit] = useState(30);
 
   const handleCrawlReviews = async () => {
@@ -45,19 +43,6 @@ export function ProductCrawl() {
     }
   };
 
-  const handleAnalyzeReviews = async () => {
-    if (!productId) {
-      toast.error('Product ID is required');
-      return;
-    }
-
-    try {
-      await analyzeReviews.mutateAsync(productId);
-      // Trust score will automatically refresh due to query invalidation in hook
-    } catch (error) {
-      // Error handled by hook
-    }
-  };
 
   if (isLoadingProduct) {
     return (
@@ -255,47 +240,6 @@ export function ProductCrawl() {
                 <div className="flex items-center gap-2 text-sm text-green-600">
                   <CheckCircle2 className="h-4 w-4" />
                   <span>Reviews crawled successfully</span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Analyze Reviews Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Analyze Reviews</CardTitle>
-              <CardDescription>
-                Analyze reviews with spam detection and calculate trust score
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button
-                onClick={handleAnalyzeReviews}
-                disabled={analyzeReviews.isPending}
-                className="w-full"
-              >
-                {analyzeReviews.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Analyzing Reviews...
-                  </>
-                ) : (
-                  <>
-                    <Brain className="mr-2 h-4 w-4" />
-                    Analyze Reviews & Calculate Trust Score
-                  </>
-                )}
-              </Button>
-              {analyzeReviews.isError && (
-                <div className="flex items-center gap-2 text-sm text-destructive">
-                  <XCircle className="h-4 w-4" />
-                  <span>Failed to analyze reviews</span>
-                </div>
-              )}
-              {analyzeReviews.isSuccess && (
-                <div className="flex items-center gap-2 text-sm text-green-600">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span>Reviews analyzed successfully</span>
                 </div>
               )}
             </CardContent>

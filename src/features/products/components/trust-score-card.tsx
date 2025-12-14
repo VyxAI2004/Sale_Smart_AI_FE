@@ -1,4 +1,4 @@
-import { useTrustScore, useTrustScoreDetail, useCalculateTrustScore } from '../hooks/use-trust-score';
+import { useTrustScore, useCalculateTrustScore } from '../hooks/use-trust-score';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +13,6 @@ interface TrustScoreCardProps {
 
 export function TrustScoreCard({ productId }: TrustScoreCardProps) {
   const { data: trustScore, isLoading, error } = useTrustScore(productId);
-  const { data: detail } = useTrustScoreDetail(productId);
   const calculateTrustScore = useCalculateTrustScore();
 
   const handleCalculate = async () => {
@@ -183,25 +182,6 @@ export function TrustScoreCard({ productId }: TrustScoreCardProps) {
           </div>
         </div>
 
-        {/* Breakdown Detail */}
-        {detail && (
-          <div className="space-y-2 border-t pt-4">
-            <div className="text-sm font-semibold">Score Breakdown</div>
-            <div className="space-y-2">
-              {Object.entries(detail.breakdown).map(([key, breakdown]) => (
-                <div key={key} className="space-y-1">
-                  <div className="flex justify-between text-sm">
-                    <span className="capitalize">{key.replace('_', ' ')}</span>
-                    <span className="font-semibold">
-                      {(breakdown.contribution * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                  <Progress value={breakdown.contribution * 100} className="h-2" />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

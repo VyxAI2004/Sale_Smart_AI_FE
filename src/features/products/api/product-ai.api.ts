@@ -21,5 +21,3 @@ export class ProductAIApi {
     return response.data;
   }
 }
-
-

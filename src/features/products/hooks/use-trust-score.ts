@@ -43,7 +43,11 @@ export const useCalculateTrustScore = () => {
       queryClient.invalidateQueries({ queryKey: ['trust-score-detail', data.product_id] });
       queryClient.invalidateQueries({ queryKey: ['product', data.product_id] });
       queryClient.invalidateQueries({ queryKey: ['products'] });
-      toast.success(`Trust score calculated: ${data.trust_score.toFixed(2)}`);
+      // Invalidate review analyses and statistics since analysis is done during trust score calculation
+      queryClient.invalidateQueries({ queryKey: ['review-analyses', data.product_id] });
+      queryClient.invalidateQueries({ queryKey: ['analysis-statistics', data.product_id] });
+      queryClient.invalidateQueries({ queryKey: ['reviews', data.product_id] });
+      toast.success(`Trust score calculated: ${Number(data.trust_score).toFixed(1)}`);
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to calculate trust score');
