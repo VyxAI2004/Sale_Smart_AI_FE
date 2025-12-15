@@ -1,3 +1,7 @@
+export interface DetailedRating {
+  [key: string]: number | string;
+}
+
 export interface Product {
   id: string;
   project_id: string;
@@ -15,10 +19,12 @@ export interface Product {
   currency?: string;
   specifications?: Record<string, unknown>;
   features?: string;
+  description?: string;
   images?: Record<string, unknown>;
   average_rating?: number;
   review_count?: number;
   sold_count?: number;
+  detailed_rating?: DetailedRating | Record<string, unknown>;
   url: string;
   collected_at?: string;
   is_verified?: boolean;
@@ -75,6 +81,5 @@ export interface ProductUpdate {
   is_verified?: boolean;
   data_source?: string;
 }
-
 
 

@@ -1,5 +1,12 @@
 import { Table, TableBody, TableHeader, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { MoreHorizontal, Power, PowerOff, Trash2 } from 'lucide-react'
 import type { AiModel } from '@/hooks/use-ai-models'
 import OpenAIIcon from '@/components/icons/openai'
 import GeminiIcon from '@/components/icons/gemini'
@@ -43,19 +50,32 @@ export function ModelsList({ models = [], onActivate, onDeactivate, onDelete }: 
               </TableCell>
               <TableCell>{m.model_type}</TableCell>
               <TableCell>{m.is_active ? 'Active' : 'Inactive'}</TableCell>
-              <TableCell className='flex gap-2'>
-                {m.is_active ? (
-                  <Button size='sm' variant='ghost' onClick={() => onDeactivate(m.id)}>
-                    Deactivate
-                  </Button>
-                ) : (
-                  <Button size='sm' onClick={() => onActivate(m.id)}>
-                    Activate
-                  </Button>
-                )}
-                <Button size='sm' variant='destructive' onClick={() => onDelete(m.id)}>
-                  Delete
-                </Button>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
+                      <span className='sr-only'>Open menu</span>
+                      <MoreHorizontal className='h-4 w-4' />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end'>
+                    {m.is_active ? (
+                      <DropdownMenuItem onClick={() => onDeactivate(m.id)}>
+                        <PowerOff className='mr-2 h-4 w-4' />
+                        Deactivate
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem onClick={() => onActivate(m.id)}>
+                        <Power className='mr-2 h-4 w-4' />
+                        Activate
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem onClick={() => onDelete(m.id)} className='text-destructive'>
+                      <Trash2 className='mr-2 h-4 w-4' />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}

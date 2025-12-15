@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -13,15 +12,25 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuShortcut,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, ExternalLink, Star, TrendingUp, Download } from 'lucide-react';
-import type { Product } from '@/types/product.types';
-import { useDeleteProduct } from '@/hooks/use-products';
+import {
+  MoreHorizontal,
+  ExternalLink,
+  Star,
+  TrendingUp,
+  Download,
+  Eye,
+  Edit,
+  Trash2,
+  Brain,
+} from 'lucide-react';
+import type { Product } from '../types/product.types';
+import { useDeleteProduct } from '../hooks/use-products';
 import { formatCurrency } from '@/lib/utils';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, Link } from '@tanstack/react-router';
 
 interface ProductsTableProps {
   products: Product[];
@@ -30,7 +39,7 @@ interface ProductsTableProps {
   onEdit?: (product: Product) => void;
 }
 
-export function ProductsTable({ products, projectId, onView, onEdit }: ProductsTableProps) {
+export function ProductsTable({ products, onEdit }: ProductsTableProps) {
   const deleteProduct = useDeleteProduct();
   const navigate = useNavigate();
 
@@ -71,10 +80,14 @@ export function ProductsTable({ products, projectId, onView, onEdit }: ProductsT
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {products.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="text-center text-muted-foreground">
+              <TableCell
+                colSpan={7}
+                className="text-center text-muted-foreground"
+              >
                 No products found
               </TableCell>
             </TableRow>
@@ -85,27 +98,40 @@ export function ProductsTable({ products, projectId, onView, onEdit }: ProductsT
                   <div className="flex flex-col">
                     <span>{product.name}</span>
                     {product.brand && (
-                      <span className="text-xs text-muted-foreground">{product.brand}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {product.brand}
+                      </span>
                     )}
                   </div>
                 </TableCell>
+
                 <TableCell>
                   <Badge variant={getPlatformBadgeVariant(product.platform)}>
                     {product.platform || 'Unknown'}
                   </Badge>
                 </TableCell>
+
                 <TableCell>
                   <div className="flex flex-col">
                     <span className="font-semibold">
-                      {formatCurrency(product.current_price || 0, product.currency || 'VND')}
+                      {formatCurrency(
+                        product.current_price || 0,
+                        product.currency || 'VND'
+                      )}
                     </span>
-                    {product.original_price && product.original_price > (product.current_price || 0) && (
-                      <span className="text-xs text-muted-foreground line-through">
-                        {formatCurrency(product.original_price, product.currency || 'VND')}
-                      </span>
-                    )}
+                    {product.original_price &&
+                      product.original_price >
+                        (product.current_price || 0) && (
+                        <span className="text-xs text-muted-foreground line-through">
+                          {formatCurrency(
+                            product.original_price,
+                            product.currency || 'VND'
+                          )}
+                        </span>
+                      )}
                   </div>
                 </TableCell>
+
                 <TableCell>
                   {product.average_rating ? (
                     <div className="flex items-center gap-1">
@@ -116,59 +142,114 @@ export function ProductsTable({ products, projectId, onView, onEdit }: ProductsT
                     <span className="text-muted-foreground">-</span>
                   )}
                 </TableCell>
+
                 <TableCell>{product.review_count || 0}</TableCell>
+
                 <TableCell>
-                  {product.trust_score !== undefined ? (
+                  {typeof product.trust_score === 'number' ? (
                     <div className="flex items-center gap-1">
                       <TrendingUp className="h-4 w-4" />
-                      <span className="font-semibold">{product.trust_score.toFixed(1)}</span>
+                      <span className="font-semibold">
+                        {product.trust_score.toFixed(1)}
+                      </span>
                     </div>
                   ) : (
                     <span className="text-muted-foreground">-</span>
                   )}
                 </TableCell>
+
                 <TableCell className="text-right">
-                  <DropdownMenu>
+                  <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
+                      <Button
+                        variant="ghost"
+                        className="data-[state=open]:bg-muted flex h-8 w-8 p-0"
+                      >
                         <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Open menu</span>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      {onView && (
-                        <DropdownMenuItem onClick={() => onView(product)}>
+
+                    <DropdownMenuContent
+                      align="end"
+                      className="w-[180px]"
+                    >
+                      <DropdownMenuItem asChild>
+                        <Link
+                          to="/products/$productId"
+                          params={{ productId: product.id }}
+                        >
                           View Details
+                          <DropdownMenuShortcut>
+                            <Eye size={16} />
+                          </DropdownMenuShortcut>
+                        </Link>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuSeparator />
+
+                      {onEdit && (
+                        <DropdownMenuItem
+                          onClick={() => onEdit(product)}
+                        >
+                          Edit
+                          <DropdownMenuShortcut>
+                            <Edit size={16} />
+                          </DropdownMenuShortcut>
                         </DropdownMenuItem>
                       )}
-                      {onEdit && (
-                        <DropdownMenuItem onClick={() => onEdit(product)}>Edit</DropdownMenuItem>
-                      )}
+
                       <DropdownMenuItem
-                        onClick={() => product.url && window.open(product.url, '_blank')}
-                        className="flex items-center gap-2"
+                        onClick={() =>
+                          product.url &&
+                          window.open(product.url, '_blank')
+                        }
                         disabled={!product.url}
                       >
-                        <ExternalLink className="h-4 w-4" />
                         Open on {product.platform || 'platform'}
+                        <DropdownMenuShortcut>
+                          <ExternalLink size={16} />
+                        </DropdownMenuShortcut>
                       </DropdownMenuItem>
+
                       <DropdownMenuItem
-                        onClick={() => navigate({ 
-                          to: '/products/$productId/crawl', 
-                          params: { productId: product.id } 
-                        })}
-                        className="flex items-center gap-2"
+                        onClick={() =>
+                          navigate({
+                            to: '/products/$productId/crawl',
+                            params: { productId: product.id },
+                          })
+                        }
                       >
-                        <Download className="h-4 w-4" />
                         Crawl Data
+                        <DropdownMenuShortcut>
+                          <Download size={16} />
+                        </DropdownMenuShortcut>
                       </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={() =>
+                          navigate({
+                            to: '/products/$productId/analyze',
+                            params: { productId: product.id },
+                          })
+                        }
+                      >
+                        Analyze Reviews
+                        <DropdownMenuShortcut>
+                          <Brain size={16} />
+                        </DropdownMenuShortcut>
+                      </DropdownMenuItem>
+
                       <DropdownMenuSeparator />
+
                       <DropdownMenuItem
                         onClick={() => handleDelete(product)}
-                        className="text-destructive"
+                        className="text-destructive focus:text-destructive"
                       >
                         Delete
+                        <DropdownMenuShortcut>
+                          <Trash2 size={16} />
+                        </DropdownMenuShortcut>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -181,6 +262,3 @@ export function ProductsTable({ products, projectId, onView, onEdit }: ProductsT
     </div>
   );
 }
-
-
-

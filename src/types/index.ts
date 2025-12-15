@@ -1,11 +1,11 @@
 /**
  * Centralized type exports
+ * 
+ * Note: Product-related types have been moved to features/products
+ * These exports are kept for backward compatibility
+ * New code should import from '@/features/products' instead
  */
-export * from './product.types';
-export * from './review.types';
-export * from './trust-score.types';
-export * from './crawler.types';
-export * from './product-ai.types';
+export * from '@/features/products/types';
 export * from './user-ai-model.types';
 
 

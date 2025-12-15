@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ProductApi } from '@/apis/product.api';
-import type { Product, ProductCreate, ProductUpdate, ProductListResponse } from '@/types/product.types';
+import { ProductApi } from '../api/product-api';
+import type { Product, ProductCreate, ProductUpdate, ProductListResponse } from '../types/product.types';
 import { toast } from 'sonner';
 
 /**
@@ -92,6 +92,5 @@ export const useDeleteProduct = () => {
     },
   });
 };
-
 
 

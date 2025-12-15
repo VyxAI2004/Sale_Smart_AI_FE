@@ -4,7 +4,7 @@ import type {
   TrustScoreDetailResponse,
   TopTrustedProductsResponse,
   ProductsByScoreRangeResponse,
-} from '@/types/trust-score.types';
+} from '../types/trust-score.types';
 
 export class TrustScoreApi {
   private static readonly BASE_PATH = '/products';
@@ -77,6 +77,5 @@ export class TrustScoreApi {
     return response.data;
   }
 }
-
 
 

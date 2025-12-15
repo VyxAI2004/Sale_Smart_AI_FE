@@ -25,22 +25,28 @@ import { TeamManagementCard } from './team-management-card'
 import { AnalyticsCard } from './analytics-card'
 
 // Import new product components
-import { ProductsList, CrawlerInterface, ReviewsList, TrustScoreCard } from '@/features/products'
+import { ProductsList, FindProductWorkflow, ReviewsList, TrustScoreCard } from '@/features/products'
 
 import type { ProjectDetailData } from '../../types/project-detail.types'
 
 interface ProjectDetailTabsProps {
   project: ProjectDetailData | null
   isLoading?: boolean
+  activeTab?: string
+  onTabChange?: (tab: string) => void
   onProjectUpdate?: (updates: Partial<ProjectDetailData>) => void
 }
 
 export function ProjectDetailTabs({
   project,
   isLoading = false,
+  activeTab: externalActiveTab,
+  onTabChange,
   onProjectUpdate
 }: ProjectDetailTabsProps) {
-  const [activeTab, setActiveTab] = useState('overview')
+  const [internalActiveTab, setInternalActiveTab] = useState('overview')
+  const activeTab = externalActiveTab ?? internalActiveTab
+  const setActiveTab = onTabChange ?? setInternalActiveTab
 
   return (
   <div className="w-full space-y-6">
@@ -54,9 +60,9 @@ export function ProjectDetailTabs({
           <ShoppingCart className="w-4 h-4" />
           <span className="hidden sm:inline">Products</span>
         </TabsTrigger>
-        <TabsTrigger value="crawler" className="flex items-center gap-2">
+        <TabsTrigger value="find-product" className="flex items-center gap-2">
           <Search className="w-4 h-4" />
-          <span className="hidden sm:inline">Crawler</span>
+          <span className="hidden sm:inline">Find Product</span>
         </TabsTrigger>
         <TabsTrigger value="reviews" className="flex items-center gap-2">
           <MessageSquare className="w-4 h-4" />
@@ -202,16 +208,20 @@ export function ProjectDetailTabs({
           )}
         </TabsContent>
 
-        {/* Crawler Tab */}
-        <TabsContent value="crawler" className="mt-6">
-          {project?.id && (
-            <CrawlerInterface 
+        {/* Find Product Tab */}
+        <TabsContent value="find-product" className="mt-6">
+          {project?.id ? (
+            <FindProductWorkflow 
               projectId={project.id}
-              onCrawlComplete={() => {
-                // Refresh data after crawl
-                console.log('Crawl completed')
+              onComplete={() => {
+                // Refresh data after workflow completes
+                console.log('Workflow completed')
               }}
-          />
+            />
+          ) : (
+            <div className="text-center text-muted-foreground py-8">
+              {isLoading ? 'Loading project...' : 'Project ID not available'}
+            </div>
           )}
         </TabsContent>
 

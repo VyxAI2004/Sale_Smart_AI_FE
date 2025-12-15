@@ -1,10 +1,11 @@
-import { useProduct } from '@/hooks/use-products';
+import { useProduct } from '../hooks/use-products';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, Star, TrendingUp, Package, DollarSign } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Separator } from '@/components/ui/separator';
 
 interface ProductDetailProps {
   productId: string;
@@ -94,7 +95,7 @@ export function ProductDetail({ productId }: ProductDetailProps) {
                 </div>
               )}
 
-              {product.trust_score !== undefined && (
+              {product.trust_score != null && typeof product.trust_score === 'number' && (
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
                   <span className="text-lg font-semibold">Trust Score: {product.trust_score.toFixed(1)}</span>
@@ -125,12 +126,50 @@ export function ProductDetail({ productId }: ProductDetailProps) {
                 <div>
                   <h4 className="font-semibold mb-2">Specifications</h4>
                   <div className="text-sm space-y-1">
-                    {Object.entries(product.specifications).map(([key, value]) => (
-                      <div key={key} className="flex justify-between">
-                        <span className="text-muted-foreground">{key}:</span>
-                        <span>{String(value)}</span>
-                      </div>
-                    ))}
+                    {Object.entries(product.specifications).map(([key, value]) => {
+                      // Handle nested objects and arrays
+                      let displayValue: string;
+                      if (value === null || value === undefined) {
+                        displayValue = '-';
+                      } else if (typeof value === 'object') {
+                        if (Array.isArray(value)) {
+                          displayValue = value.join(', ');
+                        } else {
+                          displayValue = JSON.stringify(value);
+                        }
+                      } else {
+                        displayValue = String(value);
+                      }
+                      
+                      return (
+                        <div key={key} className="flex justify-between">
+                          <span className="text-muted-foreground capitalize">{key.replace(/_/g, ' ')}:</span>
+                          <span className="text-right max-w-[60%] break-words">{displayValue}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {product.detailed_rating && (
+                <div>
+                  <h4 className="font-semibold mb-2">Detailed Rating</h4>
+                  <div className="text-sm space-y-1">
+                    {Object.entries(product.detailed_rating).map(([key, value]) => {
+                      const numValue = typeof value === 'number' ? value : parseFloat(String(value));
+                      if (isNaN(numValue)) return null;
+                      
+                      return (
+                        <div key={key} className="flex items-center justify-between">
+                          <span className="text-muted-foreground capitalize">{key.replace(/_/g, ' ')}:</span>
+                          <div className="flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <span>{numValue.toFixed(1)}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -145,6 +184,20 @@ export function ProductDetail({ productId }: ProductDetailProps) {
               </Button>
             </div>
           </div>
+
+          {/* Description Section */}
+          {product.description && (
+            <>
+              <Separator />
+              <div className="mt-4">
+                <h4 className="font-semibold mb-2">Description</h4>
+                <div 
+                  className="text-sm text-muted-foreground prose prose-sm max-w-none"
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

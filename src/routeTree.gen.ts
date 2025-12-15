@@ -42,7 +42,9 @@ import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_auth
 import { Route as AuthenticatedProjectsAddRouteImport } from './routes/_authenticated/projects/add'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects/$projectId'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
+import { Route as AuthenticatedProductsProductIdIndexRouteImport } from './routes/_authenticated/products/$productId/index'
 import { Route as AuthenticatedProductsProductIdCrawlRouteImport } from './routes/_authenticated/products/$productId/crawl'
+import { Route as AuthenticatedProductsProductIdAnalyzeRouteImport } from './routes/_authenticated/products/$productId/analyze'
 
 const ClerkRouteRoute = ClerkRouteRouteImport.update({
   id: '/clerk',
@@ -219,10 +221,22 @@ const AuthenticatedErrorsErrorRoute =
     path: '/errors/$error',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedProductsProductIdIndexRoute =
+  AuthenticatedProductsProductIdIndexRouteImport.update({
+    id: '/products/$productId/',
+    path: '/products/$productId/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProductsProductIdCrawlRoute =
   AuthenticatedProductsProductIdCrawlRouteImport.update({
     id: '/products/$productId/crawl',
     path: '/products/$productId/crawl',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedProductsProductIdAnalyzeRoute =
+  AuthenticatedProductsProductIdAnalyzeRouteImport.update({
+    id: '/products/$productId/analyze',
+    path: '/products/$productId/analyze',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
@@ -258,7 +272,9 @@ export interface FileRoutesByFullPath {
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/products/$productId/analyze': typeof AuthenticatedProductsProductIdAnalyzeRoute
   '/products/$productId/crawl': typeof AuthenticatedProductsProductIdCrawlRoute
+  '/products/$productId': typeof AuthenticatedProductsProductIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/clerk': typeof ClerkAuthenticatedRouteRouteWithChildren
@@ -290,7 +306,9 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/products/$productId/analyze': typeof AuthenticatedProductsProductIdAnalyzeRoute
   '/products/$productId/crawl': typeof AuthenticatedProductsProductIdCrawlRoute
+  '/products/$productId': typeof AuthenticatedProductsProductIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -327,7 +345,9 @@ export interface FileRoutesById {
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/products/$productId/analyze': typeof AuthenticatedProductsProductIdAnalyzeRoute
   '/_authenticated/products/$productId/crawl': typeof AuthenticatedProductsProductIdCrawlRoute
+  '/_authenticated/products/$productId/': typeof AuthenticatedProductsProductIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -363,7 +383,9 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/tasks'
     | '/users'
+    | '/products/$productId/analyze'
     | '/products/$productId/crawl'
+    | '/products/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/clerk'
@@ -395,7 +417,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tasks'
     | '/users'
+    | '/products/$productId/analyze'
     | '/products/$productId/crawl'
+    | '/products/$productId'
   id:
     | '__root__'
     | '/_authenticated'
@@ -431,7 +455,9 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
+    | '/_authenticated/products/$productId/analyze'
     | '/_authenticated/products/$productId/crawl'
+    | '/_authenticated/products/$productId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -681,11 +707,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedErrorsErrorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/products/$productId/': {
+      id: '/_authenticated/products/$productId/'
+      path: '/products/$productId'
+      fullPath: '/products/$productId'
+      preLoaderRoute: typeof AuthenticatedProductsProductIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/products/$productId/crawl': {
       id: '/_authenticated/products/$productId/crawl'
       path: '/products/$productId/crawl'
       fullPath: '/products/$productId/crawl'
       preLoaderRoute: typeof AuthenticatedProductsProductIdCrawlRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/products/$productId/analyze': {
+      id: '/_authenticated/products/$productId/analyze'
+      path: '/products/$productId/analyze'
+      fullPath: '/products/$productId/analyze'
+      preLoaderRoute: typeof AuthenticatedProductsProductIdAnalyzeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
@@ -729,7 +769,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProjectsIndexRoute: typeof AuthenticatedProjectsIndexRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
+  AuthenticatedProductsProductIdAnalyzeRoute: typeof AuthenticatedProductsProductIdAnalyzeRoute
   AuthenticatedProductsProductIdCrawlRoute: typeof AuthenticatedProductsProductIdCrawlRoute
+  AuthenticatedProductsProductIdIndexRoute: typeof AuthenticatedProductsProductIdIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -744,8 +786,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProjectsIndexRoute: AuthenticatedProjectsIndexRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
+  AuthenticatedProductsProductIdAnalyzeRoute:
+    AuthenticatedProductsProductIdAnalyzeRoute,
   AuthenticatedProductsProductIdCrawlRoute:
     AuthenticatedProductsProductIdCrawlRoute,
+  AuthenticatedProductsProductIdIndexRoute:
+    AuthenticatedProductsProductIdIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

@@ -4,7 +4,7 @@ import type {
   ProductListResponse,
   ProductCreate,
   ProductUpdate,
-} from '@/types/product.types';
+} from '../types/product.types';
 
 export class ProductApi {
   private static readonly BASE_PATH = '/products';
@@ -62,6 +62,5 @@ export class ProductApi {
     return response.data;
   }
 }
-
 
 

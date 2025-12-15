@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ProductCrawlerApi } from '@/apis/product-crawler.api';
-import type { CrawlSearchRequest, CrawlReviewsRequest } from '@/types/crawler.types';
+import { ProductCrawlerApi } from '../api/product-crawler.api';
+import type { CrawlSearchRequest, CrawlReviewsRequest } from '../types/crawler.types';
 import { toast } from 'sonner';
 
 /**
@@ -45,6 +45,5 @@ export const useCrawlReviews = () => {
     },
   });
 };
-
 
 

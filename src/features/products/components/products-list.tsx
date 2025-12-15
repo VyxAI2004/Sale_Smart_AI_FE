@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useProducts } from '@/hooks/use-products';
+import { useProducts } from '../hooks/use-products';
 import { ProductsTable } from './products-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +19,7 @@ interface ProductsListProps {
   onViewProduct?: (productId: string) => void;
 }
 
-export function ProductsList({ projectId, onViewProduct }: ProductsListProps) {
+export function ProductsList({ projectId }: ProductsListProps) {
   const [search, setSearch] = useState('');
   const [platform, setPlatform] = useState<string>('');
   const [category, setCategory] = useState<string>('');
@@ -33,12 +33,6 @@ export function ProductsList({ projectId, onViewProduct }: ProductsListProps) {
     skip,
     limit,
   });
-
-  const handleView = (product: { id: string }) => {
-    if (onViewProduct) {
-      onViewProduct(product.id);
-    }
-  };
 
   if (!projectId) {
     return (
@@ -150,7 +144,6 @@ export function ProductsList({ projectId, onViewProduct }: ProductsListProps) {
           <ProductsTable
             products={data?.items || []}
             projectId={projectId}
-            onView={handleView}
           />
           {data && data.total > limit && (
             <div className="flex items-center justify-between">

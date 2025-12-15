@@ -4,7 +4,7 @@ import type {
   CrawlReviewsRequest,
   CrawlSearchResponse,
   CrawlReviewsResponse,
-} from '@/types/crawler.types';
+} from '../types/crawler.types';
 
 export class ProductCrawlerApi {
   private static readonly BASE_PATH = '/products/crawler';
@@ -29,6 +29,5 @@ export class ProductCrawlerApi {
     return response.data;
   }
 }
-
 
 

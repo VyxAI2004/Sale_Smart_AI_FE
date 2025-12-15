@@ -8,6 +8,8 @@ export const PRODUCT_CATEGORIES: string[] = [
   'Gia dụng & Đời sống',
   'Sức khỏe & Làm đẹp',
   'Thể thao & Du lịch',
+  'Sách & Văn phòng phẩm',
+  'Thực phẩm & Đồ uống',
   'Ô tô & Xe máy',
   'Mẹ & Bé',
   'Nhà cửa & Đời sống',

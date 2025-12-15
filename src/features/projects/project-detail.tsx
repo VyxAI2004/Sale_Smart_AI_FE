@@ -24,6 +24,7 @@ export function ProjectDetail() {
   const [isLoading, setIsLoading] = useState(true)
   const [isFullWidth, setIsFullWidth] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<string>('overview')
 
   useEffect(() => {
     const fetchProjectDetail = async () => {
@@ -156,12 +157,14 @@ export function ProjectDetail() {
       <Main fluid={isFullWidth}>
         <ProjectHeader 
           project={project} 
-          onTriggerCrawl={handleTriggerCrawl}
+          onTriggerCrawl={() => setActiveTab('find-product')}
         />
         
         <ProjectDetailTabs 
           project={project}
           isLoading={isLoading}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
           onProjectUpdate={(updates) => {
             if (project) {
               setProject({ ...project, ...updates })

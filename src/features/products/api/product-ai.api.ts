@@ -1,5 +1,5 @@
 import http from '@/utils/http';
-import type { ProductSearchResponse, PlatformEnum } from '@/types/product-ai.types';
+import type { ProductSearchResponse, PlatformEnum } from '../types/product-ai.types';
 
 export class ProductAIApi {
   private static readonly BASE_PATH = '/products/ai';
@@ -21,6 +21,3 @@ export class ProductAIApi {
     return response.data;
   }
 }
-
-
-

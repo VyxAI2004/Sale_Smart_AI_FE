@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useCrawlSearch } from '@/hooks/use-product-crawler';
-import { useProductAISearchMutation } from '@/hooks/use-product-ai';
+import { useCrawlSearch } from '../hooks/use-product-crawler';
+import { useProductAISearchMutation } from '../hooks/use-product-ai';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,7 @@ import {
 import { Loader2, Search, CheckCircle2, XCircle, Sparkles, Copy, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { CrawlResultsDisplay } from './crawl-results-display';
-import type { PlatformEnum } from '@/types/product-ai.types';
+import type { PlatformEnum } from '../types/product-ai.types';
 
 interface CrawlerInterfaceProps {
   projectId: string;
