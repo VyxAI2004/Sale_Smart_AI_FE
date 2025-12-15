@@ -12,6 +12,13 @@ type Team = {
   plan: string
 }
 
+type Project = {
+  id: string
+  name: string
+  logo: React.ElementType
+  status: string
+}
+
 type BaseNavItem = {
   title: string
   badge?: string
@@ -38,7 +45,8 @@ type NavGroup = {
 type SidebarData = {
   user: User
   teams: Team[]
+  projects: Project[]
   navGroups: NavGroup[]
 }
 
-export type { SidebarData, NavGroup, NavItem, NavCollapsible, NavLink }
+export type { SidebarData, NavGroup, NavItem, NavCollapsible, NavLink, Project }

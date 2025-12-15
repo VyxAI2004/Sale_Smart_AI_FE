@@ -10,6 +10,7 @@ import {
   Bell,
   Package,
   Palette,
+  Cpu,
   ServerOff,
   Settings,
   Wrench,
@@ -21,6 +22,7 @@ import {
   AudioWaveform,
   Command,
   GalleryVerticalEnd,
+  FolderOpen,
 } from 'lucide-react'
 import { ClerkLogo } from '@/assets/clerk-logo'
 import { type SidebarData } from '../types'
@@ -48,6 +50,26 @@ export const sidebarData: SidebarData = {
       plan: 'Startup',
     },
   ],
+  projects: [
+    {
+      id: '1',
+      name: 'E-commerce Analytics',
+      logo: Package,
+      status: 'Active',
+    },
+    {
+      id: '2', 
+      name: 'Mobile App Tracking',
+      logo: Monitor,
+      status: 'Draft',
+    },
+    {
+      id: '3',
+      name: 'Social Media Monitor',
+      logo: MessagesSquare,
+      status: 'Completed',
+    },
+  ],
   navGroups: [
     {
       title: 'General',
@@ -61,6 +83,11 @@ export const sidebarData: SidebarData = {
           title: 'Tasks',
           url: '/tasks',
           icon: ListTodo,
+        },
+        {
+          title: 'Projects',
+          url: '/projects',
+          icon: FolderOpen,
         },
         {
           title: 'Apps',
@@ -191,6 +218,11 @@ export const sidebarData: SidebarData = {
               title: 'Display',
               url: '/settings/display',
               icon: Monitor,
+            },
+            {
+              title: 'AI & Models',
+              url: '/settings/ai-and-models',
+              icon: Cpu,
             },
           ],
         },

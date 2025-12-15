@@ -12,9 +12,14 @@
   }
   html {
     @apply overflow-x-hidden;
+    overflow-y: scroll;
   }
   body {
     @apply bg-background text-foreground has-[div[data-variant='inset']]:bg-sidebar min-h-svh w-full;
+  }
+  
+  main[data-layout="fixed"] .overflow-auto {
+    scrollbar-width: thin;
   }
 
   /* Override Radix scroll locking for sticky headers */
