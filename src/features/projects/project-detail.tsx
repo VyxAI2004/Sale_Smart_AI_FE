@@ -6,9 +6,11 @@ import { ConfigDrawer } from '@/components/config-drawer'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { LanguageSwitcher } from '@/components/language-switcher'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Maximize2, Minimize2, Loader2 } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 
 // Dashboard Components
 import { ProjectHeader } from './components/dashboard/project-header'
@@ -19,6 +21,7 @@ import { ProjectDetailApi } from './api/project-detail-api'
 import type { ProjectDetailData } from './types/project-detail.types'
 
 export function ProjectDetail() {
+  const { t } = useTranslation()
   const { projectId } = useParams({ from: '/_authenticated/projects/$projectId' })
   const [project, setProject] = useState<ProjectDetailData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -36,7 +39,7 @@ export function ProjectDetail() {
         const data = await ProjectDetailApi.getProjectDetail(projectId)
         setProject(data)
       } catch (_err) {
-        setError('Failed to load project details')
+        setError(t('projects.failedToLoadDetails'))
         // Handle error silently for production
       } finally {
         setIsLoading(false)
@@ -78,10 +81,11 @@ export function ProjectDetail() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Mở rộng bảng</p>
+                  <p>{t('common.expandTable')}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+            <LanguageSwitcher />
             <ThemeSwitch />
             <ConfigDrawer />
             <ProfileDropdown />
@@ -105,6 +109,7 @@ export function ProjectDetail() {
         <Header fixed>
           <Search />
           <div className='ms-auto flex items-center space-x-4'>
+            <LanguageSwitcher />
             <ThemeSwitch />
             <ConfigDrawer />
             <ProfileDropdown />
@@ -114,10 +119,10 @@ export function ProjectDetail() {
         <Main>
           <div className="flex items-center justify-center min-h-[400px] text-center">
             <div>
-              <h2 className="text-lg font-semibold mb-2">Failed to load project</h2>
+              <h2 className="text-lg font-semibold mb-2">{t('projects.failedToLoad')}</h2>
               <p className="text-muted-foreground mb-4">{error}</p>
               <Button onClick={() => window.location.reload()}>
-                Try Again
+                {t('common.tryAgain')}
               </Button>
             </div>
           </div>
@@ -144,7 +149,7 @@ export function ProjectDetail() {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{isFullWidth ? 'Thu nhỏ bảng' : 'Mở rộng bảng'}</p>
+                <p>{isFullWidth ? t('common.collapseTable') : t('common.expandTable')}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

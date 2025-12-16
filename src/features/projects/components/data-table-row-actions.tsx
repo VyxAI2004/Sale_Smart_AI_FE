@@ -13,12 +13,14 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { type ProjectApiResponse } from '../api/project-api'
 import { useProjects } from './projects-provider'
+import { useTranslation } from '@/hooks/use-translation'
 
 type DataTableRowActionsProps = {
   row: Row<ProjectApiResponse>
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
+  const { t } = useTranslation()
   const { setOpen, setCurrentRow } = useProjects()
   const project = row.original
 
@@ -31,13 +33,13 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             className='data-[state=open]:bg-muted flex h-8 w-8 p-0'
           >
             <DotsHorizontalIcon className='h-4 w-4' />
-            <span className='sr-only'>Open menu</span>
+            <span className='sr-only'>{t('common.openMenu')}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' className='w-[160px]'>
           <DropdownMenuItem asChild>
             <Link to="/projects/$projectId" params={{ projectId: project.id }}>
-              View Details
+              {t('projects.viewDetails')}
               <DropdownMenuShortcut>
                 <Eye size={16} />
               </DropdownMenuShortcut>
@@ -52,7 +54,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
               setOpen('edit')
             }}
           >
-            Edit
+            {t('projects.edit')}
             <DropdownMenuShortcut>
               <Edit size={16} />
             </DropdownMenuShortcut>
@@ -65,7 +67,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
                 // TODO: Implement pause functionality
               }}
             >
-              Pause
+              {t('projects.pause')}
               <DropdownMenuShortcut>
                 <Pause size={16} />
               </DropdownMenuShortcut>
@@ -77,7 +79,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
                 // TODO: Implement resume functionality
               }}
             >
-              Resume
+              {t('projects.resume')}
               <DropdownMenuShortcut>
                 <Play size={16} />
               </DropdownMenuShortcut>
@@ -90,7 +92,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
               setOpen('archive')
             }}
           >
-            Archive
+            {t('projects.archive')}
             <DropdownMenuShortcut>
               <Archive size={16} />
             </DropdownMenuShortcut>
@@ -104,7 +106,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             }}
             className="text-destructive focus:text-destructive"
           >
-            Delete
+            {t('projects.delete')}
             <DropdownMenuShortcut>
               <Trash2 size={16} />
             </DropdownMenuShortcut>
