@@ -7,17 +7,42 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DatePicker } from '@/components/ui/date-picker'
+import { Switch } from '@/components/ui/switch'
+import { Separator } from '@/components/ui/separator'
 import { 
   DollarSign, 
   Edit3,
   Save,
   X,
   Target,
-  Clock
+  Clock,
+  Settings,
+  Bell,
+  Cpu,
+  Trash2,
+  Archive,
+  Copy,
+  AlertTriangle,
+  Loader2
 } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
+import { useNavigate } from '@tanstack/react-router'
+import { useTranslation } from '@/hooks/use-translation'
+import { ProjectApi } from '../../api/project-api'
 import type { ProjectDetailData } from '../../types/project-detail.types'
 import type { PipelineType, CrawlSchedule } from '../../types/project.types'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 interface ProjectDetailsCardProps {
   project: ProjectDetailData | null
@@ -30,8 +55,15 @@ export function ProjectDetailsCard({
   isLoading = false,
   onUpdate 
 }: ProjectDetailsCardProps) {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
   const [isEditing, setIsEditing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [isArchiving, setIsArchiving] = useState(false)
+  const [isDuplicating, setIsDuplicating] = useState(false)
   const [editData, setEditData] = useState<Partial<ProjectDetailData>>({})
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const formatCurrency = (amount: number | null, currency = 'VND') => {
     if (!amount) return '--'
@@ -40,6 +72,21 @@ export function ProjectDetailsCard({
       currency: currency,
       minimumFractionDigits: 0,
     }).format(amount)
+  }
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {}
+    
+    if (!editData.name || editData.name.trim() === '') {
+      newErrors.name = t('projects.settings.projectName') + ' is required'
+    }
+    
+    if (editData.target_budget_range !== undefined && editData.target_budget_range < 0) {
+      newErrors.budget = 'Budget must be positive'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   const handleStartEdit = () => {
@@ -55,19 +102,100 @@ export function ProjectDetailsCard({
       crawl_schedule: project.crawl_schedule,
       deadline: project.deadline
     })
+    setErrors({})
     setIsEditing(true)
   }
 
-  const handleSave = () => {
-    if (onUpdate) {
-      onUpdate(editData)
+  const handleSave = async () => {
+    if (!project || !validateForm()) {
+      toast.error(t('projects.settings.updateError'))
+      return
     }
-    setIsEditing(false)
+
+    try {
+      setIsSaving(true)
+      await ProjectApi.update(project.id, editData)
+      
+      if (onUpdate) {
+        onUpdate(editData)
+      }
+      
+      toast.success(t('projects.settings.updateSuccess'))
+      setIsEditing(false)
+      setEditData({})
+    } catch (error) {
+      console.error('Failed to update project:', error)
+      toast.error(t('projects.settings.updateError'))
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleCancel = () => {
     setEditData({})
+    setErrors({})
     setIsEditing(false)
+  }
+
+  const handleDelete = async () => {
+    if (!project) return
+
+    try {
+      setIsDeleting(true)
+      await ProjectApi.delete(project.id)
+      toast.success(t('projects.settings.deleteSuccess'))
+      navigate({ to: '/projects' })
+    } catch (error) {
+      console.error('Failed to delete project:', error)
+      toast.error(t('projects.settings.deleteError'))
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const handleArchive = async () => {
+    if (!project) return
+
+    try {
+      setIsArchiving(true)
+      await ProjectApi.updateStatus(project.id, 'archived')
+      toast.success(t('projects.settings.archiveSuccess'))
+      if (onUpdate) {
+        onUpdate({ status: 'archived' })
+      }
+    } catch (error) {
+      console.error('Failed to archive project:', error)
+      toast.error(t('projects.settings.archiveError'))
+    } finally {
+      setIsArchiving(false)
+    }
+  }
+
+  const handleDuplicate = async () => {
+    if (!project) return
+
+    try {
+      setIsDuplicating(true)
+      const duplicateData = {
+        name: `${project.name} (Copy)`,
+        description: project.description,
+        target_product_name: project.target_product_name,
+        target_product_category: project.target_product_category,
+        target_budget_range: project.target_budget_range,
+        currency: project.currency,
+        pipeline_type: project.pipeline_type,
+        crawl_schedule: project.crawl_schedule,
+        deadline: project.deadline
+      }
+      const newProject = await ProjectApi.create(duplicateData)
+      toast.success(t('projects.settings.duplicateSuccess'))
+      navigate({ to: `/projects/${newProject.id}` })
+    } catch (error) {
+      console.error('Failed to duplicate project:', error)
+      toast.error(t('projects.settings.duplicateError'))
+    } finally {
+      setIsDuplicating(false)
+    }
   }
 
   if (isLoading) {
@@ -78,7 +206,7 @@ export function ProjectDetailsCard({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
-                Budget & Finance
+                {t('projects.settings.budgetFinance')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -99,7 +227,7 @@ export function ProjectDetailsCard({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
-                Schedule & Timeline
+                {t('projects.settings.scheduleTimeline')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -116,7 +244,7 @@ export function ProjectDetailsCard({
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Edit3 className="w-5 h-5" />
-              Quick Edit
+              {t('projects.settings.quickEdit')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -133,7 +261,7 @@ export function ProjectDetailsCard({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>
             <CardContent className="flex items-center justify-center py-8">
-              <p className="text-muted-foreground">No project data available</p>
+              <p className="text-muted-foreground">{t('projects.projectNotFound')}</p>
             </CardContent>
           </Card>
         </div>
@@ -143,34 +271,34 @@ export function ProjectDetailsCard({
 
   return (
     <div className="space-y-6">
-      {/* Project Details Cards - Moved to top */}
+      {/* Project Details Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Budget & Finance */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <DollarSign className="w-5 h-5" />
-              Budget & Finance
+              {t('projects.settings.budgetFinance')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Budget</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('projects.budget')}</p>
                 <p className="text-2xl font-bold">
                   {formatCurrency(project.target_budget_range ?? null, project.currency)}
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Currency</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('projects.settings.currency')}</p>
                 <Badge variant="secondary">{project.currency || 'VND'}</Badge>
               </div>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground mb-2">Category</p>
+              <p className="text-sm font-medium text-muted-foreground mb-2">{t('projects.settings.category')}</p>
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm">{project.target_product_category || 'Not specified'}</span>
+                <span className="text-sm">{project.target_product_category || t('projects.settings.notSpecified')}</span>
               </div>
             </div>
           </CardContent>
@@ -181,34 +309,34 @@ export function ProjectDetailsCard({
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="w-5 h-5" />
-              Schedule & Timeline
+              {t('projects.settings.scheduleTimeline')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Crawl Schedule</span>
+                <span className="text-sm font-medium">{t('projects.settings.crawlSchedule')}</span>
                 <Badge variant={project.crawl_schedule ? 'default' : 'secondary'}>
-                  {project.crawl_schedule || 'Not configured'}
+                  {project.crawl_schedule || t('projects.settings.notConfigured')}
                 </Badge>
               </div>
               
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Next Crawl</span>
+                <span className="text-sm font-medium">{t('projects.nextCrawl')}</span>
                 <span className="text-sm text-muted-foreground">
-                  {project.next_crawl_at ? new Date(project.next_crawl_at).toLocaleDateString('vi-VN') : 'Not scheduled'}
+                  {project.next_crawl_at ? new Date(project.next_crawl_at).toLocaleDateString('vi-VN') : t('projects.settings.notScheduled')}
                 </span>
               </div>
               
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Deadline</span>
+                <span className="text-sm font-medium">{t('projects.deadline')}</span>
                 <span className="text-sm text-muted-foreground">
-                  {project.deadline ? new Date(project.deadline).toLocaleDateString('vi-VN') : 'Not set'}
+                  {project.deadline ? new Date(project.deadline).toLocaleDateString('vi-VN') : t('projects.settings.notSet')}
                 </span>
               </div>
               
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Pipeline</span>
+                <span className="text-sm font-medium">{t('projects.pipelineType')}</span>
                 <Badge variant="outline">
                   {project.pipeline_type || 'Standard'}
                 </Badge>
@@ -218,27 +346,36 @@ export function ProjectDetailsCard({
         </Card>
       </div>
 
-      {/* Quick Edit Panel - Moved to bottom */}
+      {/* Quick Edit Panel */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <Edit3 className="w-5 h-5" />
-              Quick Edit
+              {t('projects.settings.quickEdit')}
             </CardTitle>
             {!isEditing ? (
               <Button size="sm" onClick={handleStartEdit}>
-                Edit Project
+                {t('projects.settings.editProject')}
                 <Edit3 className="w-4 h-4 ml-1" />
               </Button>
             ) : (
               <div className="flex gap-2">
-                <Button size="sm" onClick={handleSave}>
-                  Save
-                  <Save className="w-4 h-4 ml-1" />
+                <Button size="sm" onClick={handleSave} disabled={isSaving}>
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 ml-1 animate-spin" />
+                      {t('projects.saving')}
+                    </>
+                  ) : (
+                    <>
+                      {t('projects.settings.save')}
+                      <Save className="w-4 h-4 ml-1" />
+                    </>
+                  )}
                 </Button>
-                <Button size="sm" variant="outline" onClick={handleCancel}>
-                  Cancel
+                <Button size="sm" variant="outline" onClick={handleCancel} disabled={isSaving}>
+                  {t('projects.settings.cancel')}
                   <X className="w-4 h-4 ml-1" />
                 </Button>
               </div>
@@ -250,18 +387,20 @@ export function ProjectDetailsCard({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Basic Info */}
               <div className="space-y-4">
-                <h4 className="font-medium text-sm text-muted-foreground mb-4 pb-2 border-b">Basic Info</h4>
+                <h4 className="font-medium text-sm text-muted-foreground mb-4 pb-2 border-b">{t('projects.settings.basicInfo')}</h4>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Project Name</Label>
+                    <Label htmlFor="name">{t('projects.settings.projectName')}</Label>
                     <Input
                       id="name"
                       value={editData.name || ''}
                       onChange={(e) => setEditData({...editData, name: e.target.value})}
+                      className={errors.name ? 'border-destructive' : ''}
                     />
+                    {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="target">Target Product</Label>
+                    <Label htmlFor="target">{t('projects.settings.targetProduct')}</Label>
                     <Input
                       id="target"
                       value={editData.target_product_name || ''}
@@ -269,7 +408,7 @@ export function ProjectDetailsCard({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="description">Description</Label>
+                    <Label htmlFor="description">{t('projects.description')}</Label>
                     <Textarea
                       id="description"
                       value={editData.description || ''}
@@ -282,22 +421,24 @@ export function ProjectDetailsCard({
 
               {/* Budget & Finance */}
               <div className="space-y-4">
-                <h4 className="font-medium text-sm text-muted-foreground mb-4 pb-2 border-b">Budget & Finance</h4>
+                <h4 className="font-medium text-sm text-muted-foreground mb-4 pb-2 border-b">{t('projects.settings.budgetFinance')}</h4>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="budget">Budget</Label>
+                    <Label htmlFor="budget">{t('projects.budget')}</Label>
                     <Input
                       id="budget"
                       type="number"
                       value={editData.target_budget_range || ''}
                       onChange={(e) => setEditData({...editData, target_budget_range: Number(e.target.value)})}
+                      className={errors.budget ? 'border-destructive' : ''}
                     />
+                    {errors.budget && <p className="text-xs text-destructive">{errors.budget}</p>}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="currency">Currency</Label>
+                    <Label htmlFor="currency">{t('projects.settings.currency')}</Label>
                     <Select value={editData.currency} onValueChange={(value) => setEditData({...editData, currency: value})}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select currency" />
+                        <SelectValue placeholder={t('projects.settings.selectCurrency')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="VND">VND</SelectItem>
@@ -307,7 +448,7 @@ export function ProjectDetailsCard({
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="category">Category</Label>
+                    <Label htmlFor="category">{t('projects.settings.category')}</Label>
                     <Input
                       id="category"
                       value={editData.target_product_category || ''}
@@ -319,16 +460,16 @@ export function ProjectDetailsCard({
 
               {/* Schedule & Timeline */}
               <div className="space-y-4">
-                <h4 className="font-medium text-sm text-muted-foreground mb-4 pb-2 border-b">Schedule & Timeline</h4>
+                <h4 className="font-medium text-sm text-muted-foreground mb-4 pb-2 border-b">{t('projects.settings.scheduleTimeline')}</h4>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="pipeline">Pipeline Type</Label>
+                    <Label htmlFor="pipeline">{t('projects.pipelineType')}</Label>
                     <Select 
                       value={editData.pipeline_type} 
                       onValueChange={(value) => setEditData({...editData, pipeline_type: value as PipelineType})}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select pipeline" />
+                        <SelectValue placeholder={t('projects.settings.selectPipeline')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="standard">Standard</SelectItem>
@@ -338,13 +479,13 @@ export function ProjectDetailsCard({
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="schedule">Crawl Schedule</Label>
+                    <Label htmlFor="schedule">{t('projects.settings.crawlSchedule')}</Label>
                     <Select 
                       value={editData.crawl_schedule || ''} 
                       onValueChange={(value) => setEditData({...editData, crawl_schedule: value as CrawlSchedule})}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select schedule" />
+                        <SelectValue placeholder={t('projects.settings.selectSchedule')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="daily">Daily</SelectItem>
@@ -354,11 +495,11 @@ export function ProjectDetailsCard({
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="deadline">Deadline</Label>
+                    <Label htmlFor="deadline">{t('projects.deadline')}</Label>
                     <DatePicker
                       value={editData.deadline ? new Date(editData.deadline) : undefined}
-                      onChange={(date) => setEditData({...editData, deadline: date})}
-                      placeholder="Select deadline"
+                      onChange={(date) => setEditData({...editData, deadline: date?.toISOString()})}
+                      placeholder={t('projects.settings.selectDeadline')}
                     />
                   </div>
                 </div>
@@ -367,64 +508,270 @@ export function ProjectDetailsCard({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="space-y-3">
-                <h4 className="font-medium text-sm text-muted-foreground">Basic Info</h4>
+                <h4 className="font-medium text-sm text-muted-foreground">{t('projects.settings.basicInfo')}</h4>
                 <div className="space-y-2">
                   <div>
-                    <span className="text-sm font-medium">Project:</span>
+                    <span className="text-sm font-medium">{t('projects.settings.project')}:</span>
                     <p className="text-sm text-muted-foreground">{project.name}</p>
                   </div>
                   <div>
-                    <span className="text-sm font-medium">Target:</span>
+                    <span className="text-sm font-medium">{t('projects.settings.target')}:</span>
                     <p className="text-sm text-muted-foreground">{project.target_product_name}</p>
                   </div>
                   <div>
-                    <span className="text-sm font-medium">Description:</span>
-                    <p className="text-sm text-muted-foreground">{project.description || 'No description'}</p>
+                    <span className="text-sm font-medium">{t('projects.description')}:</span>
+                    <p className="text-sm text-muted-foreground">{project.description || t('projects.settings.noDescription')}</p>
                   </div>
                 </div>
               </div>
               
               <div className="space-y-3">
-                <h4 className="font-medium text-sm text-muted-foreground">Budget & Finance</h4>
+                <h4 className="font-medium text-sm text-muted-foreground">{t('projects.settings.budgetFinance')}</h4>
                 <div className="space-y-2">
                   <div>
-                    <span className="text-sm font-medium">Budget:</span>
+                    <span className="text-sm font-medium">{t('projects.budget')}:</span>
                     <p className="text-sm text-muted-foreground">
                       {formatCurrency(project.target_budget_range ?? null, project.currency)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-sm font-medium">Currency:</span>
+                    <span className="text-sm font-medium">{t('projects.settings.currency')}:</span>
                     <p className="text-sm text-muted-foreground">{project.currency || 'VND'}</p>
                   </div>
                   <div>
-                    <span className="text-sm font-medium">Category:</span>
-                    <p className="text-sm text-muted-foreground">{project.target_product_category || 'Not specified'}</p>
+                    <span className="text-sm font-medium">{t('projects.settings.category')}:</span>
+                    <p className="text-sm text-muted-foreground">{project.target_product_category || t('projects.settings.notSpecified')}</p>
                   </div>
                 </div>
               </div>
               
               <div className="space-y-3">
-                <h4 className="font-medium text-sm text-muted-foreground">Schedule & Timeline</h4>
+                <h4 className="font-medium text-sm text-muted-foreground">{t('projects.settings.scheduleTimeline')}</h4>
                 <div className="space-y-2">
                   <div>
-                    <span className="text-sm font-medium">Pipeline:</span>
-                    <Badge variant="outline">{project.pipeline_type || 'Standard'}</Badge>
+                    <span className="text-sm font-medium">{t('projects.pipelineType')}:</span>
+                    <Badge variant="outline" className="ml-2">{project.pipeline_type || 'Standard'}</Badge>
                   </div>
                   <div>
-                    <span className="text-sm font-medium">Schedule:</span>
-                    <p className="text-sm text-muted-foreground">{project.crawl_schedule || 'Not configured'}</p>
+                    <span className="text-sm font-medium">{t('projects.schedule')}:</span>
+                    <p className="text-sm text-muted-foreground">{project.crawl_schedule || t('projects.settings.notConfigured')}</p>
                   </div>
                   <div>
-                    <span className="text-sm font-medium">Deadline:</span>
+                    <span className="text-sm font-medium">{t('projects.deadline')}:</span>
                     <p className="text-sm text-muted-foreground">
-                      {project.deadline ? new Date(project.deadline).toLocaleDateString('vi-VN') : 'Not set'}
+                      {project.deadline ? new Date(project.deadline).toLocaleDateString('vi-VN') : t('projects.settings.notSet')}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Advanced Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="w-5 h-5" />
+            {t('projects.settings.advancedSettings')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* AI Model Selection */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-muted-foreground" />
+              <Label className="text-base font-medium">{t('projects.settings.aiModel')}</Label>
+            </div>
+            <Select defaultValue="gpt-4">
+              <SelectTrigger className="w-full max-w-md">
+                <SelectValue placeholder={t('projects.settings.selectAIModel')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="gpt-4">GPT-4</SelectItem>
+                <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
+                <SelectItem value="claude">Claude</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Separator />
+
+          {/* Notifications Settings */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Bell className="w-4 h-4 text-muted-foreground" />
+              <Label className="text-base font-medium">{t('projects.settings.notifications')}</Label>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>{t('projects.settings.enableEmailAlerts')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('projects.settings.emailNotifications')}</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>{t('projects.settings.crawlAlerts')}</Label>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>{t('projects.settings.priceAlerts')}</Label>
+                </div>
+                <Switch />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>{t('projects.settings.analysisAlerts')}</Label>
+                </div>
+                <Switch defaultChecked />
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Danger Zone */}
+      <Card className="border-destructive">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertTriangle className="w-5 h-5" />
+            {t('projects.settings.dangerZone')}
+          </CardTitle>
+          <p className="text-sm text-muted-foreground mt-2">
+            {t('projects.settings.dangerZoneDescription')}
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Duplicate Project */}
+          <div className="flex items-center justify-between p-4 border rounded-lg">
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <Copy className="w-4 h-4" />
+                <Label className="font-medium">{t('projects.settings.duplicateProject')}</Label>
+              </div>
+              <p className="text-sm text-muted-foreground">{t('projects.settings.duplicateDescription')}</p>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" disabled={isDuplicating}>
+                  {isDuplicating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      {t('projects.settings.duplicating')}
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 mr-2" />
+                      {t('projects.settings.duplicate')}
+                    </>
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t('projects.settings.duplicateProject')}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t('projects.settings.confirmDuplicate')}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t('projects.settings.cancel')}</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDuplicate}>
+                    {t('projects.settings.duplicate')}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+
+          {/* Archive Project */}
+          <div className="flex items-center justify-between p-4 border rounded-lg">
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <Archive className="w-4 h-4" />
+                <Label className="font-medium">{t('projects.settings.archiveProject')}</Label>
+              </div>
+              <p className="text-sm text-muted-foreground">{t('projects.settings.archiveDescription')}</p>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" disabled={isArchiving}>
+                  {isArchiving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      {t('projects.settings.archiving')}
+                    </>
+                  ) : (
+                    <>
+                      <Archive className="w-4 h-4 mr-2" />
+                      {t('projects.settings.archive')}
+                    </>
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t('projects.settings.archiveProject')}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t('projects.settings.confirmArchive')}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t('projects.settings.cancel')}</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleArchive}>
+                    {t('projects.settings.archive')}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+
+          {/* Delete Project */}
+          <div className="flex items-center justify-between p-4 border border-destructive rounded-lg bg-destructive/5">
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <Trash2 className="w-4 h-4 text-destructive" />
+                <Label className="font-medium text-destructive">{t('projects.settings.deleteProject')}</Label>
+              </div>
+              <p className="text-sm text-muted-foreground">{t('projects.settings.deleteDescription')}</p>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" disabled={isDeleting}>
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      {t('projects.settings.deleting')}
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      {t('projects.settings.delete')}
+                    </>
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t('projects.settings.deleteProject')}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t('projects.settings.confirmDelete')}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t('projects.settings.cancel')}</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    {t('projects.settings.delete')}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </CardContent>
       </Card>
     </div>

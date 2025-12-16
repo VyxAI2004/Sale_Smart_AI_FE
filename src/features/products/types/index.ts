@@ -4,3 +4,4 @@ export * from './crawler.types';
 export * from './review.types';
 export * from './trust-score.types';
 export * from './auto-discovery.types';
+export * from './analytics.types';

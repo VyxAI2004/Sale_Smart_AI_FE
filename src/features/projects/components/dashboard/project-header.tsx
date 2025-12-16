@@ -16,6 +16,8 @@ import {
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import type { ProjectDetailData } from '../../types/project-detail.types'
+import { useTranslation } from '@/hooks/use-translation'
+import { getStatusTranslationKey } from '../../constants/project.constants'
 
 interface ProjectHeaderProps {
   project: ProjectDetailData | null
@@ -34,6 +36,7 @@ export function ProjectHeader({
   onShare,
   onTriggerCrawl
 }: ProjectHeaderProps) {
+  const { t } = useTranslation()
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline', color: string }> = {
       draft: { variant: 'secondary', color: 'bg-gray-100 text-gray-700' },
@@ -45,9 +48,10 @@ export function ProjectHeader({
     }
     
     const config = variants[status] || variants.draft
+    const statusLabel = t(getStatusTranslationKey(status)) || status.charAt(0).toUpperCase() + status.slice(1)
     return (
       <Badge variant={config.variant} className={config.color}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+        {statusLabel}
       </Badge>
     )
   }
@@ -98,7 +102,7 @@ export function ProjectHeader({
     return (
       <div className="mb-6">
         <div className="flex items-center justify-center py-8">
-          <p className="text-muted-foreground">Project not found</p>
+          <p className="text-muted-foreground">{t('projects.projectNotFound')}</p>
         </div>
       </div>
     )
@@ -113,7 +117,7 @@ export function ProjectHeader({
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Projects
+          {t('projects.backToProjects')}
         </Link>
       </div>
 
@@ -148,20 +152,20 @@ export function ProjectHeader({
 
             {/* Description */}
             <p className='text-muted-foreground mb-2 line-clamp-2'>
-              {project.description || 'No description provided'}
+              {project.description || t('projects.noDescription')}
             </p>
 
             {/* Meta Info */}
             <div className="flex items-center gap-6 text-sm text-muted-foreground flex-wrap">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                <span>Created {formatDate(project.created_at)}</span>
+                <span>{t('projects.created')} {formatDate(project.created_at)}</span>
               </div>
               
               {project.deadline && (
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
-                  <span>Due {new Date(project.deadline).toLocaleDateString('vi-VN')}</span>
+                  <span>{t('projects.due')} {new Date(project.deadline).toLocaleDateString('vi-VN')}</span>
                 </div>
               )}
 
@@ -180,7 +184,7 @@ export function ProjectHeader({
                       ))}
                     </div>
                     <span className="ml-2">
-                      {project.team_members.length} member{project.team_members.length > 1 ? 's' : ''}
+                      {project.team_members.length} {project.team_members.length > 1 ? t('projects.members') : t('projects.member')}
                     </span>
                   </div>
                 </div>
@@ -188,7 +192,7 @@ export function ProjectHeader({
 
               {project.target_product_name && (
                 <div className="flex items-center gap-2">
-                  <span className="font-medium">Target:</span>
+                  <span className="font-medium">{t('projects.target')}</span>
                   <span className="truncate max-w-48">{project.target_product_name}</span>
                 </div>
               )}
@@ -208,12 +212,12 @@ export function ProjectHeader({
               {project.status === 'running' ? (
                 <>
                   <Pause className="w-4 h-4" />
-                  Pause
+                  {t('projects.pause')}
                 </>
               ) : (
                 <>
                   <Play className="w-4 h-4" />
-                  Find Products
+                  {t('projects.findProducts')}
                 </>
               )}
             </Button>

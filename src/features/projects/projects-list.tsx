@@ -6,6 +6,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { LanguageSwitcher } from '@/components/language-switcher'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { ProjectsDialogs } from './components/projects-dialogs'
@@ -14,10 +15,12 @@ import { ProjectsProvider } from './components/projects-provider'
 import { ProjectsTable } from './components/projects-table'
 import { ProjectApi, type ProjectApiResponse } from './api/project-api'
 import { Loader2, Maximize2, Minimize2 } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 
 const route = getRouteApi('/_authenticated/projects/')
 
 export function Projects() {
+  const { t } = useTranslation()
   const search = route.useSearch()
   const navigate = route.useNavigate()
   const [projects, setProjects] = useState<ProjectApiResponse[]>([])
@@ -59,10 +62,11 @@ export function Projects() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{isFullWidth ? 'Thu nhỏ bảng' : 'Mở rộng bảng'}</p>
+                  <p>{isFullWidth ? t('common.collapseTable') : t('common.expandTable')}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+            <LanguageSwitcher />
             <ThemeSwitch />
             <ConfigDrawer />
             <ProfileDropdown />
@@ -99,6 +103,7 @@ export function Projects() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+          <LanguageSwitcher />
           <ThemeSwitch />
           <ConfigDrawer />
           <ProfileDropdown />
@@ -108,9 +113,9 @@ export function Projects() {
       <Main fluid={isFullWidth}>
         <div className='mb-2 flex flex-wrap items-center justify-between space-y-2'>
           <div>
-            <h2 className='text-2xl font-bold tracking-tight'>Projects</h2>
+            <h2 className='text-2xl font-bold tracking-tight'>{t('projects.title')}</h2>
             <p className='text-muted-foreground'>
-              Manage your projects and track their progress here. ({projects.length} total)
+              {t('projects.description')} ({projects.length} {t('common.total')})
             </p>
           </div>
           <ProjectsPrimaryButtons />

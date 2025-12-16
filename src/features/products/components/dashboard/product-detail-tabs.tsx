@@ -6,9 +6,12 @@ import {
   MessageSquare,
   Shield,
   BarChart3,
+  CheckSquare,
 } from 'lucide-react';
 import { TrustScoreCard } from '../trust-score-card';
 import { ReviewsList } from '../reviews-list';
+import { ProductAnalytics } from '../product-analytics';
+import { ProductTasks } from '../product-tasks';
 import type { Product } from '../../types/product.types';
 
 interface ProductDetailTabsProps {
@@ -27,7 +30,7 @@ export function ProductDetailTabs({
   return (
     <div className="w-full space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid w-full grid-cols-4 lg:w-fit lg:grid-cols-none lg:flex flex-wrap">
+      <TabsList className="grid w-full grid-cols-5 lg:w-fit lg:grid-cols-none lg:flex flex-wrap">
         <TabsTrigger value="overview" className="flex items-center gap-2">
           <LayoutDashboard className="w-4 h-4" />
           <span className="hidden sm:inline">Overview</span>
@@ -43,6 +46,10 @@ export function ProductDetailTabs({
         <TabsTrigger value="analytics" className="flex items-center gap-2">
           <BarChart3 className="w-4 h-4" />
           <span className="hidden sm:inline">Analytics</span>
+        </TabsTrigger>
+        <TabsTrigger value="tasks" className="flex items-center gap-2">
+          <CheckSquare className="w-4 h-4" />
+          <span className="hidden sm:inline">Nhiệm vụ</span>
         </TabsTrigger>
       </TabsList>
 
@@ -181,14 +188,12 @@ export function ProductDetailTabs({
 
         {/* Analytics Tab */}
         <TabsContent value="analytics" className="mt-6">
-          <div className="space-y-6">
-            <div className="p-6 border rounded-lg">
-              <h3 className="font-semibold text-lg mb-4">Analytics</h3>
-              <p className="text-sm text-muted-foreground">
-                Analytics data will be displayed here.
-              </p>
-            </div>
-          </div>
+          <ProductAnalytics productId={productId} />
+        </TabsContent>
+
+        {/* Tasks Tab */}
+        <TabsContent value="tasks" className="mt-6">
+          <ProductTasks productId={productId} projectId={product?.project_id} />
         </TabsContent>
       </Tabs>
     </div>

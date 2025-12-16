@@ -7,48 +7,48 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { LanguageSwitcher } from '@/components/language-switcher'
 import { SidebarNav } from './components/sidebar-nav'
-
-const sidebarNavItems = [
-  {
-    title: 'Profile',
-    href: '/settings',
-    icon: <UserCog size={18} />,
-  },
-  {
-    title: 'Account',
-    href: '/settings/account',
-    icon: <Wrench size={18} />,
-  },
-  {
-    title: 'Appearance',
-    href: '/settings/appearance',
-    icon: <Palette size={18} />,
-  },
-  {
-    title: 'Notifications',
-    href: '/settings/notifications',
-    icon: <Bell size={18} />,
-  },
-  {
-    title: 'Display',
-    href: '/settings/display',
-    icon: <Monitor size={18} />,
-  },
-  {
-    title: 'AI & Models',
-    href: '/settings/ai-and-models',
-    icon: <Cpu size={18} />,
-  },
-]
+import { useTranslation } from '@/hooks/use-translation'
 
 export function Settings() {
+  const { t } = useTranslation()
+  
+  const sidebarNavItems = [
+    {
+      title: t('sidebar.profile'),
+      href: '/settings',
+      icon: <UserCog size={18} />,
+    },
+    {
+      title: t('sidebar.appearance'),
+      href: '/settings/appearance',
+      icon: <Palette size={18} />,
+    },
+    {
+      title: t('sidebar.notifications'),
+      href: '/settings/notifications',
+      icon: <Bell size={18} />,
+    },
+    {
+      title: t('sidebar.display'),
+      href: '/settings/display',
+      icon: <Monitor size={18} />,
+    },
+    {
+      title: t('sidebar.aiAndModels'),
+      href: '/settings/ai-and-models',
+      icon: <Cpu size={18} />,
+    },
+  ]
+
   return (
     <>
       {/* ===== Top Heading ===== */}
       <Header>
         <Search />
         <div className='ms-auto flex items-center space-x-4'>
+          <LanguageSwitcher />
           <ThemeSwitch />
           <ConfigDrawer />
           <ProfileDropdown />
@@ -58,10 +58,10 @@ export function Settings() {
       <Main fixed>
         <div className='space-y-0.5'>
           <h1 className='text-2xl font-bold tracking-tight md:text-3xl'>
-            Settings
+            {t('settings.title')}
           </h1>
           <p className='text-muted-foreground'>
-            Manage your account settings and set e-mail preferences.
+            {t('settings.description')}
           </p>
         </div>
         <Separator className='my-4 lg:my-6' />

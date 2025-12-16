@@ -6,6 +6,7 @@ import { ContentSection } from '../components/content-section'
 import { useUserAiModels } from '@/hooks/use-user-ai-models'
 import { useAiModels } from '@/hooks/use-ai-models'
 import { usePermissions } from '@/hooks/use-permissions'
+import { useTranslation } from '@/hooks/use-translation'
 import { UserModelsList } from './user-models-list'
 import { AddUserModelDialog } from './add-user-model-dialog'
 import { ModelsList } from './models-list'
@@ -15,6 +16,7 @@ import type { UserAIModelCreate } from '@/types/user-ai-model.types'
 import { toast } from 'sonner'
 
 export default function SettingsAIAndModels() {
+  const { t } = useTranslation()
   const { userModels, isLoading, fetchUserModels, createOrUpdateUserModel, deleteUserModel } = useUserAiModels()
   const { models, fetchMyModels, activateModel, deactivateModel, removeModel } = useAiModels()
   const { hasPermission, isLoading: isLoadingPermissions, permissions } = usePermissions()
@@ -48,9 +50,9 @@ export default function SettingsAIAndModels() {
   const handleAddModel = async (values: UserAIModelCreate) => {
     try {
       await createOrUpdateUserModel(values)
-      toast.success('AI Model configuration added successfully')
+      toast.success(t('settings.aiModels.aiModelConfigurationAdded'))
     } catch (error) {
-      toast.error('Failed to add AI Model configuration')
+      toast.error(t('settings.aiModels.failedToAddAIModelConfiguration'))
       console.error(error)
     }
   }
@@ -61,34 +63,34 @@ export default function SettingsAIAndModels() {
         ai_model_id: modelId,
         api_key: apiKey,
       })
-      toast.success('API key updated successfully')
+      toast.success(t('settings.aiModels.apiKeyUpdated'))
     } catch (error) {
-      toast.error('Failed to update API key')
+      toast.error(t('settings.aiModels.failedToUpdateApiKey'))
       console.error(error)
     }
   }
 
   const handleDeleteModel = async (modelId: string) => {
-    if (!confirm('Are you sure you want to delete this configuration?')) {
+    if (!confirm(t('settings.aiModels.confirmDelete'))) {
       return
     }
     try {
       await deleteUserModel(modelId)
-      toast.success('AI Model configuration deleted successfully')
+      toast.success(t('settings.aiModels.aiModelConfigurationDeleted'))
     } catch (error) {
-      toast.error('Failed to delete AI Model configuration')
+      toast.error(t('settings.aiModels.failedToDeleteAIModelConfiguration'))
       console.error(error)
     }
   }
 
   return (
     <div className='w-full'>
-      <ContentSection title='AI & Models' desc='Manage your AI preferences and API keys.'>
+      <ContentSection title={t('settings.aiModels.title')} desc={t('settings.aiModels.description')}>
         <>
           <div className='flex items-center justify-between'>
             <div>
-              <h3 className='text-base font-medium'>Enable AI features</h3>
-              <p className='text-sm text-muted-foreground'>Turn off to disable AI features for your account.</p>
+              <h3 className='text-base font-medium'>{t('settings.aiModels.enableAIFeatures')}</h3>
+              <p className='text-sm text-muted-foreground'>{t('settings.aiModels.enableAIFeaturesDescription')}</p>
             </div>
             <Switch checked={aiEnabled} onCheckedChange={setAiEnabled} />
           </div>
@@ -101,20 +103,20 @@ export default function SettingsAIAndModels() {
               <div>
                 <div className='flex items-center justify-between'>
                   <div>
-                    <h3 className='text-base font-medium'>AI Models Management</h3>
+                    <h3 className='text-base font-medium'>{t('settings.aiModels.aiModelsManagement')}</h3>
                     <p className='text-sm text-muted-foreground mt-1'>
-                      Create and manage AI models available in the system
+                      {t('settings.aiModels.aiModelsManagementDescription')}
                     </p>
                   </div>
                   <div className='flex items-center gap-2'>
                     <Button variant='default' size='sm' onClick={() => setOpenCreateModel(true)}>
-                      Create Model
+                      {t('settings.aiModels.createModel')}
                     </Button>
                   </div>
                 </div>
 
                 <p className='text-sm text-muted-foreground mb-3'>
-                  Manage AI models that users can configure with their API keys.
+                  {t('settings.aiModels.manageAIModelsDescription')}
                 </p>
 
                 <ModelsList
@@ -134,22 +136,22 @@ export default function SettingsAIAndModels() {
           <div>
             <div className='flex items-center justify-between'>
               <div>
-                <h3 className='text-base font-medium'>My AI Model Configurations</h3>
+                <h3 className='text-base font-medium'>{t('settings.aiModels.myAIModelConfigurations')}</h3>
                 {isAdmin && (
                   <p className='text-sm text-muted-foreground mt-1'>
-                    Super Admin: You can view and manage all users' API keys
+                    {t('settings.aiModels.superAdminViewAll')}
                   </p>
                 )}
               </div>
               <div className='flex items-center gap-2'>
                 <Button variant='default' size='sm' onClick={() => setOpenAdd(true)}>
-                  Add API Key
+                  {t('settings.aiModels.addApiKey')}
                 </Button>
               </div>
             </div>
 
             <p className='text-sm text-muted-foreground mb-3'>
-              Configure API keys for AI models. {!isAdmin && 'You can only view your own API keys.'}
+              {t('settings.aiModels.configureApiKeysDescription')}
             </p>
 
             <UserModelsList

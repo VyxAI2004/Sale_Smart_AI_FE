@@ -11,6 +11,7 @@ import {
 import { Eye, EyeOff, Copy, Check, Edit2, Trash2, MoreHorizontal } from 'lucide-react'
 import type { UserAIModel } from '@/types/user-ai-model.types'
 import { isSuperAdmin, getUserIdFromToken } from '@/utils/jwt'
+import { useTranslation } from '@/hooks/use-translation'
 import OpenAIIcon from '@/components/icons/openai'
 import GeminiIcon from '@/components/icons/gemini'
 import ClaudeIcon from '@/components/icons/claude'
@@ -43,19 +44,21 @@ type UserModelsListProps = {
   onDelete?: (modelId: string) => Promise<void>
 }
 
-const updateApiKeySchema = z.object({
-  api_key: z.string().min(1, 'API key is required'),
+const getUpdateApiKeySchema = (t: (key: string) => string) => z.object({
+  api_key: z.string().min(1, t('settings.aiModels.apiKeyRequired')),
 })
 
-type UpdateApiKeyForm = z.infer<typeof updateApiKeySchema>
-
 export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: UserModelsListProps) {
+  const { t } = useTranslation()
   const currentUserId = getUserIdFromToken()
   const isAdmin = isSuperAdmin()
   const [visibleKeys, setVisibleKeys] = useState<Set<string>>(new Set())
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
   const [editingModel, setEditingModel] = useState<UserAIModel | null>(null)
   const [isUpdating, setIsUpdating] = useState(false)
+  
+  const updateApiKeySchema = getUpdateApiKeySchema(t)
+  type UpdateApiKeyForm = z.infer<typeof updateApiKeySchema>
 
   const toggleKeyVisibility = (modelId: string) => {
     setVisibleKeys((prev) => {
@@ -80,7 +83,7 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
   }
 
   const maskApiKey = (key?: string): string => {
-    if (!key) return 'Not set'
+    if (!key) return t('settings.aiModels.notSet')
     if (key.length <= 8) return '••••••••'
     return `${key.substring(0, 4)}${'•'.repeat(key.length - 8)}${key.substring(key.length - 4)}`
   }
@@ -137,13 +140,13 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
   }
 
   if (isLoading) {
-    return <div className='text-center py-4 text-muted-foreground'>Loading...</div>
+    return <div className='text-center py-4 text-muted-foreground'>{t('settings.aiModels.loading')}</div>
   }
 
   if (userModels.length === 0) {
     return (
       <div className='text-center py-8 text-muted-foreground'>
-        No AI models configured. Create one to get started.
+        {t('settings.aiModels.noModelsConfigured')}
       </div>
     )
   }
@@ -154,12 +157,12 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
         <Table>
           <TableHeader>
             <TableRow>
-              {isAdmin && <TableHead>User</TableHead>}
-              <TableHead>Model Name</TableHead>
-              <TableHead>Provider</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>API Key</TableHead>
-              <TableHead>Actions</TableHead>
+              {isAdmin && <TableHead>{t('settings.aiModels.user')}</TableHead>}
+              <TableHead>{t('settings.aiModels.modelName')}</TableHead>
+              <TableHead>{t('settings.aiModels.provider')}</TableHead>
+              <TableHead>{t('settings.aiModels.type')}</TableHead>
+              <TableHead>{t('settings.aiModels.apiKey')}</TableHead>
+              <TableHead>{t('settings.aiModels.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -227,14 +230,14 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
-                            <span className='sr-only'>Open menu</span>
+                            <span className='sr-only'>{t('settings.aiModels.openMenu')}</span>
                             <MoreHorizontal className='h-4 w-4' />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align='end'>
                           <DropdownMenuItem onClick={() => handleEdit(model)}>
                             <Edit2 className='mr-2 h-4 w-4' />
-                            Edit API Key
+                            {t('settings.aiModels.editApiKey')}
                           </DropdownMenuItem>
                           {onDelete && (
                             <DropdownMenuItem
@@ -242,7 +245,7 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
                               className='text-destructive'
                             >
                               <Trash2 className='mr-2 h-4 w-4' />
-                              Delete
+                              {t('settings.aiModels.delete')}
                             </DropdownMenuItem>
                           )}
                         </DropdownMenuContent>
@@ -261,9 +264,9 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
       <Dialog open={!!editingModel} onOpenChange={(open) => !open && setEditingModel(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Update API Key</DialogTitle>
+            <DialogTitle>{t('settings.aiModels.updateApiKey')}</DialogTitle>
             <DialogDescription>
-              Update the API key for {editingModel?.ai_model_name || 'this model'}
+              {t('settings.aiModels.updateApiKeyDescription')} {editingModel?.ai_model_name || t('settings.aiModels.aiModel')}
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
@@ -273,9 +276,9 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
                 name='api_key'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>API Key</FormLabel>
+                    <FormLabel>{t('settings.aiModels.apiKey')}</FormLabel>
                     <FormControl>
-                      <Input type='password' placeholder='Enter API key' {...field} />
+                      <Input type='password' placeholder={t('settings.aiModels.enterApiKey')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -287,10 +290,10 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
                   variant='outline'
                   onClick={() => setEditingModel(null)}
                 >
-                  Cancel
+                  {t('settings.aiModels.cancel')}
                 </Button>
                 <Button type='submit' disabled={isUpdating}>
-                  {isUpdating ? 'Updating...' : 'Update'}
+                  {isUpdating ? t('settings.aiModels.updating') : t('settings.aiModels.update')}
                 </Button>
               </DialogFooter>
             </form>

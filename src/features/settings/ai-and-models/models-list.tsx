@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal, Power, PowerOff, Trash2 } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 import type { AiModel } from '@/hooks/use-ai-models'
 import OpenAIIcon from '@/components/icons/openai'
 import GeminiIcon from '@/components/icons/gemini'
@@ -22,16 +23,18 @@ type ModelsListProps = {
 }
 
 export function ModelsList({ models = [], onActivate, onDeactivate, onDelete }: ModelsListProps) {
+  const { t } = useTranslation()
+  
   return (
     <div className='mt-3'>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Provider</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead>{t('settings.aiModels.name')}</TableHead>
+            <TableHead>{t('settings.aiModels.provider')}</TableHead>
+            <TableHead>{t('settings.aiModels.type')}</TableHead>
+            <TableHead>{t('settings.aiModels.status')}</TableHead>
+            <TableHead>{t('settings.aiModels.actions')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -49,12 +52,12 @@ export function ModelsList({ models = [], onActivate, onDeactivate, onDelete }: 
                 </div>
               </TableCell>
               <TableCell>{m.model_type}</TableCell>
-              <TableCell>{m.is_active ? 'Active' : 'Inactive'}</TableCell>
+              <TableCell>{m.is_active ? t('settings.aiModels.active') : t('settings.aiModels.inactive')}</TableCell>
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
-                      <span className='sr-only'>Open menu</span>
+                      <span className='sr-only'>{t('settings.aiModels.openMenu')}</span>
                       <MoreHorizontal className='h-4 w-4' />
                     </Button>
                   </DropdownMenuTrigger>
@@ -62,17 +65,17 @@ export function ModelsList({ models = [], onActivate, onDeactivate, onDelete }: 
                     {m.is_active ? (
                       <DropdownMenuItem onClick={() => onDeactivate(m.id)}>
                         <PowerOff className='mr-2 h-4 w-4' />
-                        Deactivate
+                        {t('settings.aiModels.deactivate')}
                       </DropdownMenuItem>
                     ) : (
                       <DropdownMenuItem onClick={() => onActivate(m.id)}>
                         <Power className='mr-2 h-4 w-4' />
-                        Activate
+                        {t('settings.aiModels.activate')}
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem onClick={() => onDelete(m.id)} className='text-destructive'>
                       <Trash2 className='mr-2 h-4 w-4' />
-                      Delete
+                      {t('settings.aiModels.delete')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

@@ -1,10 +1,14 @@
 import { z } from 'zod'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { showSubmittedData } from '@/lib/show-submitted-data'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
+import { getMyProfile, updateMyProfile } from '@/apis/user.api'
 import {
   Command,
   CommandEmpty,
@@ -42,31 +46,68 @@ const languages = [
   { label: 'Chinese', value: 'zh' },
 ] as const
 
-const accountFormSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Please enter your name.')
-    .min(2, 'Name must be at least 2 characters.')
-    .max(30, 'Name must not be longer than 30 characters.'),
-  dob: z.date('Please select your date of birth.'),
-  language: z.string('Please select a language.'),
-})
-
-type AccountFormValues = z.infer<typeof accountFormSchema>
-
-// This can come from your database or API.
-const defaultValues: Partial<AccountFormValues> = {
-  name: '',
-}
-
 export function AccountForm() {
+  const { t } = useTranslation()
+  const queryClient = useQueryClient()
+  
+  const accountFormSchema = z.object({
+    full_name: z
+      .string()
+      .min(1, t('account.validation.nameRequired'))
+      .min(2, t('account.validation.nameMinLength'))
+      .max(100, t('account.validation.nameMaxLength')),
+    date_of_birth: z.date().nullable().optional(),
+    language: z.string().optional(),
+  })
+
+  type AccountFormValues = z.infer<typeof accountFormSchema>
+  
+  // Load user data
+  const { data: userData, isLoading } = useQuery({
+    queryKey: ['myProfile'],
+    queryFn: () => getMyProfile(),
+  })
+
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
-    defaultValues,
+    defaultValues: {
+      full_name: '',
+      date_of_birth: undefined,
+      language: 'en',
+    },
+  })
+
+  // Update form when user data loads - using useEffect to avoid infinite loop
+  useEffect(() => {
+    if (userData?.data && !isLoading) {
+      const user = userData.data
+      form.reset({
+        full_name: user.full_name || '',
+        date_of_birth: user.date_of_birth ? new Date(user.date_of_birth) : undefined,
+        language: user.language || 'en',
+      })
+    }
+  }, [userData?.data, isLoading, form])
+
+  // Update mutation
+  const updateMutation = useMutation({
+    mutationFn: (data: AccountFormValues) => updateMyProfile({
+      full_name: data.full_name,
+      date_of_birth: data.date_of_birth ? data.date_of_birth.toISOString().split('T')[0] : null,
+      language: data.language || undefined,
+    }),
+    onSuccess: () => {
+      toast.success(t('account.updateSuccess'))
+      queryClient.invalidateQueries({ queryKey: ['myProfile'] })
+      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.detail || t('account.updateError'))
+    },
   })
 
   function onSubmit(data: AccountFormValues) {
-    showSubmittedData(data)
+    updateMutation.mutate(data)
   }
 
   return (
@@ -74,16 +115,15 @@ export function AccountForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <FormField
           control={form.control}
-          name='name'
+          name='full_name'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t('account.name')}</FormLabel>
               <FormControl>
-                <Input placeholder='Your name' {...field} />
+                <Input placeholder={t('account.namePlaceholder')} {...field} disabled={isLoading} />
               </FormControl>
               <FormDescription>
-                This is the name that will be displayed on your profile and in
-                emails.
+                {t('account.nameDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -91,13 +131,17 @@ export function AccountForm() {
         />
         <FormField
           control={form.control}
-          name='dob'
+          name='date_of_birth'
           render={({ field }) => (
             <FormItem className='flex flex-col'>
-              <FormLabel>Date of birth</FormLabel>
-              <DatePicker selected={field.value} onSelect={field.onChange} />
+              <FormLabel>{t('account.dateOfBirth')}</FormLabel>
+              <DatePicker 
+                selected={field.value || undefined} 
+                onSelect={field.onChange}
+                disabled={isLoading}
+              />
               <FormDescription>
-                Your date of birth is used to calculate your age.
+                {t('account.dateOfBirthDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -108,7 +152,7 @@ export function AccountForm() {
           name='language'
           render={({ field }) => (
             <FormItem className='flex flex-col'>
-              <FormLabel>Language</FormLabel>
+              <FormLabel>{t('account.language')}</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -124,15 +168,15 @@ export function AccountForm() {
                         ? languages.find(
                             (language) => language.value === field.value
                           )?.label
-                        : 'Select language'}
+                        : t('account.selectLanguage')}
                       <CaretSortIcon className='ms-2 h-4 w-4 shrink-0 opacity-50' />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className='w-[200px] p-0'>
                   <Command>
-                    <CommandInput placeholder='Search language...' />
-                    <CommandEmpty>No language found.</CommandEmpty>
+                    <CommandInput placeholder={t('account.searchLanguage')} />
+                    <CommandEmpty>{t('account.noLanguageFound')}</CommandEmpty>
                     <CommandGroup>
                       <CommandList>
                         {languages.map((language) => (
@@ -160,13 +204,15 @@ export function AccountForm() {
                 </PopoverContent>
               </Popover>
               <FormDescription>
-                This is the language that will be used in the dashboard.
+                {t('account.languageDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type='submit'>Update account</Button>
+        <Button type='submit' disabled={isLoading || updateMutation.isPending}>
+          {updateMutation.isPending ? t('account.updating') : t('account.updateAccount')}
+        </Button>
       </form>
     </Form>
   )
