@@ -1,12 +1,14 @@
+import { useTranslation } from '@/hooks/use-translation'
 import { ContentSection } from '../components/content-section'
 import { AppearanceForm } from './appearance-form'
 
 export function SettingsAppearance() {
+  const { t } = useTranslation()
+  
   return (
     <ContentSection
-      title='Appearance'
-      desc='Customize the appearance of the app. Automatically switch between day
-          and night themes.'
+      title={t('settings.appearance.title')}
+      desc={t('settings.appearance.description')}
     >
       <AppearanceForm />
     </ContentSection>

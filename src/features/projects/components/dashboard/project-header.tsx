@@ -17,6 +17,7 @@ import {
 import { Link } from '@tanstack/react-router'
 import type { ProjectDetailData } from '../../types/project-detail.types'
 import { useTranslation } from '@/hooks/use-translation'
+import { getStatusTranslationKey } from '../../constants/project.constants'
 
 interface ProjectHeaderProps {
   project: ProjectDetailData | null
@@ -47,9 +48,10 @@ export function ProjectHeader({
     }
     
     const config = variants[status] || variants.draft
+    const statusLabel = t(getStatusTranslationKey(status)) || status.charAt(0).toUpperCase() + status.slice(1)
     return (
       <Badge variant={config.variant} className={config.color}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+        {statusLabel}
       </Badge>
     )
   }

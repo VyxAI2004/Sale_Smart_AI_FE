@@ -56,15 +56,20 @@ export function ProjectManager() {
   }, [])
 
   const getStatusBadge = (status: string) => {
-    const statusMap: Record<string, { label: string; variant: 'default' | 'secondary' | 'outline' | 'destructive' }> = {
-      active: { label: t('projects.status'), variant: 'default' },
-      draft: { label: 'Draft', variant: 'secondary' },
-      running: { label: 'Running', variant: 'default' },
-      paused: { label: t('projects.pause'), variant: 'secondary' },
-      completed: { label: 'Completed', variant: 'outline' },
-      archived: { label: t('projects.archive'), variant: 'secondary' },
+    const statusMap: Record<string, { translationKey: string; variant: 'default' | 'secondary' | 'outline' | 'destructive' }> = {
+      active: { translationKey: 'projects.status', variant: 'default' },
+      draft: { translationKey: 'projects.statusDraft', variant: 'secondary' },
+      ready: { translationKey: 'projects.statusReady', variant: 'outline' },
+      running: { translationKey: 'projects.statusRunning', variant: 'default' },
+      paused: { translationKey: 'projects.statusPaused', variant: 'secondary' },
+      completed: { translationKey: 'projects.statusCompleted', variant: 'outline' },
+      archived: { translationKey: 'projects.statusArchived', variant: 'secondary' },
     }
-    return statusMap[status?.toLowerCase()] || { label: status, variant: 'secondary' }
+    const statusInfo = statusMap[status?.toLowerCase()] || { translationKey: 'projects.status', variant: 'secondary' as const }
+    return { 
+      label: t(statusInfo.translationKey), 
+      variant: statusInfo.variant 
+    }
   }
 
   const handleProjectSelect = (project: ProjectApiResponse) => {

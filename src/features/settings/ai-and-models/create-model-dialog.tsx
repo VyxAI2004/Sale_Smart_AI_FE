@@ -20,6 +20,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useTranslation } from '@/hooks/use-translation'
 import { useAiModels } from '@/hooks/use-ai-models'
 import OpenAIIcon from '@/components/icons/openai'
 import GeminiIcon from '@/components/icons/gemini'
@@ -27,14 +28,12 @@ import ClaudeIcon from '@/components/icons/claude'
 import GrokIcon from '@/components/icons/grok'
 import DeepseekIcon from '@/components/icons/deepseek'
 
-const schema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  model_name: z.string().min(1, 'Model identifier is required'),
-  provider: z.string().min(1, 'Provider is required'),
-  model_type: z.string().min(1, 'Type is required'),
+const getSchema = (t: (key: string) => string) => z.object({
+  name: z.string().min(1, t('settings.aiModels.name') + ' is required'),
+  model_name: z.string().min(1, t('settings.aiModels.modelIdentifier') + ' is required'),
+  provider: z.string().min(1, t('settings.aiModels.provider') + ' is required'),
+  model_type: z.string().min(1, t('settings.aiModels.type') + ' is required'),
 })
-
-type FormValues = z.infer<typeof schema>
 
 type Props = {
   open: boolean
@@ -42,6 +41,10 @@ type Props = {
 }
 
 export function CreateModelDialog({ open, onOpenChange }: Props) {
+  const { t } = useTranslation()
+  const schema = getSchema(t)
+  type FormValues = z.infer<typeof schema>
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -64,8 +67,8 @@ export function CreateModelDialog({ open, onOpenChange }: Props) {
     <Dialog open={open} onOpenChange={(v) => { form.reset(); onOpenChange(v) }}>
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
-          <DialogTitle>Create AI Model</DialogTitle>
-          <DialogDescription>Create a new AI model for your account.</DialogDescription>
+          <DialogTitle>{t('settings.aiModels.createAIModel')}</DialogTitle>
+          <DialogDescription>{t('settings.aiModels.createAIModelDescription')}</DialogDescription>
         </DialogHeader>
 
         <div className='h-[22rem] w-[calc(100%+0.75rem)] overflow-y-auto py-1 pe-3'>
@@ -76,9 +79,9 @@ export function CreateModelDialog({ open, onOpenChange }: Props) {
                 name='name'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Display name</FormLabel>
+                    <FormLabel>{t('settings.aiModels.displayName')}</FormLabel>
                     <FormControl>
-                      <Input placeholder='My Model' {...field} />
+                      <Input placeholder={t('settings.aiModels.myModel')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -90,9 +93,9 @@ export function CreateModelDialog({ open, onOpenChange }: Props) {
                 name='model_name'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Model identifier</FormLabel>
+                    <FormLabel>{t('settings.aiModels.modelIdentifier')}</FormLabel>
                     <FormControl>
-                      <Input placeholder='gpt-4' {...field} />
+                      <Input placeholder={t('settings.aiModels.gpt4')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -104,11 +107,11 @@ export function CreateModelDialog({ open, onOpenChange }: Props) {
                 name='provider'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Provider</FormLabel>
+                    <FormLabel>{t('settings.aiModels.provider')}</FormLabel>
                     <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <SelectTrigger>
-                          <SelectValue placeholder='Select provider' />
+                          <SelectValue placeholder={t('settings.aiModels.selectProvider')} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value='openai'>
@@ -154,11 +157,11 @@ export function CreateModelDialog({ open, onOpenChange }: Props) {
                 name='model_type'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Type</FormLabel>
+                    <FormLabel>{t('settings.aiModels.type')}</FormLabel>
                     <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <SelectTrigger>
-                          <SelectValue placeholder='Select model type' />
+                          <SelectValue placeholder={t('settings.aiModels.selectModelType')} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value='llm'>LLM</SelectItem>
@@ -173,7 +176,7 @@ export function CreateModelDialog({ open, onOpenChange }: Props) {
               />
 
               <DialogFooter>
-                <Button type='submit'>Create</Button>
+                <Button type='submit'>{t('settings.aiModels.create')}</Button>
               </DialogFooter>
             </form>
           </Form>

@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
 import { getMyProfile, updateMyProfile } from '@/apis/user.api'
 import {
@@ -45,20 +46,21 @@ const languages = [
   { label: 'Chinese', value: 'zh' },
 ] as const
 
-const accountFormSchema = z.object({
-  full_name: z
-    .string()
-    .min(1, 'Please enter your name.')
-    .min(2, 'Name must be at least 2 characters.')
-    .max(100, 'Name must not be longer than 100 characters.'),
-  date_of_birth: z.date().nullable().optional(),
-  language: z.string().optional(),
-})
-
-type AccountFormValues = z.infer<typeof accountFormSchema>
-
 export function AccountForm() {
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
+  
+  const accountFormSchema = z.object({
+    full_name: z
+      .string()
+      .min(1, t('account.validation.nameRequired'))
+      .min(2, t('account.validation.nameMinLength'))
+      .max(100, t('account.validation.nameMaxLength')),
+    date_of_birth: z.date().nullable().optional(),
+    language: z.string().optional(),
+  })
+
+  type AccountFormValues = z.infer<typeof accountFormSchema>
   
   // Load user data
   const { data: userData, isLoading } = useQuery({
@@ -95,12 +97,12 @@ export function AccountForm() {
       language: data.language || undefined,
     }),
     onSuccess: () => {
-      toast.success('Account updated successfully')
+      toast.success(t('account.updateSuccess'))
       queryClient.invalidateQueries({ queryKey: ['myProfile'] })
       queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.detail || 'Failed to update account')
+      toast.error(error?.response?.data?.detail || t('account.updateError'))
     },
   })
 
@@ -116,13 +118,12 @@ export function AccountForm() {
           name='full_name'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t('account.name')}</FormLabel>
               <FormControl>
-                <Input placeholder='Your name' {...field} disabled={isLoading} />
+                <Input placeholder={t('account.namePlaceholder')} {...field} disabled={isLoading} />
               </FormControl>
               <FormDescription>
-                This is the name that will be displayed on your profile and in
-                emails.
+                {t('account.nameDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -133,14 +134,14 @@ export function AccountForm() {
           name='date_of_birth'
           render={({ field }) => (
             <FormItem className='flex flex-col'>
-              <FormLabel>Date of birth</FormLabel>
+              <FormLabel>{t('account.dateOfBirth')}</FormLabel>
               <DatePicker 
                 selected={field.value || undefined} 
                 onSelect={field.onChange}
                 disabled={isLoading}
               />
               <FormDescription>
-                Your date of birth is used to calculate your age.
+                {t('account.dateOfBirthDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -151,7 +152,7 @@ export function AccountForm() {
           name='language'
           render={({ field }) => (
             <FormItem className='flex flex-col'>
-              <FormLabel>Language</FormLabel>
+              <FormLabel>{t('account.language')}</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -167,15 +168,15 @@ export function AccountForm() {
                         ? languages.find(
                             (language) => language.value === field.value
                           )?.label
-                        : 'Select language'}
+                        : t('account.selectLanguage')}
                       <CaretSortIcon className='ms-2 h-4 w-4 shrink-0 opacity-50' />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className='w-[200px] p-0'>
                   <Command>
-                    <CommandInput placeholder='Search language...' />
-                    <CommandEmpty>No language found.</CommandEmpty>
+                    <CommandInput placeholder={t('account.searchLanguage')} />
+                    <CommandEmpty>{t('account.noLanguageFound')}</CommandEmpty>
                     <CommandGroup>
                       <CommandList>
                         {languages.map((language) => (
@@ -203,14 +204,14 @@ export function AccountForm() {
                 </PopoverContent>
               </Popover>
               <FormDescription>
-                This is the language that will be used in the dashboard.
+                {t('account.languageDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <Button type='submit' disabled={isLoading || updateMutation.isPending}>
-          {updateMutation.isPending ? 'Updating...' : 'Update account'}
+          {updateMutation.isPending ? t('account.updating') : t('account.updateAccount')}
         </Button>
       </form>
     </Form>

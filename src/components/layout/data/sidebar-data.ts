@@ -190,11 +190,6 @@ export const getSidebarData = (): SidebarData => {
               icon: UserCog,
             },
             {
-              title: t('sidebar.account'),
-              url: '/settings/account',
-              icon: Wrench,
-            },
-            {
               title: t('sidebar.appearance'),
               url: '/settings/appearance',
               icon: Palette,

@@ -34,33 +34,52 @@ export const PIPELINE_TYPES: SelectOption[] = [
   { value: 'custom', label: 'Custom' },
 ];
 
+// Status options with translation keys
 export const STATUS_OPTIONS: StatusOption[] = [
   { 
     value: 'draft', 
-    label: 'Draft', 
+    label: 'Draft', // Will be replaced with translation
     color: 'bg-yellow-100 text-yellow-800' 
   },
   { 
     value: 'ready', 
-    label: 'Ready', 
+    label: 'Ready', // Will be replaced with translation
     color: 'bg-blue-100 text-blue-800' 
   },
   { 
+    value: 'running', 
+    label: 'Running', // Will be replaced with translation
+    color: 'bg-green-100 text-green-800' 
+  },
+  { 
     value: 'paused', 
-    label: 'Paused', 
+    label: 'Paused', // Will be replaced with translation
     color: 'bg-orange-100 text-orange-800' 
   },
   { 
     value: 'completed', 
-    label: 'Completed', 
+    label: 'Completed', // Will be replaced with translation
     color: 'bg-blue-100 text-blue-800' 
   },
   { 
     value: 'archived', 
-    label: 'Archived', 
+    label: 'Archived', // Will be replaced with translation
     color: 'bg-gray-100 text-gray-800' 
   },
 ];
+
+// Helper function to get translated status label
+export const getStatusTranslationKey = (status: string): string => {
+  const statusMap: Record<string, string> = {
+    'draft': 'projects.statusDraft',
+    'ready': 'projects.statusReady',
+    'running': 'projects.statusRunning',
+    'paused': 'projects.statusPaused',
+    'completed': 'projects.statusCompleted',
+    'archived': 'projects.statusArchived',
+  }
+  return statusMap[status?.toLowerCase()] || 'projects.status'
+}
 
 export const DEFAULT_FORM_DATA: ProjectFormData = {
   name: '',

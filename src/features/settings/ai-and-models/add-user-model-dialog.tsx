@@ -21,6 +21,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useTranslation } from '@/hooks/use-translation'
 import { aiModelApi } from '@/apis/aiModel.api'
 import type { AIModel } from '@/apis/aiModel.api'
 import OpenAIIcon from '@/components/icons/openai'
@@ -29,22 +30,24 @@ import ClaudeIcon from '@/components/icons/claude'
 import GrokIcon from '@/components/icons/grok'
 import DeepseekIcon from '@/components/icons/deepseek'
 
-const schema = z.object({
-  ai_model_id: z.string().min(1, 'AI Model is required'),
-  api_key: z.string().min(1, 'API key is required'),
+const getSchema = (t: (key: string) => string) => z.object({
+  ai_model_id: z.string().min(1, t('settings.aiModels.aiModel') + ' is required'),
+  api_key: z.string().min(1, t('settings.aiModels.apiKeyRequired')),
 })
-
-type FormValues = z.infer<typeof schema>
 
 type Props = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (values: FormValues) => Promise<void>
+  onSubmit: (values: { ai_model_id: string; api_key: string }) => Promise<void>
 }
 
 export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
+  const { t } = useTranslation()
   const [availableModels, setAvailableModels] = useState<AIModel[]>([])
   const [isLoadingModels, setIsLoadingModels] = useState(false)
+  
+  const schema = getSchema(t)
+  type FormValues = z.infer<typeof schema>
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -100,9 +103,9 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
     <Dialog open={open} onOpenChange={(v) => { form.reset(); onOpenChange(v) }}>
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
-          <DialogTitle>Add AI Model Configuration</DialogTitle>
+          <DialogTitle>{t('settings.aiModels.addAIModelConfiguration')}</DialogTitle>
           <DialogDescription>
-            Select an AI model and provide your API key to use it.
+            {t('settings.aiModels.addAIModelConfigurationDescription')}
           </DialogDescription>
         </DialogHeader>
 
@@ -113,7 +116,7 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
               name='ai_model_id'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>AI Model</FormLabel>
+                  <FormLabel>{t('settings.aiModels.aiModel')}</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
@@ -121,7 +124,7 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
                       disabled={isLoadingModels}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder={isLoadingModels ? 'Loading models...' : 'Select AI model'} />
+                        <SelectValue placeholder={isLoadingModels ? t('settings.aiModels.loadingModels') : t('settings.aiModels.selectAIModel')} />
                       </SelectTrigger>
                       <SelectContent>
                         {availableModels.map((model) => (
@@ -146,9 +149,9 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
               name='api_key'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>API Key</FormLabel>
+                  <FormLabel>{t('settings.aiModels.apiKey')}</FormLabel>
                   <FormControl>
-                    <Input type='password' placeholder='Enter your API key' {...field} />
+                    <Input type='password' placeholder={t('settings.aiModels.enterYourApiKey')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -161,10 +164,10 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
                 variant='outline'
                 onClick={() => onOpenChange(false)}
               >
-                Cancel
+                {t('settings.aiModels.cancel')}
               </Button>
               <Button type='submit' disabled={isLoadingModels} variant='default'>
-                Add API Key
+                {t('settings.aiModels.addApiKeyButton')}
               </Button>
             </DialogFooter>
           </form>
