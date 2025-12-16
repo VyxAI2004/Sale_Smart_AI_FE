@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { TrustScoreCard } from '../trust-score-card';
 import { ReviewsList } from '../reviews-list';
+import { ProductAnalytics } from '../product-analytics';
 import type { Product } from '../../types/product.types';
 
 interface ProductDetailTabsProps {
@@ -181,14 +182,7 @@ export function ProductDetailTabs({
 
         {/* Analytics Tab */}
         <TabsContent value="analytics" className="mt-6">
-          <div className="space-y-6">
-            <div className="p-6 border rounded-lg">
-              <h3 className="font-semibold text-lg mb-4">Analytics</h3>
-              <p className="text-sm text-muted-foreground">
-                Analytics data will be displayed here.
-              </p>
-            </div>
-          </div>
+          <ProductAnalytics productId={productId} />
         </TabsContent>
       </Tabs>
     </div>

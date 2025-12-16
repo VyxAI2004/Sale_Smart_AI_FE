@@ -2,8 +2,10 @@ import { Plus, FolderPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import { useProjects } from './projects-provider'
+import { useTranslation } from '@/hooks/use-translation'
 
 export function ProjectsPrimaryButtons() {
+  const { t } = useTranslation()
   const { setOpen } = useProjects()
   return (
     <div className='flex gap-2'>
@@ -12,11 +14,11 @@ export function ProjectsPrimaryButtons() {
         className='space-x-1'
         onClick={() => setOpen('add')}
       >
-        <span>Quick Add</span> <FolderPlus size={18} />
+        <span>{t('projects.quickAdd')}</span> <FolderPlus size={18} />
       </Button>
       <Button className='space-x-1' asChild>
         <Link to="/projects/add">
-          <span>Add Project</span> <Plus size={18} />
+          <span>{t('projects.addProject')}</span> <Plus size={18} />
         </Link>
       </Button>
     </div>

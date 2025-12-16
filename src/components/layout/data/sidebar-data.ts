@@ -1,33 +1,28 @@
 import {
-  Construction,
   LayoutDashboard,
   Monitor,
-  Bug,
   ListTodo,
-  FileX,
-  HelpCircle,
-  Lock,
   Bell,
-  Package,
   Palette,
   Cpu,
-  ServerOff,
   Settings,
   Wrench,
   UserCog,
-  UserX,
   Users,
-  MessagesSquare,
-  ShieldCheck,
   AudioWaveform,
   Command,
   GalleryVerticalEnd,
-  FolderOpen,
+  ShoppingCart,
+  Search,
+  BarChart3,
 } from 'lucide-react'
-import { ClerkLogo } from '@/assets/clerk-logo'
 import { type SidebarData } from '../types'
+import i18n from '@/lib/i18n'
 
-export const sidebarData: SidebarData = {
+export const getSidebarData = (): SidebarData => {
+  const t = (key: string) => i18n.t(key) || key
+
+  return {
   user: {
     name: 'satnaing',
     email: 'satnaingdev@gmail.com',
@@ -50,188 +45,188 @@ export const sidebarData: SidebarData = {
       plan: 'Startup',
     },
   ],
-  projects: [
-    {
-      id: '1',
-      name: 'E-commerce Analytics',
-      logo: Package,
-      status: 'Active',
-    },
-    {
-      id: '2', 
-      name: 'Mobile App Tracking',
-      logo: Monitor,
-      status: 'Draft',
-    },
-    {
-      id: '3',
-      name: 'Social Media Monitor',
-      logo: MessagesSquare,
-      status: 'Completed',
-    },
-  ],
   navGroups: [
     {
-      title: 'General',
+      title: t('sidebar.general'),
       items: [
         {
-          title: 'Dashboard',
+          title: t('sidebar.dashboard'),
           url: '/',
           icon: LayoutDashboard,
         },
         {
-          title: 'Tasks',
+          title: t('sidebar.tasks'),
           url: '/tasks',
           icon: ListTodo,
         },
         {
-          title: 'Projects',
-          url: '/projects',
-          icon: FolderOpen,
+          title: t('sidebar.products'),
+          url: '/products',
+          icon: ShoppingCart,
         },
         {
-          title: 'Apps',
-          url: '/apps',
-          icon: Package,
+          title: t('sidebar.findProduct'),
+          url: '/find-products',
+          icon: Search,
         },
         {
-          title: 'Chats',
-          url: '/chats',
-          badge: '3',
-          icon: MessagesSquare,
+          title: t('sidebar.analytics'),
+          url: '/analytics',
+          icon: BarChart3,
         },
-        {
-          title: 'Users',
-          url: '/users',
-          icon: Users,
-        },
-        {
-          title: 'Secured by Clerk',
-          icon: ClerkLogo,
-          items: [
-            {
-              title: 'Sign In',
-              url: '/clerk/sign-in',
-            },
-            {
-              title: 'Sign Up',
-              url: '/clerk/sign-up',
-            },
-            {
-              title: 'User Management',
-              url: '/clerk/user-management',
-            },
-          ],
-        },
+        // Apps - Hidden temporarily
+        // {
+        //   title: t('sidebar.apps'),
+        //   url: '/apps',
+        //   icon: Package,
+        // },
+        // Chats - Hidden temporarily
+        // {
+        //   title: t('sidebar.chats'),
+        //   url: '/chats',
+        //   badge: '3',
+        //   icon: MessagesSquare,
+        // },
+        // Users - Hidden temporarily
+        // {
+        //   title: t('sidebar.users'),
+        //   url: '/users',
+        //   icon: Users,
+        // },
+        // Secured by Clerk - Hidden temporarily
+        // {
+        //   title: t('sidebar.securedByClerk'),
+        //   icon: ClerkLogo,
+        //   items: [
+        //     {
+        //       title: t('sidebar.signIn'),
+        //       url: '/clerk/sign-in',
+        //     },
+        //     {
+        //       title: t('sidebar.signUp'),
+        //       url: '/clerk/sign-up',
+        //     },
+        //     {
+        //       title: t('sidebar.userManagement'),
+        //       url: '/clerk/user-management',
+        //     },
+        //   ],
+        // },
       ],
     },
+    // Pages section - Hidden temporarily (Auth and Errors)
+    // {
+    //   title: t('sidebar.pages'),
+    //   items: [
+    //     {
+    //       title: t('sidebar.auth'),
+    //       icon: ShieldCheck,
+    //       items: [
+    //         {
+    //           title: t('sidebar.signIn'),
+    //           url: '/sign-in',
+    //         },
+    //         {
+    //           title: t('sidebar.signIn2Col'),
+    //           url: '/sign-in-2',
+    //         },
+    //         {
+    //           title: t('sidebar.signUp'),
+    //           url: '/sign-up',
+    //         },
+    //         {
+    //           title: t('sidebar.forgotPassword'),
+    //           url: '/forgot-password',
+    //         },
+    //         {
+    //           title: t('sidebar.otp'),
+    //           url: '/otp',
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       title: t('sidebar.errors'),
+    //       icon: Bug,
+    //       items: [
+    //         {
+    //           title: t('sidebar.unauthorized'),
+    //           url: '/errors/unauthorized',
+    //           icon: Lock,
+    //         },
+    //         {
+    //           title: t('sidebar.forbidden'),
+    //           url: '/errors/forbidden',
+    //           icon: UserX,
+    //         },
+    //         {
+    //           title: t('sidebar.notFound'),
+    //           url: '/errors/not-found',
+    //           icon: FileX,
+    //         },
+    //         {
+    //           title: t('sidebar.internalServerError'),
+    //           url: '/errors/internal-server-error',
+    //           icon: ServerOff,
+    //         },
+    //         {
+    //           title: t('sidebar.maintenanceError'),
+    //           url: '/errors/maintenance-error',
+    //           icon: Construction,
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
     {
-      title: 'Pages',
+      title: t('sidebar.other'),
       items: [
         {
-          title: 'Auth',
-          icon: ShieldCheck,
-          items: [
-            {
-              title: 'Sign In',
-              url: '/sign-in',
-            },
-            {
-              title: 'Sign In (2 Col)',
-              url: '/sign-in-2',
-            },
-            {
-              title: 'Sign Up',
-              url: '/sign-up',
-            },
-            {
-              title: 'Forgot Password',
-              url: '/forgot-password',
-            },
-            {
-              title: 'OTP',
-              url: '/otp',
-            },
-          ],
-        },
-        {
-          title: 'Errors',
-          icon: Bug,
-          items: [
-            {
-              title: 'Unauthorized',
-              url: '/errors/unauthorized',
-              icon: Lock,
-            },
-            {
-              title: 'Forbidden',
-              url: '/errors/forbidden',
-              icon: UserX,
-            },
-            {
-              title: 'Not Found',
-              url: '/errors/not-found',
-              icon: FileX,
-            },
-            {
-              title: 'Internal Server Error',
-              url: '/errors/internal-server-error',
-              icon: ServerOff,
-            },
-            {
-              title: 'Maintenance Error',
-              url: '/errors/maintenance-error',
-              icon: Construction,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      title: 'Other',
-      items: [
-        {
-          title: 'Settings',
+          title: t('sidebar.settings'),
           icon: Settings,
           items: [
             {
-              title: 'Profile',
+              title: t('sidebar.profile'),
               url: '/settings',
               icon: UserCog,
             },
             {
-              title: 'Account',
+              title: t('sidebar.account'),
               url: '/settings/account',
               icon: Wrench,
             },
             {
-              title: 'Appearance',
+              title: t('sidebar.appearance'),
               url: '/settings/appearance',
               icon: Palette,
             },
             {
-              title: 'Notifications',
+              title: t('sidebar.notifications'),
               url: '/settings/notifications',
               icon: Bell,
             },
             {
-              title: 'Display',
+              title: t('sidebar.display'),
               url: '/settings/display',
               icon: Monitor,
             },
             {
-              title: 'AI & Models',
+              title: t('sidebar.aiAndModels'),
               url: '/settings/ai-and-models',
               icon: Cpu,
             },
           ],
         },
-        {
-          title: 'Help Center',
-          url: '/help-center',
-          icon: HelpCircle,
-        },
+        // Help Center - Hidden temporarily
+        // {
+        //   title: t('sidebar.helpCenter'),
+        //   url: '/help-center',
+        //   icon: HelpCircle,
+        // },
       ],
     },
   ],
 }
+}
+
+// Export for backward compatibility
+export const sidebarData = getSidebarData()

@@ -1,10 +1,13 @@
 import { z } from 'zod'
+import { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { showSubmittedData } from '@/lib/show-submitted-data'
+import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { getMyProfile, updateMyProfile } from '@/apis/user.api'
 import {
   Form,
   FormControl,
@@ -26,20 +29,15 @@ import { Textarea } from '@/components/ui/textarea'
 
 const profileFormSchema = z.object({
   username: z
-    .string('Please enter your username.')
+    .string()
     .min(2, 'Username must be at least 2 characters.')
-    .max(30, 'Username must not be longer than 30 characters.'),
-  email: z.email({
-    error: (iss) =>
-      iss.input === undefined
-        ? 'Please select an email to display.'
-        : undefined,
-  }),
-  bio: z.string().max(160).min(4),
+    .max(50, 'Username must not be longer than 50 characters.'),
+  email: z.string().email('Please enter a valid email.'),
+  bio: z.string().max(500).min(0).optional(),
   urls: z
     .array(
       z.object({
-        value: z.url('Please enter a valid URL.'),
+        value: z.string().url('Please enter a valid URL.').or(z.literal('')),
       })
     )
     .optional(),
@@ -47,31 +45,68 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  bio: 'I own a computer.',
-  urls: [
-    { value: 'https://shadcn.com' },
-    { value: 'http://twitter.com/shadcn' },
-  ],
-}
-
 export function ProfileForm() {
+  const queryClient = useQueryClient()
+  
+  // Load user data
+  const { data: userData, isLoading } = useQuery({
+    queryKey: ['myProfile'],
+    queryFn: () => getMyProfile(),
+  })
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
+    defaultValues: {
+      username: '',
+      email: '',
+      bio: '',
+      urls: [],
+    },
     mode: 'onChange',
   })
+
+  // Update form when user data loads - using useEffect to avoid infinite loop
+  useEffect(() => {
+    if (userData?.data && !isLoading) {
+      const user = userData.data
+      form.reset({
+        username: user.username || '',
+        email: user.email || '',
+        bio: user.bio || '',
+        urls: user.urls && user.urls.length > 0 
+          ? user.urls.map(url => ({ value: url }))
+          : [],
+      })
+    }
+  }, [userData?.data, isLoading, form])
 
   const { fields, append } = useFieldArray({
     name: 'urls',
     control: form.control,
   })
 
+  // Update mutation
+  const updateMutation = useMutation({
+    mutationFn: (data: ProfileFormValues) => updateMyProfile({
+      username: data.username,
+      email: data.email,
+      bio: data.bio || undefined,
+      urls: data.urls?.filter(url => url.value).map(url => url.value) || undefined,
+    }),
+    onSuccess: () => {
+      toast.success('Profile updated successfully')
+      queryClient.invalidateQueries({ queryKey: ['myProfile'] })
+      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.detail || 'Failed to update profile')
+    },
+  })
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((data) => showSubmittedData(data))}
+        onSubmit={form.handleSubmit((data) => updateMutation.mutate(data))}
         className='space-y-8'
       >
         <FormField
@@ -81,7 +116,7 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder='shadcn' {...field} />
+                <Input placeholder='shadcn' {...field} disabled={isLoading} />
               </FormControl>
               <FormDescription>
                 This is your public display name. It can be your real name or a
@@ -97,20 +132,11 @@ export function ProfileForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder='Select a verified email to display' />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value='m@example.com'>m@example.com</SelectItem>
-                  <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                  <SelectItem value='m@support.com'>m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormControl>
+                <Input type='email' placeholder='your@email.com' {...field} disabled={isLoading} />
+              </FormControl>
               <FormDescription>
-                You can manage verified email addresses in your{' '}
+                Your email address. You can manage verified email addresses in your{' '}
                 <Link to='/'>email settings</Link>.
               </FormDescription>
               <FormMessage />
@@ -128,6 +154,7 @@ export function ProfileForm() {
                   placeholder='Tell us a little bit about yourself'
                   className='resize-none'
                   {...field}
+                  disabled={isLoading}
                 />
               </FormControl>
               <FormDescription>
@@ -153,7 +180,7 @@ export function ProfileForm() {
                     Add links to your website, blog, or social media profiles.
                   </FormDescription>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} disabled={isLoading} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -166,11 +193,14 @@ export function ProfileForm() {
             size='sm'
             className='mt-2'
             onClick={() => append({ value: '' })}
+            disabled={isLoading}
           >
             Add URL
           </Button>
         </div>
-        <Button type='submit'>Update profile</Button>
+        <Button type='submit' disabled={isLoading || updateMutation.isPending}>
+          {updateMutation.isPending ? 'Updating...' : 'Update profile'}
+        </Button>
       </form>
     </Form>
   )

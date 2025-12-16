@@ -14,12 +14,15 @@ import { Main } from '@/components/layout/main';
 import { ProfileDropdown } from '@/components/profile-dropdown';
 import { Search } from '@/components/search';
 import { ThemeSwitch } from '@/components/theme-switch';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import { ConfigDrawer } from '@/components/config-drawer';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from '@/hooks/use-translation';
 
 const AddProjectForm = () => {
+  const { t } = useTranslation()
   const {
     formData,
     errors,
@@ -37,12 +40,12 @@ const AddProjectForm = () => {
     const hasChanges = JSON.stringify(formData) !== JSON.stringify(resetForm);
     
     if (hasChanges) {
-      const confirmed = confirm('Are you sure you want to discard all changes?');
+      const confirmed = confirm(t('projects.discardConfirm'));
       if (!confirmed) return;
     }
     
     resetForm();
-    toast.info('Form has been reset');
+    toast.info(t('projects.formReset'));
   };
 
   return (
@@ -51,6 +54,7 @@ const AddProjectForm = () => {
       <Header fixed>
         <Search />
         <div className='ms-auto flex items-center space-x-4'>
+          <LanguageSwitcher />
           <ThemeSwitch />
           <ConfigDrawer />
           <ProfileDropdown />
@@ -61,9 +65,9 @@ const AddProjectForm = () => {
       <Main>
         <div className="mb-2 flex flex-wrap items-center justify-between space-y-2">
           <div>
-            <h2 className='text-2xl font-bold tracking-tight'>Add Project</h2>
+            <h2 className='text-2xl font-bold tracking-tight'>{t('projects.addProjectTitle')}</h2>
             <p className='text-muted-foreground'>
-              Create a new project to track and analyze market trends.
+              {t('projects.addProjectDescription')}
             </p>
           </div>
           <div className="flex items-center space-x-3">
@@ -76,10 +80,10 @@ const AddProjectForm = () => {
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  {t('projects.saving')}
                 </>
               ) : (
-                'Save Draft'
+                t('projects.saveDraft')
               )}
             </Button>
             <Button 
@@ -88,7 +92,7 @@ const AddProjectForm = () => {
               onClick={handleDiscard}
               disabled={isSubmitting}
             >
-              Discard
+              {t('projects.discard')}
             </Button>
             <Button 
               onClick={handleSubmit}
@@ -98,10 +102,10 @@ const AddProjectForm = () => {
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Publishing...
+                  {t('projects.publishing')}
                 </>
               ) : (
-                'Publish'
+                t('projects.publish')
               )}
             </Button>
           </div>

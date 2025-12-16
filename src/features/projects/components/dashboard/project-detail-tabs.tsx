@@ -15,6 +15,7 @@ import {
   MessageSquare,
   Shield,
 } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 
 // Import tab components
 import { PriceAnalysisCard } from './price-analysis-card'
@@ -44,6 +45,7 @@ export function ProjectDetailTabs({
   onTabChange,
   onProjectUpdate
 }: ProjectDetailTabsProps) {
+  const { t } = useTranslation()
   const [internalActiveTab, setInternalActiveTab] = useState('overview')
   const activeTab = externalActiveTab ?? internalActiveTab
   const setActiveTab = onTabChange ?? setInternalActiveTab
@@ -54,39 +56,39 @@ export function ProjectDetailTabs({
       <TabsList className="grid w-full grid-cols-6 lg:w-fit lg:grid-cols-none lg:flex flex-wrap">
         <TabsTrigger value="overview" className="flex items-center gap-2">
           <LayoutDashboard className="w-4 h-4" />
-          <span className="hidden sm:inline">Overview</span>
+          <span className="hidden sm:inline">{t('projects.overview')}</span>
         </TabsTrigger>
         <TabsTrigger value="products" className="flex items-center gap-2">
           <ShoppingCart className="w-4 h-4" />
-          <span className="hidden sm:inline">Products</span>
+          <span className="hidden sm:inline">{t('projects.products')}</span>
         </TabsTrigger>
         <TabsTrigger value="find-product" className="flex items-center gap-2">
           <Search className="w-4 h-4" />
-          <span className="hidden sm:inline">Find Product</span>
+          <span className="hidden sm:inline">{t('projects.findProduct')}</span>
         </TabsTrigger>
         <TabsTrigger value="reviews" className="flex items-center gap-2">
           <MessageSquare className="w-4 h-4" />
-          <span className="hidden sm:inline">Reviews</span>
+          <span className="hidden sm:inline">{t('projects.reviews')}</span>
         </TabsTrigger>
         <TabsTrigger value="trust-score" className="flex items-center gap-2">
           <Shield className="w-4 h-4" />
-          <span className="hidden sm:inline">Trust Score</span>
+          <span className="hidden sm:inline">{t('projects.trustScore')}</span>
         </TabsTrigger>
         <TabsTrigger value="analytics" className="flex items-center gap-2">
           <BarChart3 className="w-4 h-4" />
-          <span className="hidden sm:inline">Analytics</span>
+          <span className="hidden sm:inline">{t('projects.analytics')}</span>
         </TabsTrigger>
         <TabsTrigger value="sources" className="flex items-center gap-2">
           <Database className="w-4 h-4" />
-          <span className="hidden sm:inline">Sources</span>
+          <span className="hidden sm:inline">{t('projects.sources')}</span>
         </TabsTrigger>
         <TabsTrigger value="team" className="flex items-center gap-2">
           <Users className="w-4 h-4" />
-          <span className="hidden sm:inline">Team</span>
+          <span className="hidden sm:inline">{t('projects.team')}</span>
         </TabsTrigger>
         <TabsTrigger value="settings" className="flex items-center gap-2">
           <FolderCog2Icon className="w-4 h-4" />
-          <span className="hidden sm:inline">Project</span>
+          <span className="hidden sm:inline">{t('projects.project')}</span>
         </TabsTrigger>
       </TabsList>
         {/* Overview Tab */}
@@ -97,44 +99,44 @@ export function ProjectDetailTabs({
               <div className="p-6 border rounded-lg space-y-2">
                 <div className="flex items-center gap-2">
                   <Target className="w-5 h-5 text-blue-500" />
-                  <span className="font-medium">Total Products</span>
+                  <span className="font-medium">{t('projects.totalProducts')}</span>
                 </div>
                 <p className="text-2xl font-bold">{project?.analytics?.total_products || 0}</p>
-                <p className="text-sm text-muted-foreground">Products tracked</p>
+                <p className="text-sm text-muted-foreground">{t('projects.productsTracked')}</p>
               </div>
               
               <div className="p-6 border rounded-lg space-y-2">
                 <div className="flex items-center gap-2">
                   <Zap className="w-5 h-5 text-green-500" />
-                  <span className="font-medium">Analyzed</span>
+                  <span className="font-medium">{t('projects.analyzed')}</span>
                 </div>
                 <p className="text-2xl font-bold">{project?.analytics?.analyzed_products || 0}</p>
-                <p className="text-sm text-muted-foreground">Analysis complete</p>
+                <p className="text-sm text-muted-foreground">{t('projects.analysisComplete')}</p>
               </div>
               
               <div className="p-6 border rounded-lg space-y-2">
                 <div className="flex items-center gap-2">
                   <Activity className="w-5 h-5 text-purple-500" />
-                  <span className="font-medium">Confidence</span>
+                  <span className="font-medium">{t('projects.confidence')}</span>
                 </div>
                 <p className="text-2xl font-bold">{project?.analytics?.confidence_score || 0}%</p>
-                <p className="text-sm text-muted-foreground">Analysis accuracy</p>
+                <p className="text-sm text-muted-foreground">{t('projects.analysisAccuracy')}</p>
               </div>
               
               <div className="p-6 border rounded-lg space-y-2">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-orange-500" />
-                  <span className="font-medium">Market Position</span>
+                  <span className="font-medium">{t('projects.marketPosition')}</span>
                 </div>
                 <p className="text-2xl font-bold">{project?.analytics?.market_position || 0}%</p>
-                <p className="text-sm text-muted-foreground">Market strength</p>
+                <p className="text-sm text-muted-foreground">{t('projects.marketStrength')}</p>
               </div>
             </div>
 
             {/* Equal height cards layout */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Price Analysis</h3>
+                <h3 className="text-lg font-semibold">{t('projects.priceAnalysis')}</h3>
                 <div className="h-[400px]">
                   <PriceAnalysisCard 
                     analysis={project?.price_analysis || null} 
@@ -144,7 +146,7 @@ export function ProjectDetailTabs({
               </div>
               
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Product Sources</h3>
+                <h3 className="text-lg font-semibold">{t('projects.productSources')}</h3>
                 <div className="h-[400px]">
                   <ProductSourcesCard 
                     sources={project?.product_sources || []} 

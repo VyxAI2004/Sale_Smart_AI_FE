@@ -5,6 +5,9 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { type ProjectApiResponse } from '../api/project-api'
 import { DataTableRowActions } from './data-table-row-actions'
+import i18n from '@/lib/i18n'
+
+const t = (key: string) => i18n.t(key) || key
 
 export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
@@ -16,7 +19,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
+        aria-label={t('common.selectAll')}
         className='translate-y-[2px]'
       />
     ),
@@ -27,7 +30,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
+        aria-label={t('common.selectRow')}
         className='translate-y-[2px]'
       />
     ),
@@ -37,7 +40,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Name' />
+      <DataTableColumnHeader column={column} title={t('projects.name')} />
     ),
     cell: ({ row }) => (
       <div className="font-medium">
@@ -48,7 +51,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'description',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Description' />
+      <DataTableColumnHeader column={column} title={t('projects.description')} />
     ),
     cell: ({ row }) => (
       <div className="max-w-[200px] truncate">
@@ -59,7 +62,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'target_product_name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Product' />
+      <DataTableColumnHeader column={column} title={t('projects.product')} />
     ),
     cell: ({ row }) => (
       <div>
@@ -70,7 +73,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Status' />
+      <DataTableColumnHeader column={column} title={t('projects.status')} />
     ),
     cell: ({ row }) => {
       const status = row.getValue('status') as string
@@ -87,7 +90,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'target_budget_range',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Budget' />
+      <DataTableColumnHeader column={column} title={t('projects.budget')} />
     ),
     cell: ({ row }) => {
       const budget = row.getValue('target_budget_range') as string
@@ -102,7 +105,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'pipeline_type',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Pipeline Type' />
+      <DataTableColumnHeader column={column} title={t('projects.pipelineType')} />
     ),
     cell: ({ row }) => {
       const type = row.getValue('pipeline_type') as string
@@ -116,13 +119,13 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'assigned_to',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Assigned To' />
+      <DataTableColumnHeader column={column} title={t('projects.assignedTo')} />
     ),
     cell: ({ row }) => {
       const assignedTo = row.original.assigned_to
       return (
         <div>
-          {assignedTo ? `User ${assignedTo}` : '-'}
+          {assignedTo ? `${t('projects.user')} ${assignedTo}` : '-'}
         </div>
       )
     },
@@ -130,7 +133,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'deadline',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Deadline' />
+      <DataTableColumnHeader column={column} title={t('projects.deadline')} />
     ),
     cell: ({ row }) => {
       const deadline = row.getValue('deadline') as string
@@ -144,7 +147,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'crawl_schedule',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Schedule' />
+      <DataTableColumnHeader column={column} title={t('projects.schedule')} />
     ),
     cell: ({ row }) => {
       const schedule = row.getValue('crawl_schedule') as string
@@ -158,7 +161,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'next_crawl_at',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Next Crawl' />
+      <DataTableColumnHeader column={column} title={t('projects.nextCrawl')} />
     ),
     cell: ({ row }) => {
       const nextCrawl = row.getValue('next_crawl_at') as string
@@ -172,7 +175,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'updated_at',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Updated' />
+      <DataTableColumnHeader column={column} title={t('projects.updated')} />
     ),
     cell: ({ row }) => {
       const date = row.getValue('updated_at') as string
@@ -186,7 +189,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   {
     accessorKey: 'created_at',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Created' />
+      <DataTableColumnHeader column={column} title={t('projects.createdAt')} />
     ),
     cell: ({ row }) => {
       const date = row.getValue('created_at') as string
@@ -199,7 +202,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
   },
   {
     id: 'actions',
-    header: 'Actions',
+    header: t('projects.actions'),
     cell: ({ row }) => <DataTableRowActions row={row} />,
     meta: {
       className: cn('sticky md:table-cell end-0 z-10 rounded-tr-[inherit] bg-background'),
