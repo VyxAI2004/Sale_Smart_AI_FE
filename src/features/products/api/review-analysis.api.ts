@@ -82,7 +82,10 @@ export class ReviewAnalysisApi {
       created: number
       items: ReviewAnalysis[]
     }>(`${this.BASE_PATH}/${productId}/analyses/bulk`, payload)
-    return response.data
+    return response.data as {
+      created: number
+      items: ReviewAnalysis[]
+    }
   }
 
   /**
