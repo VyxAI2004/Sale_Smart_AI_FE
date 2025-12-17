@@ -8,6 +8,7 @@ import type {
   AutoDiscoveryStepProgress,
   AutoDiscoveryFinalResult,
 } from '../types/auto-discovery.types'
+
 // AutoDiscoveryRequest is imported but unused
 
 export const useAutoDiscovery = (projectId: string) => {

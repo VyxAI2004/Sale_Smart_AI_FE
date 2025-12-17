@@ -501,7 +501,9 @@ export function ProjectDetailsCard({
                       onChange={(e) =>
                         setEditData({
                           ...editData,
-                          target_budget_range: e.target.value ? Number(e.target.value) : undefined,
+                          target_budget_range: e.target.value
+                            ? Number(e.target.value)
+                            : undefined,
                         })
                       }
                       className={errors.budget ? 'border-destructive' : ''}

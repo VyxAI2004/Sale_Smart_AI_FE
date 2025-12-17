@@ -31,7 +31,9 @@ export class DashboardApi {
           params: { limit: 100 },
         }
       )
-      const projectsData = DashboardApi.ensureObject(projectsResponse.data || {})
+      const projectsData = DashboardApi.ensureObject(
+        projectsResponse.data || {}
+      )
       const projectList = DashboardApi.ensureArray(projectsData.items)
 
       const [dashboardStatsResponse, projectSummaries, products, tasks] =
@@ -204,7 +206,9 @@ export class DashboardApi {
               }
             )
 
-            const productsData = DashboardApi.ensureObject(productsResponse.data)
+            const productsData = DashboardApi.ensureObject(
+              productsResponse.data
+            )
             const products = DashboardApi.ensureArray(productsData.items)
             allProducts.push(...products)
           } catch (err) {
@@ -226,7 +230,8 @@ export class DashboardApi {
         sentiment: this.getSentimentFromTrustScore(
           product.trust_score?.score || 0
         ),
-        lastAnalyzed: product.updated_at || product.created_at || new Date().toISOString(),
+        lastAnalyzed:
+          product.updated_at || product.created_at || new Date().toISOString(),
       }))
     } catch (error) {
       console.error('Error fetching products summary:', error)
@@ -261,7 +266,9 @@ export class DashboardApi {
             const projectResponse = await http.get<{ name?: string }>(
               `/projects/${projectId}`
             )
-            const projectData = DashboardApi.ensureObject(projectResponse.data || {})
+            const projectData = DashboardApi.ensureObject(
+              projectResponse.data || {}
+            )
             projectMap.set(
               projectId,
               String(projectData.name ?? 'Unknown Project')
@@ -303,7 +310,9 @@ export class DashboardApi {
             params: { limit: 100 },
           }
         )
-        const projectsData = DashboardApi.ensureObject(projectsResponse.data || {})
+        const projectsData = DashboardApi.ensureObject(
+          projectsResponse.data || {}
+        )
         projectList = DashboardApi.ensureArray(projectsData.items)
       }
 
@@ -320,7 +329,9 @@ export class DashboardApi {
                   params: { limit: 100 },
                 }
               )
-              const productsData = DashboardApi.ensureObject(productsResponse.data || {})
+              const productsData = DashboardApi.ensureObject(
+                productsResponse.data || {}
+              )
               const products = DashboardApi.ensureArray(productsData.items)
               allProducts.push(...products)
             } catch (err) {
@@ -344,7 +355,9 @@ export class DashboardApi {
             const statsResponse = await http.get<Record<string, unknown>>(
               `/products/${product.id}/reviews/statistics`
             )
-            const statsData = DashboardApi.ensureObject(statsResponse.data || {})
+            const statsData = DashboardApi.ensureObject(
+              statsResponse.data || {}
+            )
             return {
               productId: product.id,
               ...(statsData as Record<string, unknown>),
