@@ -43,7 +43,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
         if (fetchedProjects.length > 0) {
           // Get current project from URL first
-          const projectIdFromUrl = location.pathname.match(/\/projects\/([^\/]+)/)?.[1]
+          const projectIdFromUrl = location.pathname.match(/\/projects\/([^/]+)/)?.[1]
           
           let current: ProjectApiResponse | null = null
           
@@ -87,7 +87,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
   // Update active project when URL changes
   useEffect(() => {
-    const projectIdFromUrl = location.pathname.match(/\/projects\/([^\/]+)/)?.[1]
+    const projectIdFromUrl = location.pathname.match(/\/projects\/([^/]+)/)?.[1]
     
     if (projectIdFromUrl && projects.length > 0) {
       // URL has project ID - use it

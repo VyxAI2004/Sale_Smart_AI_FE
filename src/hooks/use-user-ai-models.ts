@@ -1,8 +1,7 @@
 import { useState, useCallback } from 'react'
 import { UserAIModelApi } from '@/apis/user-ai-model.api'
-import { aiModelApi } from '@/apis/aiModel.api'
+import { aiModelApi, type AIModel } from '@/apis/aiModel.api'
 import type { UserAIModel, UserAIModelCreate } from '@/types/user-ai-model.types'
-import type { AIModel } from '@/apis/aiModel.api'
 
 export function useUserAiModels() {
   const [userModels, setUserModels] = useState<UserAIModel[]>([])

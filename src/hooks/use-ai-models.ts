@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react'
-import { aiModelApi } from '@/apis/aiModel.api'
+import { aiModelApi, type AIModel } from '@/apis/aiModel.api'
 import { isSuperAdmin } from '@/utils/jwt'
-import type { AIModel } from '@/apis/aiModel.api'
 
 export type AiModel = {
   id: string

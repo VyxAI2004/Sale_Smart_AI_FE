@@ -2,7 +2,6 @@ import { useState, useCallback, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { AutoDiscoveryApi } from '../api/auto-discovery.api';
 import type {
-  AutoDiscoveryRequest,
   AutoDiscoveryState,
   StreamEvent,
   AutoDiscoveryStepProgress,
@@ -83,7 +82,7 @@ export const useAutoDiscovery = (projectId: string) => {
         toast.error(event.message);
         break;
 
-      case 'final_result':
+      case 'final_result': {
         setState((prev) => ({
           ...prev,
           finalResult: event.data as AutoDiscoveryFinalResult,
@@ -99,6 +98,7 @@ export const useAutoDiscovery = (projectId: string) => {
           toast.error(result.error_message || result.message || 'Có lỗi xảy ra');
         }
         break;
+      }
     }
   }, [projectId, queryClient]);
 
