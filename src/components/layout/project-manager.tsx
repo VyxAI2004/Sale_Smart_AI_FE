@@ -1,6 +1,9 @@
 import * as React from 'react'
+import { Link } from '@tanstack/react-router'
+import { useProjectContext } from '@/contexts/project-context'
 import { ChevronsUpDown, Plus, FolderOpen, Loader2 } from 'lucide-react'
-import { Link, useNavigate, useLocation } from '@tanstack/react-router'
+import { useTranslation } from '@/hooks/use-translation'
+import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,29 +19,27 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { Badge } from '@/components/ui/badge'
-import { ProjectApi, type ProjectApiResponse } from '@/features/projects/api/project-api'
-import { useTranslation } from '@/hooks/use-translation'
-import { useProjectContext } from '@/contexts/project-context'
+import {
+  ProjectApi,
+  type ProjectApiResponse,
+} from '@/features/projects/api/project-api'
 
 export function ProjectManager() {
   const { t } = useTranslation()
   const { isMobile } = useSidebar()
-  const navigate = useNavigate()
-  const location = useLocation()
   const { activeProject, isLoading, setActiveProject } = useProjectContext()
   const [projects, setProjects] = React.useState<ProjectApiResponse[]>([])
 
   // Fetch projects list for dropdown
   React.useEffect(() => {
     let cancelled = false
-    
+
     const fetchProjects = async () => {
       try {
         const response = await ProjectApi.getMyProjects({ limit: 20 })
-        
+
         if (cancelled) return
-        
+
         setProjects(response.items || [])
       } catch (error) {
         console.error('Failed to fetch projects:', error)
@@ -49,26 +50,41 @@ export function ProjectManager() {
     }
 
     fetchProjects()
-    
+
     return () => {
       cancelled = true
     }
   }, [])
 
   const getStatusBadge = (status: string) => {
-    const statusMap: Record<string, { translationKey: string; variant: 'default' | 'secondary' | 'outline' | 'destructive' }> = {
+    const statusMap: Record<
+      string,
+      {
+        translationKey: string
+        variant: 'default' | 'secondary' | 'outline' | 'destructive'
+      }
+    > = {
       active: { translationKey: 'projects.status', variant: 'default' },
       draft: { translationKey: 'projects.statusDraft', variant: 'secondary' },
       ready: { translationKey: 'projects.statusReady', variant: 'outline' },
       running: { translationKey: 'projects.statusRunning', variant: 'default' },
       paused: { translationKey: 'projects.statusPaused', variant: 'secondary' },
-      completed: { translationKey: 'projects.statusCompleted', variant: 'outline' },
-      archived: { translationKey: 'projects.statusArchived', variant: 'secondary' },
+      completed: {
+        translationKey: 'projects.statusCompleted',
+        variant: 'outline',
+      },
+      archived: {
+        translationKey: 'projects.statusArchived',
+        variant: 'secondary',
+      },
     }
-    const statusInfo = statusMap[status?.toLowerCase()] || { translationKey: 'projects.status', variant: 'secondary' as const }
-    return { 
-      label: t(statusInfo.translationKey), 
-      variant: statusInfo.variant 
+    const statusInfo = statusMap[status?.toLowerCase()] || {
+      translationKey: 'projects.status',
+      variant: 'secondary' as const,
+    }
+    return {
+      label: t(statusInfo.translationKey),
+      variant: statusInfo.variant,
     }
   }
 
@@ -86,7 +102,9 @@ export function ProjectManager() {
               <Loader2 className='size-4 animate-spin' />
             </div>
             <div className='grid flex-1 text-start text-sm leading-tight'>
-              <span className='truncate font-semibold'>{t('projects.title')}</span>
+              <span className='truncate font-semibold'>
+                {t('projects.title')}
+              </span>
               <span className='truncate text-xs'>{t('projects.loading')}</span>
             </div>
           </SidebarMenuButton>
@@ -109,8 +127,12 @@ export function ProjectManager() {
                   <FolderOpen className='size-4' />
                 </div>
                 <div className='grid flex-1 text-start text-sm leading-tight'>
-                  <span className='truncate font-semibold'>{t('projects.title')}</span>
-                  <span className='truncate text-xs'>{t('projects.noProjects')}</span>
+                  <span className='truncate font-semibold'>
+                    {t('projects.title')}
+                  </span>
+                  <span className='truncate text-xs'>
+                    {t('projects.noProjects')}
+                  </span>
                 </div>
                 <ChevronsUpDown className='ms-auto' />
               </SidebarMenuButton>
@@ -126,11 +148,13 @@ export function ProjectManager() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild className='gap-2 p-2'>
-                <Link to="/projects/add">
+                <Link to='/projects/add'>
                   <div className='bg-background flex size-6 items-center justify-center rounded-md border'>
                     <Plus className='size-4' />
                   </div>
-                  <div className='text-muted-foreground font-medium'>{t('projects.addProject')}</div>
+                  <div className='text-muted-foreground font-medium'>
+                    {t('projects.addProject')}
+                  </div>
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -157,14 +181,16 @@ export function ProjectManager() {
                   {activeProject?.name || t('projects.title')}
                 </span>
                 <span className='truncate text-xs'>
-                  {activeProject ? getStatusBadge(activeProject.status || '').label : t('projects.selectProject')}
+                  {activeProject
+                    ? getStatusBadge(activeProject.status || '').label
+                    : t('projects.selectProject')}
                 </span>
               </div>
               <ChevronsUpDown className='ms-auto' />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg max-h-[400px] overflow-y-auto'
+            className='max-h-[400px] w-(--radix-dropdown-menu-trigger-width) min-w-56 overflow-y-auto rounded-lg'
             align='start'
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
@@ -172,7 +198,7 @@ export function ProjectManager() {
             <DropdownMenuLabel className='text-muted-foreground text-xs'>
               {t('projects.title')} ({projects.length})
             </DropdownMenuLabel>
-            {projects.map((project, index) => {
+            {projects.map((project) => {
               const statusInfo = getStatusBadge(project.status || '')
               const isActive = activeProject?.id === project.id
               return (
@@ -184,23 +210,24 @@ export function ProjectManager() {
                   <div className='flex size-6 items-center justify-center rounded-sm border'>
                     <FolderOpen className='size-4 shrink-0' />
                   </div>
-                  <div className='flex-1 min-w-0'>
+                  <div className='min-w-0 flex-1'>
                     <div className='truncate font-medium'>{project.name}</div>
-                    <div className='flex items-center gap-2 mt-0.5'>
-                      <Badge variant={statusInfo.variant} className='text-xs h-4 px-1'>
+                    <div className='mt-0.5 flex items-center gap-2'>
+                      <Badge
+                        variant={statusInfo.variant}
+                        className='h-4 px-1 text-xs'
+                      >
                         {statusInfo.label}
                       </Badge>
                     </div>
                   </div>
-                  {isActive && (
-                    <DropdownMenuShortcut>✓</DropdownMenuShortcut>
-                  )}
+                  {isActive && <DropdownMenuShortcut>✓</DropdownMenuShortcut>}
                 </DropdownMenuItem>
               )
             })}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className='gap-2 p-2'>
-              <Link to="/projects">
+              <Link to='/projects'>
                 <div className='bg-background flex size-6 items-center justify-center rounded-md border'>
                   <FolderOpen className='size-4' />
                 </div>
@@ -208,11 +235,13 @@ export function ProjectManager() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild className='gap-2 p-2'>
-              <Link to="/projects/add">
+              <Link to='/projects/add'>
                 <div className='bg-background flex size-6 items-center justify-center rounded-md border'>
                   <Plus className='size-4' />
                 </div>
-                <div className='text-muted-foreground font-medium'>{t('projects.addProject')}</div>
+                <div className='text-muted-foreground font-medium'>
+                  {t('projects.addProject')}
+                </div>
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>

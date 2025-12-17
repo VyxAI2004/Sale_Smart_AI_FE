@@ -1,4 +1,5 @@
 import { Languages } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -6,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useTranslation } from '@/hooks/use-translation'
 
 export function LanguageSwitcher() {
   const { currentLanguage, switchLanguage, t } = useTranslation()

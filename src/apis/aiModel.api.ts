@@ -56,7 +56,8 @@ export const aiModelApi = {
   /**
    * Create AI model (admin only)
    */
-  create: (payload: CreateAIModelPayload) => http.post<AIModel>('/ai-models', payload),
+  create: (payload: CreateAIModelPayload) =>
+    http.post<AIModel>('/ai-models', payload),
 
   /**
    * Update AI model (admin only)
@@ -77,7 +78,8 @@ export const aiModelApi = {
   /**
    * Increment usage count
    */
-  incrementUsage: (id: string) => http.post<AIModel>(`/ai-models/${id}/increment-usage`),
+  incrementUsage: (id: string) =>
+    http.post<AIModel>(`/ai-models/${id}/increment-usage`),
 
   /**
    * Delete AI model (admin only)

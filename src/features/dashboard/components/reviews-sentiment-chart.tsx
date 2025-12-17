@@ -1,10 +1,17 @@
 /**
  * Reviews Sentiment Chart - Hiển thị phân bố sentiment của reviews
  */
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+} from 'recharts'
 
 interface ReviewsSentimentChartProps {
-  data: Array<{ name: string; value: number; color?: string }>;
+  data: Array<{ name: string; value: number; color?: string }>
 }
 
 export function ReviewsSentimentChart({ data }: ReviewsSentimentChartProps) {
@@ -16,7 +23,9 @@ export function ReviewsSentimentChart({ data }: ReviewsSentimentChartProps) {
           cx='50%'
           cy='50%'
           labelLine={false}
-          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+          label={({ name, percent = 0 }) =>
+            `${name}: ${(percent * 100).toFixed(0)}%`
+          }
           outerRadius={80}
           fill='#8884d8'
           dataKey='value'
@@ -29,5 +38,5 @@ export function ReviewsSentimentChart({ data }: ReviewsSentimentChartProps) {
         <Legend />
       </PieChart>
     </ResponsiveContainer>
-  );
+  )
 }

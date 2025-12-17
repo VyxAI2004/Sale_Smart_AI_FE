@@ -1,18 +1,20 @@
-import { useParams } from '@tanstack/react-router';
-import { Header } from '@/components/layout/header';
-import { Main } from '@/components/layout/main';
-import { ConfigDrawer } from '@/components/config-drawer';
-import { ProfileDropdown } from '@/components/profile-dropdown';
-import { Search } from '@/components/search';
-import { ThemeSwitch } from '@/components/theme-switch';
-import { Loader2 } from 'lucide-react';
-import { useProduct } from '../hooks/use-products';
-import { ProductHeader } from './dashboard/product-header';
-import { ProductDetailTabs } from './dashboard/product-detail-tabs';
+import { useParams } from '@tanstack/react-router'
+import { Loader2 } from 'lucide-react'
+import { ConfigDrawer } from '@/components/config-drawer'
+import { Header } from '@/components/layout/header'
+import { Main } from '@/components/layout/main'
+import { ProfileDropdown } from '@/components/profile-dropdown'
+import { Search } from '@/components/search'
+import { ThemeSwitch } from '@/components/theme-switch'
+import { useProduct } from '../hooks/use-products'
+import { ProductDetailTabs } from './dashboard/product-detail-tabs'
+import { ProductHeader } from './dashboard/product-header'
 
 export function ProductDetailPage() {
-  const { productId } = useParams({ from: '/_authenticated/products/$productId/' });
-  const { data: product, isLoading, error } = useProduct(productId);
+  const { productId } = useParams({
+    from: '/_authenticated/products/$productId/',
+  })
+  const { data: product, isLoading, error } = useProduct(productId)
 
   if (isLoading) {
     return (
@@ -27,12 +29,12 @@ export function ProductDetailPage() {
         </Header>
         <Main>
           <ProductHeader product={null} isLoading={true} />
-          <div className="flex items-center justify-center min-h-[400px]">
-            <Loader2 className="h-8 w-8 animate-spin" />
+          <div className='flex min-h-[400px] items-center justify-center'>
+            <Loader2 className='h-8 w-8 animate-spin' />
           </div>
         </Main>
       </div>
-    );
+    )
   }
 
   if (error || !product) {
@@ -47,17 +49,19 @@ export function ProductDetailPage() {
           </div>
         </Header>
         <Main>
-          <div className="flex items-center justify-center min-h-[400px] text-center">
+          <div className='flex min-h-[400px] items-center justify-center text-center'>
             <div>
-              <h2 className="text-lg font-semibold mb-2">Failed to load product</h2>
-              <p className="text-muted-foreground mb-4">
+              <h2 className='mb-2 text-lg font-semibold'>
+                Failed to load product
+              </h2>
+              <p className='text-muted-foreground mb-4'>
                 {error ? (error as Error).message : 'Product not found'}
               </p>
             </div>
           </div>
         </Main>
       </div>
-    );
+    )
   }
 
   return (
@@ -73,14 +77,9 @@ export function ProductDetailPage() {
 
       <Main>
         <ProductHeader product={product} />
-        
-        <ProductDetailTabs 
-          product={product}
-          productId={productId}
-          isLoading={isLoading}
-        />
+
+        <ProductDetailTabs product={product} productId={productId} />
       </Main>
     </div>
-  );
+  )
 }
-

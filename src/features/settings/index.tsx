@@ -1,19 +1,19 @@
 import { Outlet } from '@tanstack/react-router'
-import { Monitor, Bell, Palette, Wrench, UserCog, Cpu } from 'lucide-react'
+import { Monitor, Bell, Palette, UserCog, Cpu } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 import { Separator } from '@/components/ui/separator'
 import { ConfigDrawer } from '@/components/config-drawer'
+import { LanguageSwitcher } from '@/components/language-switcher'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { LanguageSwitcher } from '@/components/language-switcher'
 import { SidebarNav } from './components/sidebar-nav'
-import { useTranslation } from '@/hooks/use-translation'
 
 export function Settings() {
   const { t } = useTranslation()
-  
+
   const sidebarNavItems = [
     {
       title: t('sidebar.profile'),
@@ -56,13 +56,13 @@ export function Settings() {
       </Header>
 
       <Main fixed>
-        <div className='space-y-0.5'>
-          <h1 className='text-2xl font-bold tracking-tight md:text-3xl'>
-            {t('settings.title')}
-          </h1>
-          <p className='text-muted-foreground'>
-            {t('settings.description')}
-          </p>
+        <div className='mb-6 flex flex-wrap items-center justify-between space-y-2 gap-x-4'>
+          <div>
+            <h2 className='text-2xl font-bold tracking-tight'>
+              {t('settings.title')}
+            </h2>
+            <p className='text-muted-foreground'>{t('settings.description')}</p>
+          </div>
         </div>
         <Separator className='my-4 lg:my-6' />
         <div className='flex flex-1 flex-col space-y-2 overflow-hidden md:space-y-2 lg:flex-row lg:space-y-0 lg:space-x-12'>

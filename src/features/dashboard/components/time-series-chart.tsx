@@ -10,26 +10,29 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts';
+} from 'recharts'
 
 interface TimeSeriesChartProps {
   data: Array<{
-    date: string;
-    projects: number;
-    products: number;
-    tasks: number;
-    reviews: number;
-    trustScore: number;
-  }>;
+    date: string
+    projects: number
+    products: number
+    tasks: number
+    reviews: number
+    trustScore: number
+  }>
 }
 
 export function TimeSeriesChart({ data }: TimeSeriesChartProps) {
   // Format date for display
-  const formattedData = data.map(item => ({
+  const formattedData = data.map((item) => ({
     ...item,
-    date: new Date(item.date).toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' }),
+    date: new Date(item.date).toLocaleDateString('vi-VN', {
+      month: 'short',
+      day: 'numeric',
+    }),
     trustScore: Number((item.trustScore * 100).toFixed(1)),
-  }));
+  }))
 
   return (
     <ResponsiveContainer width='100%' height={350}>
@@ -83,5 +86,5 @@ export function TimeSeriesChart({ data }: TimeSeriesChartProps) {
         />
       </LineChart>
     </ResponsiveContainer>
-  );
+  )
 }

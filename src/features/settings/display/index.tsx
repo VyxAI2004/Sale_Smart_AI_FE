@@ -4,7 +4,7 @@ import { DisplayForm } from './display-form'
 
 export function SettingsDisplay() {
   const { t } = useTranslation()
-  
+
   return (
     <ContentSection
       title={t('settings.display.title')}

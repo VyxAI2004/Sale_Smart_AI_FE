@@ -1,5 +1,5 @@
-import { getMe } from '@/apis/auth.api'
 import { queryOptions } from '@tanstack/react-query'
+import { getMe } from '@/apis/auth.api'
 
 export const getMeQueryOptions = () => {
   return queryOptions({

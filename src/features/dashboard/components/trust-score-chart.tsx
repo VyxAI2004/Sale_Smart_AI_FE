@@ -1,10 +1,20 @@
 /**
  * Trust Score Distribution Chart - Hiển thị phân bố trust scores
  */
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts'
 
 interface TrustScoreChartProps {
-  data: Array<{ range: string; count: number; color?: string }>;
+  data: Array<{ range: string; count: number; color?: string }>
 }
 
 export function TrustScoreChart({ data }: TrustScoreChartProps) {
@@ -23,5 +33,5 @@ export function TrustScoreChart({ data }: TrustScoreChartProps) {
         </Bar>
       </BarChart>
     </ResponsiveContainer>
-  );
+  )
 }

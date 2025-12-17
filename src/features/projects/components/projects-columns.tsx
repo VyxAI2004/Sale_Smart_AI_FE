@@ -1,11 +1,11 @@
 import { type ColumnDef } from '@tanstack/react-table'
+import i18n from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { type ProjectApiResponse } from '../api/project-api'
 import { DataTableRowActions } from './data-table-row-actions'
-import i18n from '@/lib/i18n'
 
 const t = (key: string) => i18n.t(key) || key
 
@@ -24,7 +24,9 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
       />
     ),
     meta: {
-      className: cn('sticky md:table-cell start-0 z-10 rounded-tl-[inherit] bg-background'),
+      className: cn(
+        'sticky md:table-cell start-0 z-10 rounded-tl-[inherit] bg-background'
+      ),
     },
     cell: ({ row }) => (
       <Checkbox
@@ -43,18 +45,19 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
       <DataTableColumnHeader column={column} title={t('projects.name')} />
     ),
     cell: ({ row }) => (
-      <div className="font-medium">
-        {row.getValue('name')}
-      </div>
+      <div className='font-medium'>{row.getValue('name')}</div>
     ),
   },
   {
     accessorKey: 'description',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={t('projects.description')} />
+      <DataTableColumnHeader
+        column={column}
+        title={t('projects.description')}
+      />
     ),
     cell: ({ row }) => (
-      <div className="max-w-[200px] truncate">
+      <div className='max-w-[200px] truncate'>
         {row.getValue('description') || '-'}
       </div>
     ),
@@ -64,11 +67,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title={t('projects.product')} />
     ),
-    cell: ({ row }) => (
-      <div>
-        {row.getValue('target_product_name') || '-'}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.getValue('target_product_name') || '-'}</div>,
   },
   {
     accessorKey: 'status',
@@ -78,7 +77,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     cell: ({ row }) => {
       const status = row.getValue('status') as string
       return (
-        <Badge variant="outline" className="capitalize">
+        <Badge variant='outline' className='capitalize'>
           {status}
         </Badge>
       )
@@ -95,22 +94,21 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     cell: ({ row }) => {
       const budget = row.getValue('target_budget_range') as string
       const currency = row.original.currency
-      return (
-        <div>
-          {budget ? `${budget} ${currency || ''}` : '-'}
-        </div>
-      )
+      return <div>{budget ? `${budget} ${currency || ''}` : '-'}</div>
     },
   },
   {
     accessorKey: 'pipeline_type',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={t('projects.pipelineType')} />
+      <DataTableColumnHeader
+        column={column}
+        title={t('projects.pipelineType')}
+      />
     ),
     cell: ({ row }) => {
       const type = row.getValue('pipeline_type') as string
       return (
-        <Badge variant="secondary" className="capitalize">
+        <Badge variant='secondary' className='capitalize'>
           {type || '-'}
         </Badge>
       )
@@ -124,9 +122,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     cell: ({ row }) => {
       const assignedTo = row.original.assigned_to
       return (
-        <div>
-          {assignedTo ? `${t('projects.user')} ${assignedTo}` : '-'}
-        </div>
+        <div>{assignedTo ? `${t('projects.user')} ${assignedTo}` : '-'}</div>
       )
     },
   },
@@ -138,9 +134,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     cell: ({ row }) => {
       const deadline = row.getValue('deadline') as string
       return (
-        <div>
-          {deadline ? new Date(deadline).toLocaleDateString() : '-'}
-        </div>
+        <div>{deadline ? new Date(deadline).toLocaleDateString() : '-'}</div>
       )
     },
   },
@@ -151,11 +145,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     ),
     cell: ({ row }) => {
       const schedule = row.getValue('crawl_schedule') as string
-      return (
-        <div className="capitalize">
-          {schedule || '-'}
-        </div>
-      )
+      return <div className='capitalize'>{schedule || '-'}</div>
     },
   },
   {
@@ -166,9 +156,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     cell: ({ row }) => {
       const nextCrawl = row.getValue('next_crawl_at') as string
       return (
-        <div>
-          {nextCrawl ? new Date(nextCrawl).toLocaleDateString() : '-'}
-        </div>
+        <div>{nextCrawl ? new Date(nextCrawl).toLocaleDateString() : '-'}</div>
       )
     },
   },
@@ -179,11 +167,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     ),
     cell: ({ row }) => {
       const date = row.getValue('updated_at') as string
-      return (
-        <div>
-          {date ? new Date(date).toLocaleDateString() : '-'}
-        </div>
-      )
+      return <div>{date ? new Date(date).toLocaleDateString() : '-'}</div>
     },
   },
   {
@@ -193,11 +177,7 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     ),
     cell: ({ row }) => {
       const date = row.getValue('created_at') as string
-      return (
-        <div>
-          {date ? new Date(date).toLocaleDateString() : '-'}
-        </div>
-      )
+      return <div>{date ? new Date(date).toLocaleDateString() : '-'}</div>
     },
   },
   {
@@ -205,7 +185,9 @@ export const projectsColumns: ColumnDef<ProjectApiResponse>[] = [
     header: t('projects.actions'),
     cell: ({ row }) => <DataTableRowActions row={row} />,
     meta: {
-      className: cn('sticky md:table-cell end-0 z-10 rounded-tr-[inherit] bg-background'),
+      className: cn(
+        'sticky md:table-cell end-0 z-10 rounded-tr-[inherit] bg-background'
+      ),
     },
   },
 ]

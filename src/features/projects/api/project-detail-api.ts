@@ -11,7 +11,9 @@ export class ProjectDetailApi {
    * Get comprehensive project detail data for dashboard
    */
   static async getProjectDetail(projectId: string): Promise<ProjectDetailData> {
-    const response = await http.get<ProjectDetailData>(`${this.BASE_PATH}/${projectId}`)
+    const response = await http.get<ProjectDetailData>(
+      `${this.BASE_PATH}/${projectId}`
+    )
     return response.data
   }
 
@@ -34,12 +36,18 @@ export class ProjectDetailApi {
   /**
    * Get competitor products
    */
-  static async getCompetitorProducts(projectId: string, params?: {
-    limit?: number
-    offset?: number
-    similarity_threshold?: number
-  }) {
-    const response = await http.get(`${this.BASE_PATH}/${projectId}/competitors`, { params })
+  static async getCompetitorProducts(
+    projectId: string,
+    params?: {
+      limit?: number
+      offset?: number
+      similarity_threshold?: number
+    }
+  ) {
+    const response = await http.get(
+      `${this.BASE_PATH}/${projectId}/competitors`,
+      { params }
+    )
     return response.data
   }
 
@@ -47,7 +55,9 @@ export class ProjectDetailApi {
    * Get price analysis
    */
   static async getPriceAnalysis(projectId: string) {
-    const response = await http.get(`${this.BASE_PATH}/${projectId}/price-analysis`)
+    const response = await http.get(
+      `${this.BASE_PATH}/${projectId}/price-analysis`
+    )
     return response.data
   }
 
@@ -63,9 +73,12 @@ export class ProjectDetailApi {
    * Get recent activities
    */
   static async getRecentActivities(projectId: string, limit = 10) {
-    const response = await http.get(`${this.BASE_PATH}/${projectId}/activities`, {
-      params: { limit }
-    })
+    const response = await http.get(
+      `${this.BASE_PATH}/${projectId}/activities`,
+      {
+        params: { limit },
+      }
+    )
     return response.data
   }
 
@@ -73,18 +86,26 @@ export class ProjectDetailApi {
    * Trigger manual crawl for project
    */
   static async triggerCrawl(projectId: string) {
-    const response = await http.post(`${this.BASE_PATH}/${projectId}/crawl/trigger`)
+    const response = await http.post(
+      `${this.BASE_PATH}/${projectId}/crawl/trigger`
+    )
     return response.data
   }
 
   /**
    * Update crawl schedule
    */
-  static async updateCrawlSchedule(projectId: string, schedule: {
-    crawl_schedule: string
-    next_crawl_at?: string
-  }) {
-    const response = await http.put(`${this.BASE_PATH}/${projectId}/crawl/schedule`, schedule)
+  static async updateCrawlSchedule(
+    projectId: string,
+    schedule: {
+      crawl_schedule: string
+      next_crawl_at?: string
+    }
+  ) {
+    const response = await http.put(
+      `${this.BASE_PATH}/${projectId}/crawl/schedule`,
+      schedule
+    )
     return response.data
   }
 }

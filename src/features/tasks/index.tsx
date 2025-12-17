@@ -1,1 +1,1 @@
-export { TasksPage as Tasks } from './components/tasks-page';
+export { TasksPage as Tasks } from './components/tasks-page'

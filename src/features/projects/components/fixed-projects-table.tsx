@@ -85,15 +85,13 @@ export function FixedProjectsTable({ data, search }: DataTableProps) {
                   return (
                     <TableHead
                       key={header.id}
-                      className={cn(
-                        header.column.columnDef.meta?.className,
-                      )}
+                      className={cn(header.column.columnDef.meta?.className)}
                     >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   )
@@ -111,18 +109,22 @@ export function FixedProjectsTable({ data, search }: DataTableProps) {
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className={cn(
-                        cell.column.columnDef.meta?.className,
-                      )}
+                      className={cn(cell.column.columnDef.meta?.className)}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className='h-24 text-center'>
+                <TableCell
+                  colSpan={columns.length}
+                  className='h-24 text-center'
+                >
                   No results.
                 </TableCell>
               </TableRow>

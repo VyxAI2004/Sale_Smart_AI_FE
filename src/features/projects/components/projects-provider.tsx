@@ -18,7 +18,9 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<ProjectApiResponse | null>(null)
 
   return (
-    <ProjectsContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <ProjectsContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </ProjectsContext.Provider>
   )

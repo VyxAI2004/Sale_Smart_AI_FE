@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
-import { toast } from 'sonner'
 import { login } from '@/apis/auth.api'
 import type { TLoginPayload } from '@/types/auth.type'
+import { toast } from 'sonner'
 import { setTokenResponseToLocalStorage } from '@/utils/localStorage'
 
 export const useLogin = () => {

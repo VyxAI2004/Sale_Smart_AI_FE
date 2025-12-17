@@ -1,21 +1,21 @@
 /**
  * Stats Card Component - Hiển thị một metric với icon và trend
  */
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LucideIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { LucideIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface StatsCardProps {
-  title: string;
-  value: string | number;
-  description?: string;
-  icon: LucideIcon;
+  title: string
+  value: string | number
+  description?: string
+  icon: LucideIcon
   trend?: {
-    value: number;
-    label: string;
-    isPositive?: boolean;
-  };
-  className?: string;
+    value: number
+    label: string
+    isPositive?: boolean
+  }
+  className?: string
 }
 
 export function StatsCard({
@@ -30,26 +30,27 @@ export function StatsCard({
     <Card className={cn('', className)}>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
         <CardTitle className='text-sm font-medium'>{title}</CardTitle>
-        <Icon className='h-4 w-4 text-muted-foreground' />
+        <Icon className='text-muted-foreground h-4 w-4' />
       </CardHeader>
       <CardContent>
         <div className='text-2xl font-bold'>{value}</div>
         {description && (
-          <p className='text-muted-foreground text-xs mt-1'>{description}</p>
+          <p className='text-muted-foreground mt-1 text-xs'>{description}</p>
         )}
         {trend && (
           <p
             className={cn(
-              'text-xs mt-1',
+              'mt-1 text-xs',
               trend.isPositive !== false
                 ? 'text-green-600 dark:text-green-400'
                 : 'text-red-600 dark:text-red-400'
             )}
           >
-            {trend.isPositive !== false ? '↑' : '↓'} {trend.value}% {trend.label}
+            {trend.isPositive !== false ? '↑' : '↓'} {trend.value}%{' '}
+            {trend.label}
           </p>
         )}
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -7,7 +7,7 @@ export const authSchema = yup.object({
     .string()
     .required(t('password_required'))
     .min(6, t('password_min_length'))
-    .max(160, t('password_max_length'))
+    .max(160, t('password_max_length')),
 })
 
 export type TAuthSchema = yup.InferType<typeof authSchema>

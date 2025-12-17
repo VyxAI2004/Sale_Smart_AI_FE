@@ -4,12 +4,9 @@ import { AccountForm } from './account-form'
 
 export function SettingsAccount() {
   const { t } = useTranslation()
-  
+
   return (
-    <ContentSection
-      title={t('account.title')}
-      desc={t('account.description')}
-    >
+    <ContentSection title={t('account.title')} desc={t('account.description')}>
       <AccountForm />
     </ContentSection>
   )

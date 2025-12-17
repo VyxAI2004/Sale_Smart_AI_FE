@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import i18n from '@/lib/i18n'
 import { useLayout } from '@/context/layout-provider'
 import {
   Sidebar,
@@ -12,7 +13,6 @@ import { getSidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { ProjectManager } from './project-manager'
-import i18n from '@/lib/i18n'
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()

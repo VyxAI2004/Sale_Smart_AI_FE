@@ -1,14 +1,14 @@
-import { z } from 'zod'
 import { useEffect } from 'react'
+import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { getMyProfile, updateMyProfile } from '@/apis/user.api'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
-import { getMyProfile, updateMyProfile } from '@/apis/user.api'
 import {
   Command,
   CommandEmpty,
@@ -49,7 +49,7 @@ const languages = [
 export function AccountForm() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
-  
+
   const accountFormSchema = z.object({
     full_name: z
       .string()
@@ -61,7 +61,7 @@ export function AccountForm() {
   })
 
   type AccountFormValues = z.infer<typeof accountFormSchema>
-  
+
   // Load user data
   const { data: userData, isLoading } = useQuery({
     queryKey: ['myProfile'],
@@ -83,7 +83,9 @@ export function AccountForm() {
       const user = userData.data
       form.reset({
         full_name: user.full_name || '',
-        date_of_birth: user.date_of_birth ? new Date(user.date_of_birth) : undefined,
+        date_of_birth: user.date_of_birth
+          ? new Date(user.date_of_birth)
+          : undefined,
         language: user.language || 'en',
       })
     }
@@ -91,11 +93,14 @@ export function AccountForm() {
 
   // Update mutation
   const updateMutation = useMutation({
-    mutationFn: (data: AccountFormValues) => updateMyProfile({
-      full_name: data.full_name,
-      date_of_birth: data.date_of_birth ? data.date_of_birth.toISOString().split('T')[0] : null,
-      language: data.language || undefined,
-    }),
+    mutationFn: (data: AccountFormValues) =>
+      updateMyProfile({
+        full_name: data.full_name,
+        date_of_birth: data.date_of_birth
+          ? data.date_of_birth.toISOString().split('T')[0]
+          : null,
+        language: data.language || undefined,
+      }),
     onSuccess: () => {
       toast.success(t('account.updateSuccess'))
       queryClient.invalidateQueries({ queryKey: ['myProfile'] })
@@ -120,11 +125,13 @@ export function AccountForm() {
             <FormItem>
               <FormLabel>{t('account.name')}</FormLabel>
               <FormControl>
-                <Input placeholder={t('account.namePlaceholder')} {...field} disabled={isLoading} />
+                <Input
+                  placeholder={t('account.namePlaceholder')}
+                  {...field}
+                  disabled={isLoading}
+                />
               </FormControl>
-              <FormDescription>
-                {t('account.nameDescription')}
-              </FormDescription>
+              <FormDescription>{t('account.nameDescription')}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -135,10 +142,9 @@ export function AccountForm() {
           render={({ field }) => (
             <FormItem className='flex flex-col'>
               <FormLabel>{t('account.dateOfBirth')}</FormLabel>
-              <DatePicker 
-                selected={field.value || undefined} 
+              <DatePicker
+                selected={field.value || undefined}
                 onSelect={field.onChange}
-                disabled={isLoading}
               />
               <FormDescription>
                 {t('account.dateOfBirthDescription')}
@@ -211,7 +217,9 @@ export function AccountForm() {
           )}
         />
         <Button type='submit' disabled={isLoading || updateMutation.isPending}>
-          {updateMutation.isPending ? t('account.updating') : t('account.updateAccount')}
+          {updateMutation.isPending
+            ? t('account.updating')
+            : t('account.updateAccount')}
         </Button>
       </form>
     </Form>

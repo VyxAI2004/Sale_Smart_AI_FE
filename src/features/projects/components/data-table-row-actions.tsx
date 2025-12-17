@@ -1,7 +1,8 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { Link } from '@tanstack/react-router'
 import { type Row } from '@tanstack/react-table'
 import { Trash2, Edit, Archive, Play, Pause, Eye } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -13,7 +14,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { type ProjectApiResponse } from '../api/project-api'
 import { useProjects } from './projects-provider'
-import { useTranslation } from '@/hooks/use-translation'
 
 type DataTableRowActionsProps = {
   row: Row<ProjectApiResponse>
@@ -38,16 +38,16 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' className='w-[160px]'>
           <DropdownMenuItem asChild>
-            <Link to="/projects/$projectId" params={{ projectId: project.id }}>
+            <Link to='/projects/$projectId' params={{ projectId: project.id }}>
               {t('projects.viewDetails')}
               <DropdownMenuShortcut>
                 <Eye size={16} />
               </DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
-          
+
           <DropdownMenuSeparator />
-          
+
           <DropdownMenuItem
             onClick={() => {
               setCurrentRow(project)
@@ -85,7 +85,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
               </DropdownMenuShortcut>
             </DropdownMenuItem>
           ) : null}
-          
+
           <DropdownMenuItem
             onClick={() => {
               setCurrentRow(project)
@@ -97,14 +97,14 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
               <Archive size={16} />
             </DropdownMenuShortcut>
           </DropdownMenuItem>
-          
+
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {
               setCurrentRow(project)
               setOpen('delete')
             }}
-            className="text-destructive focus:text-destructive"
+            className='text-destructive focus:text-destructive'
           >
             {t('projects.delete')}
             <DropdownMenuShortcut>

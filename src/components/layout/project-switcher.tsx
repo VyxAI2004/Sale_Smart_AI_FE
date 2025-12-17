@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { ChevronsUpDown, Plus } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
+import { ChevronsUpDown, Plus } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,11 +75,13 @@ export function ProjectSwitcher({ projects }: ProjectSwitcherProps) {
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className='gap-2 p-2'>
-              <Link to="/projects/add">
+              <Link to='/projects/add'>
                 <div className='bg-background flex size-6 items-center justify-center rounded-md border'>
                   <Plus className='size-4' />
                 </div>
-                <div className='text-muted-foreground font-medium'>Add project</div>
+                <div className='text-muted-foreground font-medium'>
+                  Add project
+                </div>
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>

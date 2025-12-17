@@ -13,7 +13,7 @@ export interface ProjectAnalytics {
   }
 }
 
-// Product Source Types  
+// Product Source Types
 export interface ProductSource {
   id: string
   url: string

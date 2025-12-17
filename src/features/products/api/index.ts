@@ -1,9 +1,7 @@
-export * from './product-api';
-export * from './product-ai.api';
-export * from './product-crawler.api';
-export * from './product-review.api';
-export * from './review-analysis.api';
-export * from './trust-score.api';
-export * from './auto-discovery.api';
-
-
+export * from './product-api'
+export * from './product-ai.api'
+export * from './product-crawler.api'
+export * from './product-review.api'
+export * from './review-analysis.api'
+export * from './trust-score.api'
+export * from './auto-discovery.api'
