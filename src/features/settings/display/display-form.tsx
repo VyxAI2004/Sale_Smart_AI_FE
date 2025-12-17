@@ -15,11 +15,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 
-const getDisplayFormSchema = (t: (key: string) => string) => z.object({
-  items: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: t('settings.display.selectAtLeastOne'),
-  }),
-})
+const getDisplayFormSchema = (t: (key: string) => string) =>
+  z.object({
+    items: z.array(z.string()).refine((value) => value.some((item) => item), {
+      message: t('settings.display.selectAtLeastOne'),
+    }),
+  })
 
 // This can come from your database or API.
 const defaultValues = {
@@ -28,10 +29,10 @@ const defaultValues = {
 
 export function DisplayForm() {
   const { t } = useTranslation()
-  
+
   const displayFormSchema = getDisplayFormSchema(t)
   type DisplayFormValues = z.infer<typeof displayFormSchema>
-  
+
   const items = [
     {
       id: 'recents',
@@ -76,7 +77,9 @@ export function DisplayForm() {
           render={() => (
             <FormItem>
               <div className='mb-4'>
-                <FormLabel className='text-base'>{t('settings.display.sidebar')}</FormLabel>
+                <FormLabel className='text-base'>
+                  {t('settings.display.sidebar')}
+                </FormLabel>
                 <FormDescription>
                   {t('settings.display.sidebarDescription')}
                 </FormDescription>

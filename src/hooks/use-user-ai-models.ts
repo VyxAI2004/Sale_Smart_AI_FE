@@ -1,7 +1,10 @@
 import { useState, useCallback } from 'react'
-import { UserAIModelApi } from '@/apis/user-ai-model.api'
 import { aiModelApi, type AIModel } from '@/apis/aiModel.api'
-import type { UserAIModel, UserAIModelCreate } from '@/types/user-ai-model.types'
+import { UserAIModelApi } from '@/apis/user-ai-model.api'
+import type {
+  UserAIModel,
+  UserAIModelCreate,
+} from '@/types/user-ai-model.types'
 
 export function useUserAiModels() {
   const [userModels, setUserModels] = useState<UserAIModel[]>([])
@@ -12,14 +15,14 @@ export function useUserAiModels() {
     try {
       // Fetch user AI models
       const models = await UserAIModelApi.list()
-      
+
       // Fetch all available AI models to get name, provider, type
       const aiModelsResponse = await aiModelApi.list({ limit: 1000 })
       const aiModelsMap = new Map<string, AIModel>()
       aiModelsResponse.data.items.forEach((model) => {
         aiModelsMap.set(model.id, model)
       })
-      
+
       // Enrich user models with AI model information
       const enrichedModels: UserAIModel[] = models.map((userModel) => {
         const aiModel = aiModelsMap.get(userModel.ai_model_id)
@@ -30,7 +33,7 @@ export function useUserAiModels() {
           ai_model_type: aiModel?.model_type || undefined,
         }
       })
-      
+
       setUserModels(enrichedModels)
     } catch (error) {
       console.error('Failed to fetch user AI models:', error)
@@ -81,4 +84,3 @@ export function useUserAiModels() {
     deleteUserModel,
   }
 }
-

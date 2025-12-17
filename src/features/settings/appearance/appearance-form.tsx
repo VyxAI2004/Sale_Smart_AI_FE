@@ -157,7 +157,9 @@ export function AppearanceForm() {
           )}
         />
 
-        <Button type='submit'>{t('settings.appearance.updatePreferences')}</Button>
+        <Button type='submit'>
+          {t('settings.appearance.updatePreferences')}
+        </Button>
       </form>
     </Form>
   )

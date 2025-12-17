@@ -1,6 +1,15 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react'
 import { useLocation } from '@tanstack/react-router'
-import { ProjectApi, type ProjectApiResponse } from '@/features/projects/api/project-api'
+import {
+  ProjectApi,
+  type ProjectApiResponse,
+} from '@/features/projects/api/project-api'
 
 interface ProjectContextType {
   activeProject: ProjectApiResponse | null
@@ -14,7 +23,8 @@ const STORAGE_KEY = 'active_project_id'
 
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const location = useLocation()
-  const [activeProject, setActiveProjectState] = useState<ProjectApiResponse | null>(null)
+  const [activeProject, setActiveProjectState] =
+    useState<ProjectApiResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [projects, setProjects] = useState<ProjectApiResponse[]>([])
 
@@ -43,18 +53,21 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
         if (fetchedProjects.length > 0) {
           // Get current project from URL first
-          const projectIdFromUrl = location.pathname.match(/\/projects\/([^/]+)/)?.[1]
-          
+          const projectIdFromUrl =
+            location.pathname.match(/\/projects\/([^/]+)/)?.[1]
+
           let current: ProjectApiResponse | null = null
-          
+
           if (projectIdFromUrl) {
             // If URL has project ID, use it
-            current = fetchedProjects.find((p) => p.id === projectIdFromUrl) || null
+            current =
+              fetchedProjects.find((p) => p.id === projectIdFromUrl) || null
           } else {
             // If no project in URL, try to get from localStorage
             const savedProjectId = localStorage.getItem(STORAGE_KEY)
             if (savedProjectId) {
-              current = fetchedProjects.find((p) => p.id === savedProjectId) || null
+              current =
+                fetchedProjects.find((p) => p.id === savedProjectId) || null
             }
             // If no saved project, use first project
             if (!current) {
@@ -88,7 +101,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   // Update active project when URL changes
   useEffect(() => {
     const projectIdFromUrl = location.pathname.match(/\/projects\/([^/]+)/)?.[1]
-    
+
     if (projectIdFromUrl && projects.length > 0) {
       // URL has project ID - use it
       const current = projects.find((p) => p.id === projectIdFromUrl)
@@ -114,7 +127,9 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   }, [location.pathname, projects])
 
   return (
-    <ProjectContext.Provider value={{ activeProject, isLoading, setActiveProject }}>
+    <ProjectContext.Provider
+      value={{ activeProject, isLoading, setActiveProject }}
+    >
       {children}
     </ProjectContext.Provider>
   )

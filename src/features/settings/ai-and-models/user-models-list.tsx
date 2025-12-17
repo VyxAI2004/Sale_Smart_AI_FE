@@ -1,22 +1,20 @@
 import { useState } from 'react'
-import { Table, TableBody, TableHeader, TableRow, TableHead, TableCell } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Eye, EyeOff, Copy, Check, Edit2, Trash2, MoreHorizontal } from 'lucide-react'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import type { UserAIModel } from '@/types/user-ai-model.types'
+import {
+  Eye,
+  EyeOff,
+  Copy,
+  Check,
+  Edit2,
+  Trash2,
+  MoreHorizontal,
+} from 'lucide-react'
 import { isSuperAdmin, getUserIdFromToken } from '@/utils/jwt'
 import { useTranslation } from '@/hooks/use-translation'
-import OpenAIIcon from '@/components/icons/openai'
-import GeminiIcon from '@/components/icons/gemini'
-import ClaudeIcon from '@/components/icons/claude'
-import GrokIcon from '@/components/icons/grok'
-import DeepseekIcon from '@/components/icons/deepseek'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -25,9 +23,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Form,
   FormControl,
@@ -36,6 +37,20 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableCell,
+} from '@/components/ui/table'
+import ClaudeIcon from '@/components/icons/claude'
+import DeepseekIcon from '@/components/icons/deepseek'
+import GeminiIcon from '@/components/icons/gemini'
+import GrokIcon from '@/components/icons/grok'
+import OpenAIIcon from '@/components/icons/openai'
 
 type UserModelsListProps = {
   userModels: UserAIModel[]
@@ -44,11 +59,17 @@ type UserModelsListProps = {
   onDelete?: (modelId: string) => Promise<void>
 }
 
-const getUpdateApiKeySchema = (t: (key: string) => string) => z.object({
-  api_key: z.string().min(1, t('settings.aiModels.apiKeyRequired')),
-})
+const getUpdateApiKeySchema = (t: (key: string) => string) =>
+  z.object({
+    api_key: z.string().min(1, t('settings.aiModels.apiKeyRequired')),
+  })
 
-export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: UserModelsListProps) {
+export function UserModelsList({
+  userModels,
+  isLoading,
+  onUpdate,
+  onDelete,
+}: UserModelsListProps) {
   const { t } = useTranslation()
   const currentUserId = getUserIdFromToken()
   const isAdmin = isSuperAdmin()
@@ -56,7 +77,7 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
   const [editingModel, setEditingModel] = useState<UserAIModel | null>(null)
   const [isUpdating, setIsUpdating] = useState(false)
-  
+
   const updateApiKeySchema = getUpdateApiKeySchema(t)
   type UpdateApiKeyForm = z.infer<typeof updateApiKeySchema>
 
@@ -109,7 +130,7 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
 
   const handleUpdate = async (values: UpdateApiKeyForm) => {
     if (!editingModel || !onUpdate) return
-    
+
     setIsUpdating(true)
     try {
       await onUpdate(editingModel.ai_model_id, values.api_key)
@@ -140,12 +161,16 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
   }
 
   if (isLoading) {
-    return <div className='text-center py-4 text-muted-foreground'>{t('settings.aiModels.loading')}</div>
+    return (
+      <div className='text-muted-foreground py-4 text-center'>
+        {t('settings.aiModels.loading')}
+      </div>
+    )
   }
 
   if (userModels.length === 0) {
     return (
-      <div className='text-center py-8 text-muted-foreground'>
+      <div className='text-muted-foreground py-8 text-center'>
         {t('settings.aiModels.noModelsConfigured')}
       </div>
     )
@@ -170,15 +195,20 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
               const canView = canViewApiKey(model)
               const isVisible = visibleKeys.has(model.id)
               const apiKey = model.api_key || ''
-              const displayKey = isVisible && canView ? apiKey : maskApiKey(apiKey)
+              const displayKey =
+                isVisible && canView ? apiKey : maskApiKey(apiKey)
 
               return (
                 <TableRow key={model.id}>
                   {isAdmin && (
                     <TableCell>
                       <div className='flex flex-col'>
-                        <span className='font-medium'>{model.user_full_name || model.user_username}</span>
-                        <span className='text-xs text-muted-foreground'>{model.user_email}</span>
+                        <span className='font-medium'>
+                          {model.user_full_name || model.user_username}
+                        </span>
+                        <span className='text-muted-foreground text-xs'>
+                          {model.user_email}
+                        </span>
                       </div>
                     </TableCell>
                   )}
@@ -192,7 +222,7 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
                   <TableCell>{model.ai_model_type || 'N/A'}</TableCell>
                   <TableCell>
                     <div className='flex items-center gap-2'>
-                      <code className='text-xs bg-muted px-2 py-1 rounded font-mono'>
+                      <code className='bg-muted rounded px-2 py-1 font-mono text-xs'>
                         {displayKey}
                       </code>
                       {canView && apiKey && (
@@ -229,8 +259,14 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
                     {canView ? (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
-                            <span className='sr-only'>{t('settings.aiModels.openMenu')}</span>
+                          <Button
+                            variant='ghost'
+                            size='sm'
+                            className='h-8 w-8 p-0'
+                          >
+                            <span className='sr-only'>
+                              {t('settings.aiModels.openMenu')}
+                            </span>
                             <MoreHorizontal className='h-4 w-4' />
                           </Button>
                         </DropdownMenuTrigger>
@@ -261,16 +297,23 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
         </Table>
       </div>
 
-      <Dialog open={!!editingModel} onOpenChange={(open) => !open && setEditingModel(null)}>
+      <Dialog
+        open={!!editingModel}
+        onOpenChange={(open) => !open && setEditingModel(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('settings.aiModels.updateApiKey')}</DialogTitle>
             <DialogDescription>
-              {t('settings.aiModels.updateApiKeyDescription')} {editingModel?.ai_model_name || t('settings.aiModels.aiModel')}
+              {t('settings.aiModels.updateApiKeyDescription')}{' '}
+              {editingModel?.ai_model_name || t('settings.aiModels.aiModel')}
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleUpdate)} className='space-y-4'>
+            <form
+              onSubmit={form.handleSubmit(handleUpdate)}
+              className='space-y-4'
+            >
               <FormField
                 control={form.control}
                 name='api_key'
@@ -278,7 +321,11 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
                   <FormItem>
                     <FormLabel>{t('settings.aiModels.apiKey')}</FormLabel>
                     <FormControl>
-                      <Input type='password' placeholder={t('settings.aiModels.enterApiKey')} {...field} />
+                      <Input
+                        type='password'
+                        placeholder={t('settings.aiModels.enterApiKey')}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -293,7 +340,9 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
                   {t('settings.aiModels.cancel')}
                 </Button>
                 <Button type='submit' disabled={isUpdating}>
-                  {isUpdating ? t('settings.aiModels.updating') : t('settings.aiModels.update')}
+                  {isUpdating
+                    ? t('settings.aiModels.updating')
+                    : t('settings.aiModels.update')}
                 </Button>
               </DialogFooter>
             </form>
@@ -303,4 +352,3 @@ export function UserModelsList({ userModels, isLoading, onUpdate, onDelete }: Us
     </>
   )
 }
-

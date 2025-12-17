@@ -4,7 +4,9 @@ export const setAccessTokenToLocalStorage = (accessToken: string) => {
   localStorage.setItem('accessToken', accessToken)
 }
 
-export const setTokenResponseToLocalStorage = (tokenResponse: TLoginResponse) => {
+export const setTokenResponseToLocalStorage = (
+  tokenResponse: TLoginResponse
+) => {
   localStorage.setItem('accessToken', tokenResponse.access_token)
   localStorage.setItem('refreshToken', tokenResponse.refresh_token)
   localStorage.setItem('expiresIn', tokenResponse.expires_in.toString())
@@ -25,7 +27,7 @@ export const getTokenResponseFromLocalStorage = (): TLoginResponse | null => {
     access_token: accessToken,
     refresh_token: refreshToken,
     expires_in: parseInt(expiresIn, 10),
-    token_type: tokenType
+    token_type: tokenType,
   }
 }
 
@@ -40,6 +42,8 @@ export const removeAllTokensFromLocalStorage = () => {
   localStorage.removeItem('tokenType')
 }
 
-export const getAccessTokenFromLocalStorage = () => localStorage.getItem('accessToken')
+export const getAccessTokenFromLocalStorage = () =>
+  localStorage.getItem('accessToken')
 
-export const getRefreshTokenFromLocalStorage = () => localStorage.getItem('refreshToken')
+export const getRefreshTokenFromLocalStorage = () =>
+  localStorage.getItem('refreshToken')

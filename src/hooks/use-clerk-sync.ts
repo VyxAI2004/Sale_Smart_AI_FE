@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
+import type { TLoginResponse } from '@/types/auth.type'
 import { useAuth, useUser } from '@clerk/clerk-react'
 import { toast } from 'sonner'
-import { setTokenResponseToLocalStorage } from '@/utils/localStorage'
 import http from '@/utils/http'
-import type { TLoginResponse } from '@/types/auth.type'
+import { setTokenResponseToLocalStorage } from '@/utils/localStorage'
 
 // API endpoint to exchange Clerk token for your backend token
 const exchangeClerkToken = async (clerkToken: string) => {
   return http.post<TLoginResponse>('/auth/clerk-exchange', {
-    clerk_token: clerkToken
+    clerk_token: clerkToken,
   })
 }
 
@@ -30,12 +30,12 @@ export const useClerkSync = () => {
     onSuccess: (response) => {
       // Save backend tokens to localStorage
       setTokenResponseToLocalStorage(response.data)
-      
+
       // Invalidate queries to refetch user data
       queryClient.invalidateQueries({ queryKey: ['me'] })
-      
+
       toast.success(`Welcome back, ${user?.emailAddresses[0]?.emailAddress}!`)
-      
+
       // Navigate to dashboard
       navigate({ to: '/', replace: true })
     },

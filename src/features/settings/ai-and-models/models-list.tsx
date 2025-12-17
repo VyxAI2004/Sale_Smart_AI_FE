@@ -1,4 +1,6 @@
-import { Table, TableBody, TableHeader, TableRow, TableHead, TableCell } from '@/components/ui/table'
+import { MoreHorizontal, Power, PowerOff, Trash2 } from 'lucide-react'
+import type { AiModel } from '@/hooks/use-ai-models'
+import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -6,14 +8,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { MoreHorizontal, Power, PowerOff, Trash2 } from 'lucide-react'
-import { useTranslation } from '@/hooks/use-translation'
-import type { AiModel } from '@/hooks/use-ai-models'
-import OpenAIIcon from '@/components/icons/openai'
-import GeminiIcon from '@/components/icons/gemini'
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableCell,
+} from '@/components/ui/table'
 import ClaudeIcon from '@/components/icons/claude'
-import GrokIcon from '@/components/icons/grok'
 import DeepseekIcon from '@/components/icons/deepseek'
+import GeminiIcon from '@/components/icons/gemini'
+import GrokIcon from '@/components/icons/grok'
+import OpenAIIcon from '@/components/icons/openai'
 
 type ModelsListProps = {
   models?: AiModel[]
@@ -22,9 +29,14 @@ type ModelsListProps = {
   onDelete: (id: string) => void
 }
 
-export function ModelsList({ models = [], onActivate, onDeactivate, onDelete }: ModelsListProps) {
+export function ModelsList({
+  models = [],
+  onActivate,
+  onDeactivate,
+  onDelete,
+}: ModelsListProps) {
   const { t } = useTranslation()
-  
+
   return (
     <div className='mt-3'>
       <Table>
@@ -43,21 +55,35 @@ export function ModelsList({ models = [], onActivate, onDeactivate, onDelete }: 
               <TableCell>{m.name}</TableCell>
               <TableCell>
                 <div className='flex items-center gap-2'>
-                  {m.provider === 'openai' && <OpenAIIcon width={18} height={18} />}
-                  {m.provider === 'gemini' && <GeminiIcon width={18} height={18} />}
-                  {m.provider === 'claude' && <ClaudeIcon width={18} height={18} />}
+                  {m.provider === 'openai' && (
+                    <OpenAIIcon width={18} height={18} />
+                  )}
+                  {m.provider === 'gemini' && (
+                    <GeminiIcon width={18} height={18} />
+                  )}
+                  {m.provider === 'claude' && (
+                    <ClaudeIcon width={18} height={18} />
+                  )}
                   {m.provider === 'grok' && <GrokIcon width={18} height={18} />}
-                  {m.provider === 'deepseek' && <DeepseekIcon width={18} height={18} />}
+                  {m.provider === 'deepseek' && (
+                    <DeepseekIcon width={18} height={18} />
+                  )}
                   <span>{m.provider}</span>
                 </div>
               </TableCell>
               <TableCell>{m.model_type}</TableCell>
-              <TableCell>{m.is_active ? t('settings.aiModels.active') : t('settings.aiModels.inactive')}</TableCell>
+              <TableCell>
+                {m.is_active
+                  ? t('settings.aiModels.active')
+                  : t('settings.aiModels.inactive')}
+              </TableCell>
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
-                      <span className='sr-only'>{t('settings.aiModels.openMenu')}</span>
+                      <span className='sr-only'>
+                        {t('settings.aiModels.openMenu')}
+                      </span>
                       <MoreHorizontal className='h-4 w-4' />
                     </Button>
                   </DropdownMenuTrigger>
@@ -73,7 +99,10 @@ export function ModelsList({ models = [], onActivate, onDeactivate, onDelete }: 
                         {t('settings.aiModels.activate')}
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem onClick={() => onDelete(m.id)} className='text-destructive'>
+                    <DropdownMenuItem
+                      onClick={() => onDelete(m.id)}
+                      className='text-destructive'
+                    >
                       <Trash2 className='mr-2 h-4 w-4' />
                       {t('settings.aiModels.delete')}
                     </DropdownMenuItem>

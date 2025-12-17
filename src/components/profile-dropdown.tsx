@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { UserCog, BadgeCheck, Bell, LogOut } from 'lucide-react'
-import useDialogState from '@/hooks/use-dialog-state'
 import { useAuth } from '@/hooks/use-auth'
+import useDialogState from '@/hooks/use-dialog-state'
 import { useTranslation } from '@/hooks/use-translation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -25,12 +25,13 @@ export function ProfileDropdown() {
   const displayName = user?.full_name || user?.username || 'User'
   const displayEmail = user?.email || ''
   const avatarUrl = user?.avatar_url || '/avatars/01.png'
-  const initials = displayName
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2) || 'U'
+  const initials =
+    displayName
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2) || 'U'
 
   return (
     <>

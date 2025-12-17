@@ -1,15 +1,15 @@
-import { z } from 'zod'
 import { useEffect } from 'react'
+import { z } from 'zod'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+import { getMyProfile, updateMyProfile } from '@/apis/user.api'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
-import { getMyProfile, updateMyProfile } from '@/apis/user.api'
 import {
   Command,
   CommandEmpty,
@@ -51,7 +51,7 @@ const languages = [
 export function ProfileForm() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
-  
+
   const profileFormSchema = z.object({
     full_name: z
       .string()
@@ -69,14 +69,17 @@ export function ProfileForm() {
     urls: z
       .array(
         z.object({
-          value: z.string().url(t('account.validation.urlInvalid')).or(z.literal('')),
+          value: z
+            .string()
+            .url(t('account.validation.urlInvalid'))
+            .or(z.literal('')),
         })
       )
       .optional(),
   })
 
   type ProfileFormValues = z.infer<typeof profileFormSchema>
-  
+
   // Load user data
   const { data: userData, isLoading } = useQuery({
     queryKey: ['myProfile'],
@@ -105,12 +108,15 @@ export function ProfileForm() {
         full_name: user.full_name || '',
         username: user.username || '',
         email: user.email || '',
-        date_of_birth: user.date_of_birth ? new Date(user.date_of_birth) : undefined,
+        date_of_birth: user.date_of_birth
+          ? new Date(user.date_of_birth)
+          : undefined,
         language: user.language || 'en',
         bio: user.bio || '',
-        urls: user.urls && user.urls.length > 0 
-          ? user.urls.map(url => ({ value: url }))
-          : [],
+        urls:
+          user.urls && user.urls.length > 0
+            ? user.urls.map((url) => ({ value: url }))
+            : [],
       })
     }
   }, [userData?.data, isLoading, form])
@@ -122,15 +128,20 @@ export function ProfileForm() {
 
   // Update mutation
   const updateMutation = useMutation({
-    mutationFn: (data: ProfileFormValues) => updateMyProfile({
-      full_name: data.full_name,
-      username: data.username,
-      email: data.email,
-      date_of_birth: data.date_of_birth ? data.date_of_birth.toISOString().split('T')[0] : null,
-      language: data.language || undefined,
-      bio: data.bio || undefined,
-      urls: data.urls?.filter(url => url.value).map(url => url.value) || undefined,
-    }),
+    mutationFn: (data: ProfileFormValues) =>
+      updateMyProfile({
+        full_name: data.full_name,
+        username: data.username,
+        email: data.email,
+        date_of_birth: data.date_of_birth
+          ? data.date_of_birth.toISOString().split('T')[0]
+          : null,
+        language: data.language || undefined,
+        bio: data.bio || undefined,
+        urls:
+          data.urls?.filter((url) => url.value).map((url) => url.value) ||
+          undefined,
+      }),
     onSuccess: () => {
       toast.success(t('account.updateSuccess'))
       queryClient.invalidateQueries({ queryKey: ['myProfile'] })
@@ -155,11 +166,13 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>{t('account.name')}</FormLabel>
               <FormControl>
-                <Input placeholder={t('account.namePlaceholder')} {...field} disabled={isLoading} />
+                <Input
+                  placeholder={t('account.namePlaceholder')}
+                  {...field}
+                  disabled={isLoading}
+                />
               </FormControl>
-              <FormDescription>
-                {t('account.nameDescription')}
-              </FormDescription>
+              <FormDescription>{t('account.nameDescription')}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -173,7 +186,11 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>{t('account.username')}</FormLabel>
               <FormControl>
-                <Input placeholder={t('account.usernamePlaceholder')} {...field} disabled={isLoading} />
+                <Input
+                  placeholder={t('account.usernamePlaceholder')}
+                  {...field}
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormDescription>
                 {t('account.usernameDescription')}
@@ -191,7 +208,12 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>{t('account.email')}</FormLabel>
               <FormControl>
-                <Input type='email' placeholder={t('account.emailPlaceholder')} {...field} disabled={isLoading} />
+                <Input
+                  type='email'
+                  placeholder={t('account.emailPlaceholder')}
+                  {...field}
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormDescription>
                 {t('account.emailDescription')}{' '}
@@ -209,8 +231,8 @@ export function ProfileForm() {
           render={({ field }) => (
             <FormItem className='flex flex-col'>
               <FormLabel>{t('account.dateOfBirth')}</FormLabel>
-              <DatePicker 
-                selected={field.value || undefined} 
+              <DatePicker
+                selected={field.value || undefined}
                 onSelect={field.onChange}
               />
               <FormDescription>
@@ -301,9 +323,7 @@ export function ProfileForm() {
                   disabled={isLoading}
                 />
               </FormControl>
-              <FormDescription>
-                {t('account.bioDescription')}
-              </FormDescription>
+              <FormDescription>{t('account.bioDescription')}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -345,7 +365,9 @@ export function ProfileForm() {
         </div>
 
         <Button type='submit' disabled={isLoading || updateMutation.isPending}>
-          {updateMutation.isPending ? t('account.updating') : t('account.updateAccount')}
+          {updateMutation.isPending
+            ? t('account.updating')
+            : t('account.updateAccount')}
         </Button>
       </form>
     </Form>

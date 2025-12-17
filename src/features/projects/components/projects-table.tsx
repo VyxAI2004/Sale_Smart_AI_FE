@@ -22,9 +22,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { statuses, pipelineTypes, crawlSchedules } from '../data/data'
-import { PRODUCT_CATEGORIES } from '../constants/project.constants'
 import { type ProjectApiResponse } from '../api/project-api'
+import { PRODUCT_CATEGORIES } from '../constants/project.constants'
+import { statuses, pipelineTypes, crawlSchedules } from '../data/data'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 import { projectsColumns as columns } from './projects-columns'
 
@@ -63,7 +63,11 @@ export function ProjectsTable({ data, search, navigate }: DataTableProps) {
       { columnId: 'name', searchKey: 'name', type: 'string' },
       { columnId: 'status', searchKey: 'status', type: 'array' },
       { columnId: 'pipeline_type', searchKey: 'pipeline_type', type: 'array' },
-      { columnId: 'target_product_category', searchKey: 'category', type: 'array' },
+      {
+        columnId: 'target_product_category',
+        searchKey: 'category',
+        type: 'array',
+      },
       { columnId: 'crawl_schedule', searchKey: 'schedule', type: 'array' },
     ],
   })
@@ -147,9 +151,7 @@ export function ProjectsTable({ data, search, navigate }: DataTableProps) {
                   return (
                     <TableHead
                       key={header.id}
-                      className={cn(
-                        header.column.columnDef.meta?.className
-                      )}
+                      className={cn(header.column.columnDef.meta?.className)}
                     >
                       {header.isPlaceholder
                         ? null
@@ -173,9 +175,7 @@ export function ProjectsTable({ data, search, navigate }: DataTableProps) {
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className={cn(
-                        cell.column.columnDef.meta?.className
-                      )}
+                      className={cn(cell.column.columnDef.meta?.className)}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

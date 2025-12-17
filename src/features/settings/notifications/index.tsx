@@ -4,7 +4,7 @@ import { NotificationsForm } from './notifications-form'
 
 export function SettingsNotifications() {
   const { t } = useTranslation()
-  
+
   return (
     <ContentSection
       title={t('settings.notifications.title')}

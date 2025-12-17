@@ -1,25 +1,36 @@
 import { useEffect, useState } from 'react'
-import { Switch } from '@/components/ui/switch'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import { ContentSection } from '../components/content-section'
-import { useUserAiModels } from '@/hooks/use-user-ai-models'
+import type { UserAIModelCreate } from '@/types/user-ai-model.types'
+import { toast } from 'sonner'
+import { isSuperAdmin } from '@/utils/jwt'
 import { useAiModels } from '@/hooks/use-ai-models'
 import { usePermissions } from '@/hooks/use-permissions'
 import { useTranslation } from '@/hooks/use-translation'
-import { UserModelsList } from './user-models-list'
+import { useUserAiModels } from '@/hooks/use-user-ai-models'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
+import { ContentSection } from '../components/content-section'
 import { AddUserModelDialog } from './add-user-model-dialog'
-import { ModelsList } from './models-list'
 import { CreateModelDialog } from './create-model-dialog'
-import { isSuperAdmin } from '@/utils/jwt'
-import type { UserAIModelCreate } from '@/types/user-ai-model.types'
-import { toast } from 'sonner'
+import { ModelsList } from './models-list'
+import { UserModelsList } from './user-models-list'
 
 export default function SettingsAIAndModels() {
   const { t } = useTranslation()
-  const { userModels, isLoading, fetchUserModels, createOrUpdateUserModel, deleteUserModel } = useUserAiModels()
-  const { models, fetchMyModels, activateModel, deactivateModel, removeModel } = useAiModels()
-  const { hasPermission, isLoading: isLoadingPermissions, permissions } = usePermissions()
+  const {
+    userModels,
+    isLoading,
+    fetchUserModels,
+    createOrUpdateUserModel,
+    deleteUserModel,
+  } = useUserAiModels()
+  const { models, fetchMyModels, activateModel, deactivateModel, removeModel } =
+    useAiModels()
+  const {
+    hasPermission,
+    isLoading: isLoadingPermissions,
+    permissions,
+  } = usePermissions()
   const isSuperAdminUser = isSuperAdmin()
   const hasManagePermission = hasPermission('manage_ai_models')
   const isAdmin = isSuperAdminUser || hasManagePermission
@@ -32,7 +43,13 @@ export default function SettingsAIAndModels() {
       console.log('Has manage_ai_models:', hasManagePermission)
       console.log('Is Admin:', isAdmin)
     }
-  }, [permissions, isLoadingPermissions, isSuperAdminUser, hasManagePermission, isAdmin])
+  }, [
+    permissions,
+    isLoadingPermissions,
+    isSuperAdminUser,
+    hasManagePermission,
+    isAdmin,
+  ])
   const [aiEnabled, setAiEnabled] = useState(true)
   const [openAdd, setOpenAdd] = useState(false)
   const [openCreateModel, setOpenCreateModel] = useState(false)
@@ -85,12 +102,19 @@ export default function SettingsAIAndModels() {
 
   return (
     <div className='w-full'>
-      <ContentSection title={t('settings.aiModels.title')} desc={t('settings.aiModels.description')}>
+      <ContentSection
+        title={t('settings.aiModels.title')}
+        desc={t('settings.aiModels.description')}
+      >
         <>
           <div className='flex items-center justify-between'>
             <div>
-              <h3 className='text-base font-medium'>{t('settings.aiModels.enableAIFeatures')}</h3>
-              <p className='text-sm text-muted-foreground'>{t('settings.aiModels.enableAIFeaturesDescription')}</p>
+              <h3 className='text-base font-medium'>
+                {t('settings.aiModels.enableAIFeatures')}
+              </h3>
+              <p className='text-muted-foreground text-sm'>
+                {t('settings.aiModels.enableAIFeaturesDescription')}
+              </p>
             </div>
             <Switch checked={aiEnabled} onCheckedChange={setAiEnabled} />
           </div>
@@ -103,19 +127,25 @@ export default function SettingsAIAndModels() {
               <div>
                 <div className='flex items-center justify-between'>
                   <div>
-                    <h3 className='text-base font-medium'>{t('settings.aiModels.aiModelsManagement')}</h3>
-                    <p className='text-sm text-muted-foreground mt-1'>
+                    <h3 className='text-base font-medium'>
+                      {t('settings.aiModels.aiModelsManagement')}
+                    </h3>
+                    <p className='text-muted-foreground mt-1 text-sm'>
                       {t('settings.aiModels.aiModelsManagementDescription')}
                     </p>
                   </div>
                   <div className='flex items-center gap-2'>
-                    <Button variant='default' size='sm' onClick={() => setOpenCreateModel(true)}>
+                    <Button
+                      variant='default'
+                      size='sm'
+                      onClick={() => setOpenCreateModel(true)}
+                    >
                       {t('settings.aiModels.createModel')}
                     </Button>
                   </div>
                 </div>
 
-                <p className='text-sm text-muted-foreground mb-3'>
+                <p className='text-muted-foreground mb-3 text-sm'>
                   {t('settings.aiModels.manageAIModelsDescription')}
                 </p>
 
@@ -125,7 +155,10 @@ export default function SettingsAIAndModels() {
                   onDeactivate={deactivateModel}
                   onDelete={removeModel}
                 />
-                <CreateModelDialog open={openCreateModel} onOpenChange={setOpenCreateModel} />
+                <CreateModelDialog
+                  open={openCreateModel}
+                  onOpenChange={setOpenCreateModel}
+                />
               </div>
 
               <Separator className='my-6' />
@@ -136,21 +169,27 @@ export default function SettingsAIAndModels() {
           <div>
             <div className='flex items-center justify-between'>
               <div>
-                <h3 className='text-base font-medium'>{t('settings.aiModels.myAIModelConfigurations')}</h3>
+                <h3 className='text-base font-medium'>
+                  {t('settings.aiModels.myAIModelConfigurations')}
+                </h3>
                 {isAdmin && (
-                  <p className='text-sm text-muted-foreground mt-1'>
+                  <p className='text-muted-foreground mt-1 text-sm'>
                     {t('settings.aiModels.superAdminViewAll')}
                   </p>
                 )}
               </div>
               <div className='flex items-center gap-2'>
-                <Button variant='default' size='sm' onClick={() => setOpenAdd(true)}>
+                <Button
+                  variant='default'
+                  size='sm'
+                  onClick={() => setOpenAdd(true)}
+                >
                   {t('settings.aiModels.addApiKey')}
                 </Button>
               </div>
             </div>
 
-            <p className='text-sm text-muted-foreground mb-3'>
+            <p className='text-muted-foreground mb-3 text-sm'>
               {t('settings.aiModels.configureApiKeysDescription')}
             </p>
 

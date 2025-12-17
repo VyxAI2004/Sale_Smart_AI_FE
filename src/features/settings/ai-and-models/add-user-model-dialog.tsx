@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
+import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { aiModelApi, type AIModel } from '@/apis/aiModel.api'
+import { useTranslation } from '@/hooks/use-translation'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -19,20 +22,26 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useTranslation } from '@/hooks/use-translation'
-import { aiModelApi, type AIModel } from '@/apis/aiModel.api'
-import OpenAIIcon from '@/components/icons/openai'
-import GeminiIcon from '@/components/icons/gemini'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import ClaudeIcon from '@/components/icons/claude'
-import GrokIcon from '@/components/icons/grok'
 import DeepseekIcon from '@/components/icons/deepseek'
+import GeminiIcon from '@/components/icons/gemini'
+import GrokIcon from '@/components/icons/grok'
+import OpenAIIcon from '@/components/icons/openai'
 
-const getSchema = (t: (key: string) => string) => z.object({
-  ai_model_id: z.string().min(1, t('settings.aiModels.aiModel') + ' is required'),
-  api_key: z.string().min(1, t('settings.aiModels.apiKeyRequired')),
-})
+const getSchema = (t: (key: string) => string) =>
+  z.object({
+    ai_model_id: z
+      .string()
+      .min(1, t('settings.aiModels.aiModel') + ' is required'),
+    api_key: z.string().min(1, t('settings.aiModels.apiKeyRequired')),
+  })
 
 type Props = {
   open: boolean
@@ -44,7 +53,7 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
   const { t } = useTranslation()
   const [availableModels, setAvailableModels] = useState<AIModel[]>([])
   const [isLoadingModels, setIsLoadingModels] = useState(false)
-  
+
   const schema = getSchema(t)
   type FormValues = z.infer<typeof schema>
 
@@ -99,17 +108,29 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { form.reset(); onOpenChange(v) }}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        form.reset()
+        onOpenChange(v)
+      }}
+    >
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
-          <DialogTitle>{t('settings.aiModels.addAIModelConfiguration')}</DialogTitle>
+          <DialogTitle>
+            {t('settings.aiModels.addAIModelConfiguration')}
+          </DialogTitle>
           <DialogDescription>
             {t('settings.aiModels.addAIModelConfigurationDescription')}
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form id='add-user-model-form' onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
+          <form
+            id='add-user-model-form'
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className='space-y-4'
+          >
             <FormField
               control={form.control}
               name='ai_model_id'
@@ -123,7 +144,13 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
                       disabled={isLoadingModels}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder={isLoadingModels ? t('settings.aiModels.loadingModels') : t('settings.aiModels.selectAIModel')} />
+                        <SelectValue
+                          placeholder={
+                            isLoadingModels
+                              ? t('settings.aiModels.loadingModels')
+                              : t('settings.aiModels.selectAIModel')
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {availableModels.map((model) => (
@@ -131,7 +158,9 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
                             <div className='flex items-center gap-2'>
                               {getProviderIcon(model.provider)}
                               <span>{model.name}</span>
-                              <span className='text-xs text-muted-foreground'>({model.provider})</span>
+                              <span className='text-muted-foreground text-xs'>
+                                ({model.provider})
+                              </span>
                             </div>
                           </SelectItem>
                         ))}
@@ -150,7 +179,11 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
                 <FormItem>
                   <FormLabel>{t('settings.aiModels.apiKey')}</FormLabel>
                   <FormControl>
-                    <Input type='password' placeholder={t('settings.aiModels.enterYourApiKey')} {...field} />
+                    <Input
+                      type='password'
+                      placeholder={t('settings.aiModels.enterYourApiKey')}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -165,7 +198,11 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
               >
                 {t('settings.aiModels.cancel')}
               </Button>
-              <Button type='submit' disabled={isLoadingModels} variant='default'>
+              <Button
+                type='submit'
+                disabled={isLoadingModels}
+                variant='default'
+              >
                 {t('settings.aiModels.addApiKeyButton')}
               </Button>
             </DialogFooter>
@@ -175,4 +212,3 @@ export function AddUserModelDialog({ open, onOpenChange, onSubmit }: Props) {
     </Dialog>
   )
 }
-

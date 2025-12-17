@@ -1,11 +1,11 @@
 // Types
-export * from './types';
+export * from './types'
 
 // API
-export * from './api';
+export * from './api'
 
 // Hooks
-export * from './hooks';
+export * from './hooks'
 
 // Components
-export * from './components';
+export * from './components'

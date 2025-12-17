@@ -56,8 +56,3 @@ export function usePermissions() {
     refetch: fetchPermissions,
   }
 }
-
-
-
-
-

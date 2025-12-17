@@ -1,26 +1,43 @@
-import axios, { type AxiosError, type AxiosRequestConfig, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
-import { getAccessTokenFromLocalStorage, removeAllTokensFromLocalStorage } from './localStorage'
+import axios, {
+  type AxiosError,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from 'axios'
+import {
+  getAccessTokenFromLocalStorage,
+  removeAllTokensFromLocalStorage,
+} from './localStorage'
 
 const API_PREFIX = '/api/v1'
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-  headers: { 'Content-Type': 'application/json' }
+  headers: { 'Content-Type': 'application/json' },
 })
 
 function withApiPrefix(url: string) {
-  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith(API_PREFIX)) {
+  if (
+    url.startsWith('http://') ||
+    url.startsWith('https://') ||
+    url.startsWith(API_PREFIX)
+  ) {
     return url
   }
   return `${API_PREFIX}${url.startsWith('/') ? '' : '/'}${url}`
 }
 
 const http = {
-  get: <T>(url: string, config?: AxiosRequestConfig) => axiosInstance.get<T>(withApiPrefix(url), config),
-  post: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => axiosInstance.post<T>(withApiPrefix(url), data, config),
-  put: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => axiosInstance.put<T>(withApiPrefix(url), data, config),
-  patch: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => axiosInstance.patch<T>(withApiPrefix(url), data, config),
-  delete: <T>(url: string, config?: AxiosRequestConfig) => axiosInstance.delete<T>(withApiPrefix(url), config)
+  get: <T>(url: string, config?: AxiosRequestConfig) =>
+    axiosInstance.get<T>(withApiPrefix(url), config),
+  post: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
+    axiosInstance.post<T>(withApiPrefix(url), data, config),
+  put: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
+    axiosInstance.put<T>(withApiPrefix(url), data, config),
+  patch: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
+    axiosInstance.patch<T>(withApiPrefix(url), data, config),
+  delete: <T>(url: string, config?: AxiosRequestConfig) =>
+    axiosInstance.delete<T>(withApiPrefix(url), config),
 }
 
 axiosInstance.interceptors.request.use(
@@ -41,7 +58,10 @@ axiosInstance.interceptors.response.use(
     return response
   },
   (error: AxiosError) => {
-    if (error.response?.status === 401 && !error.config?.url?.includes('/auth/login')) {
+    if (
+      error.response?.status === 401 &&
+      !error.config?.url?.includes('/auth/login')
+    ) {
       removeAllTokensFromLocalStorage()
       window.location.reload()
     }

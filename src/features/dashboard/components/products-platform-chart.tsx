@@ -1,10 +1,20 @@
 /**
  * Products Platform Chart - Hiển thị phân bố products theo platform
  */
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts'
 
 interface ProductsPlatformChartProps {
-  data: Array<{ name: string; value: number; color?: string }>;
+  data: Array<{ name: string; value: number; color?: string }>
 }
 
 export function ProductsPlatformChart({ data }: ProductsPlatformChartProps) {
@@ -23,5 +33,5 @@ export function ProductsPlatformChart({ data }: ProductsPlatformChartProps) {
         </Bar>
       </BarChart>
     </ResponsiveContainer>
-  );
+  )
 }

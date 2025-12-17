@@ -1,13 +1,7 @@
 import { Link } from '@tanstack/react-router'
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  LogOut,
-  UserCog,
-} from 'lucide-react'
-import useDialogState from '@/hooks/use-dialog-state'
+import { BadgeCheck, Bell, ChevronsUpDown, LogOut, UserCog } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
+import useDialogState from '@/hooks/use-dialog-state'
 import { useTranslation } from '@/hooks/use-translation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -54,12 +48,13 @@ export function NavUser({ user: userProp }: NavUserProps) {
         avatar: '/avatars/01.png',
       }
 
-  const initials = user.name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2) || 'U'
+  const initials =
+    user.name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2) || 'U'
 
   return (
     <>
@@ -73,7 +68,9 @@ export function NavUser({ user: userProp }: NavUserProps) {
               >
                 <Avatar className='h-8 w-8 rounded-lg'>
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className='rounded-lg'>{initials}</AvatarFallback>
+                  <AvatarFallback className='rounded-lg'>
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
                 <div className='grid flex-1 text-start text-sm leading-tight'>
                   <span className='truncate font-semibold'>{user.name}</span>
@@ -92,7 +89,9 @@ export function NavUser({ user: userProp }: NavUserProps) {
                 <div className='flex items-center gap-2 px-1 py-1.5 text-start text-sm'>
                   <Avatar className='h-8 w-8 rounded-lg'>
                     <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className='rounded-lg'>{initials}</AvatarFallback>
+                    <AvatarFallback className='rounded-lg'>
+                      {initials}
+                    </AvatarFallback>
                   </Avatar>
                   <div className='grid flex-1 text-start text-sm leading-tight'>
                     <span className='truncate font-semibold'>{user.name}</span>

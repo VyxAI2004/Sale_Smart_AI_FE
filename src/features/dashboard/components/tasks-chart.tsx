@@ -1,10 +1,20 @@
 /**
  * Tasks Chart - Hiển thị biểu đồ phân bố tasks theo status
  */
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts'
 
 interface TasksChartProps {
-  data: Array<{ name: string; value: number; color?: string }>;
+  data: Array<{ name: string; value: number; color?: string }>
 }
 
 export function TasksChart({ data }: TasksChartProps) {
@@ -23,5 +33,5 @@ export function TasksChart({ data }: TasksChartProps) {
         </Bar>
       </BarChart>
     </ResponsiveContainer>
-  );
+  )
 }

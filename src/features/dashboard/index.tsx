@@ -1,3 +1,20 @@
+import { Link, useNavigate } from '@tanstack/react-router'
+import { useProjectContext } from '@/contexts/project-context'
+import {
+  AlertCircle,
+  RefreshCw,
+  Download,
+  Package,
+  ShoppingCart,
+  ListTodo,
+  MessageSquare,
+  TrendingUp,
+  Shield,
+  BarChart3,
+  Settings,
+} from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -6,30 +23,25 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { LanguageSwitcher } from '@/components/language-switcher'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { LanguageSwitcher } from '@/components/language-switcher'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { AlertCircle, RefreshCw, Download, Package, ShoppingCart, ListTodo, MessageSquare, TrendingUp, Shield, BarChart3, Settings } from 'lucide-react'
-import { Link, useNavigate } from '@tanstack/react-router'
-import { useTranslation } from '@/hooks/use-translation'
-import { useProjectContext } from '@/contexts/project-context'
-import { useDashboard } from './hooks/use-dashboard'
-import { StatsCard } from './components/stats-card'
-import { ProjectsChart } from './components/projects-chart'
-import { TasksChart } from './components/tasks-chart'
-import { ReviewsSentimentChart } from './components/reviews-sentiment-chart'
-import { ProductsPlatformChart } from './components/products-platform-chart'
-import { TrustScoreChart } from './components/trust-score-chart'
-import { TimeSeriesChart } from './components/time-series-chart'
-import { RecentActivity } from './components/recent-activity'
 import { ExportButton } from './components/export-button'
+import { ProductsPlatformChart } from './components/products-platform-chart'
 import { ProjectStatusButton } from './components/project-status-button'
+import { ProjectsChart } from './components/projects-chart'
+import { RecentActivity } from './components/recent-activity'
+import { ReviewsSentimentChart } from './components/reviews-sentiment-chart'
+import { StatsCard } from './components/stats-card'
+import { TasksChart } from './components/tasks-chart'
+import { TimeSeriesChart } from './components/time-series-chart'
+import { TrustScoreChart } from './components/trust-score-chart'
+import { useDashboard } from './hooks/use-dashboard'
 
 export function Dashboard() {
   const { t } = useTranslation()
@@ -51,17 +63,16 @@ export function Dashboard() {
         <div className='flex items-center space-x-4'>
           {activeProject && (
             <>
-              <ProjectStatusButton 
+              <ProjectStatusButton
                 project={activeProject}
                 onStatusChange={handleStatusChange}
               />
-              <Button
-                variant='outline'
-                size='sm'
-                asChild
-              >
-                <Link to='/projects/$projectId' params={{ projectId: activeProject.id }}>
-                  <Settings className='h-4 w-4 mr-2' />
+              <Button variant='outline' size='sm' asChild>
+                <Link
+                  to='/projects/$projectId'
+                  params={{ projectId: activeProject.id }}
+                >
+                  <Settings className='mr-2 h-4 w-4' />
                   {t('dashboard.projectSettings')}
                 </Link>
               </Button>
@@ -80,7 +91,9 @@ export function Dashboard() {
       <Main>
         <div className='mb-4 flex items-center justify-between space-y-2'>
           <div>
-            <h1 className='text-3xl font-bold tracking-tight'>{t('dashboard.title')}</h1>
+            <h1 className='text-3xl font-bold tracking-tight'>
+              {t('dashboard.title')}
+            </h1>
             <p className='text-muted-foreground'>
               {t('dashboard.description')}
             </p>
@@ -92,7 +105,9 @@ export function Dashboard() {
               onClick={() => refetch()}
               disabled={isLoading}
             >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`}
+              />
               {t('dashboard.refresh')}
             </Button>
             <ExportButton dashboard={dashboard} disabled={isLoading} />
@@ -103,18 +118,28 @@ export function Dashboard() {
           <Alert variant='destructive' className='mb-4'>
             <AlertCircle className='h-4 w-4' />
             <AlertDescription>
-              {error instanceof Error ? error.message : t('dashboard.errorLoading')}
+              {error instanceof Error
+                ? error.message
+                : t('dashboard.errorLoading')}
             </AlertDescription>
           </Alert>
         )}
 
         <Tabs defaultValue='overview' className='space-y-4'>
-            <TabsList>
-            <TabsTrigger value='overview'>{t('dashboard.tabs.overview')}</TabsTrigger>
-            <TabsTrigger value='analytics'>{t('dashboard.tabs.analytics')}</TabsTrigger>
-            <TabsTrigger value='projects'>{t('dashboard.tabs.projects')}</TabsTrigger>
-            <TabsTrigger value='products'>{t('dashboard.tabs.products')}</TabsTrigger>
-            </TabsList>
+          <TabsList>
+            <TabsTrigger value='overview'>
+              {t('dashboard.tabs.overview')}
+            </TabsTrigger>
+            <TabsTrigger value='analytics'>
+              {t('dashboard.tabs.analytics')}
+            </TabsTrigger>
+            <TabsTrigger value='projects'>
+              {t('dashboard.tabs.projects')}
+            </TabsTrigger>
+            <TabsTrigger value='products'>
+              {t('dashboard.tabs.products')}
+            </TabsTrigger>
+          </TabsList>
 
           {/* Overview Tab */}
           <TabsContent value='overview' className='space-y-4'>
@@ -127,7 +152,7 @@ export function Dashboard() {
                       <Skeleton className='h-4 w-24' />
                     </CardHeader>
                     <CardContent>
-                      <Skeleton className='h-8 w-32 mb-2' />
+                      <Skeleton className='mb-2 h-8 w-32' />
                       <Skeleton className='h-3 w-40' />
                     </CardContent>
                   </Card>
@@ -160,9 +185,9 @@ export function Dashboard() {
                     description={`${dashboard.stats.reviews.analyzed} ${t('dashboard.stats.analyzed')}, ${dashboard.stats.reviews.spam} spam`}
                     icon={MessageSquare}
                   />
-          </div>
+                </div>
 
-            <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+                <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
                   <StatsCard
                     title={t('dashboard.stats.activeProjects')}
                     value={dashboard.stats.projects.active}
@@ -192,7 +217,9 @@ export function Dashboard() {
                 {/* Time Series Chart */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('dashboard.charts.trendsOverTime')}</CardTitle>
+                    <CardTitle>
+                      {t('dashboard.charts.trendsOverTime')}
+                    </CardTitle>
                     <CardDescription>
                       {t('dashboard.charts.trendsDescription')}
                     </CardDescription>
@@ -206,55 +233,79 @@ export function Dashboard() {
                 <div className='grid gap-4 md:grid-cols-2'>
                   <Card>
                     <CardHeader>
-                      <CardTitle>{t('dashboard.charts.projectsByStatus')}</CardTitle>
-                      <CardDescription>{t('dashboard.charts.projectsByStatusDesc')}</CardDescription>
+                      <CardTitle>
+                        {t('dashboard.charts.projectsByStatus')}
+                      </CardTitle>
+                      <CardDescription>
+                        {t('dashboard.charts.projectsByStatusDesc')}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <ProjectsChart data={dashboard.charts.projectsByStatus} />
                     </CardContent>
                   </Card>
 
-              <Card>
+                  <Card>
                     <CardHeader>
-                      <CardTitle>{t('dashboard.charts.tasksByStatus')}</CardTitle>
-                      <CardDescription>{t('dashboard.charts.tasksByStatusDesc')}</CardDescription>
-                </CardHeader>
-                <CardContent>
+                      <CardTitle>
+                        {t('dashboard.charts.tasksByStatus')}
+                      </CardTitle>
+                      <CardDescription>
+                        {t('dashboard.charts.tasksByStatusDesc')}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
                       <TasksChart data={dashboard.charts.tasksByStatus} />
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
 
-              <Card>
+                  <Card>
                     <CardHeader>
-                      <CardTitle>{t('dashboard.charts.reviewsBySentiment')}</CardTitle>
-                      <CardDescription>{t('dashboard.charts.reviewsBySentimentDesc')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                      <ReviewsSentimentChart data={dashboard.charts.reviewsBySentiment} />
-                </CardContent>
-              </Card>
+                      <CardTitle>
+                        {t('dashboard.charts.reviewsBySentiment')}
+                      </CardTitle>
+                      <CardDescription>
+                        {t('dashboard.charts.reviewsBySentimentDesc')}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ReviewsSentimentChart
+                        data={dashboard.charts.reviewsBySentiment}
+                      />
+                    </CardContent>
+                  </Card>
 
-              <Card>
+                  <Card>
                     <CardHeader>
-                      <CardTitle>{t('dashboard.charts.productsByPlatform')}</CardTitle>
-                      <CardDescription>{t('dashboard.charts.productsByPlatformDesc')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                      <ProductsPlatformChart data={dashboard.charts.productsByPlatform} />
-                </CardContent>
-              </Card>
+                      <CardTitle>
+                        {t('dashboard.charts.productsByPlatform')}
+                      </CardTitle>
+                      <CardDescription>
+                        {t('dashboard.charts.productsByPlatformDesc')}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ProductsPlatformChart
+                        data={dashboard.charts.productsByPlatform}
+                      />
+                    </CardContent>
+                  </Card>
                 </div>
 
                 {/* Trust Score Distribution */}
-              <Card>
+                <Card>
                   <CardHeader>
-                    <CardTitle>{t('dashboard.charts.trustScoreDistribution')}</CardTitle>
+                    <CardTitle>
+                      {t('dashboard.charts.trustScoreDistribution')}
+                    </CardTitle>
                     <CardDescription>
                       {t('dashboard.charts.trustScoreDistributionDesc')}
                     </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <TrustScoreChart data={dashboard.charts.trustScoreDistribution} />
+                  </CardHeader>
+                  <CardContent>
+                    <TrustScoreChart
+                      data={dashboard.charts.trustScoreDistribution}
+                    />
                   </CardContent>
                 </Card>
 
@@ -275,26 +326,46 @@ export function Dashboard() {
               <div className='grid gap-4 md:grid-cols-2'>
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('dashboard.analytics.projectsAnalytics')}</CardTitle>
-                    <CardDescription>{t('dashboard.analytics.projectsAnalyticsDesc')}</CardDescription>
+                    <CardTitle>
+                      {t('dashboard.analytics.projectsAnalytics')}
+                    </CardTitle>
+                    <CardDescription>
+                      {t('dashboard.analytics.projectsAnalyticsDesc')}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className='space-y-4'>
                     <div className='grid grid-cols-2 gap-4'>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.totalProjects')}</p>
-                        <p className='text-2xl font-bold'>{dashboard.stats.projects.total}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.totalProjects')}
+                        </p>
+                        <p className='text-2xl font-bold'>
+                          {dashboard.stats.projects.total}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.active')}</p>
-                        <p className='text-2xl font-bold text-green-600'>{dashboard.stats.projects.active}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.active')}
+                        </p>
+                        <p className='text-2xl font-bold text-green-600'>
+                          {dashboard.stats.projects.active}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.completed')}</p>
-                        <p className='text-2xl font-bold text-blue-600'>{dashboard.stats.projects.completed}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.completed')}
+                        </p>
+                        <p className='text-2xl font-bold text-blue-600'>
+                          {dashboard.stats.projects.completed}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.pending')}</p>
-                        <p className='text-2xl font-bold text-yellow-600'>{dashboard.stats.projects.pending}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.pending')}
+                        </p>
+                        <p className='text-2xl font-bold text-yellow-600'>
+                          {dashboard.stats.projects.pending}
+                        </p>
                       </div>
                     </div>
                     <ProjectsChart data={dashboard.charts.projectsByStatus} />
@@ -303,56 +374,99 @@ export function Dashboard() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('dashboard.analytics.productsAnalytics')}</CardTitle>
-                    <CardDescription>{t('dashboard.analytics.productsAnalyticsDesc')}</CardDescription>
+                    <CardTitle>
+                      {t('dashboard.analytics.productsAnalytics')}
+                    </CardTitle>
+                    <CardDescription>
+                      {t('dashboard.analytics.productsAnalyticsDesc')}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className='space-y-4'>
                     <div className='grid grid-cols-2 gap-4'>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.totalProducts')}</p>
-                        <p className='text-2xl font-bold'>{dashboard.stats.products.total}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.totalProducts')}
+                        </p>
+                        <p className='text-2xl font-bold'>
+                          {dashboard.stats.products.total}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.analyzed')}</p>
-                        <p className='text-2xl font-bold text-green-600'>{dashboard.stats.products.analyzed}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.analyzed')}
+                        </p>
+                        <p className='text-2xl font-bold text-green-600'>
+                          {dashboard.stats.products.analyzed}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.withReviews')}</p>
-                        <p className='text-2xl font-bold text-blue-600'>{dashboard.stats.products.withReviews}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.withReviews')}
+                        </p>
+                        <p className='text-2xl font-bold text-blue-600'>
+                          {dashboard.stats.products.withReviews}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.avgTrustScore')}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.avgTrustScore')}
+                        </p>
                         <p className='text-2xl font-bold text-purple-600'>
-                          {(dashboard.stats.products.averageTrustScore * 100).toFixed(1)}%
+                          {(
+                            dashboard.stats.products.averageTrustScore * 100
+                          ).toFixed(1)}
+                          %
                         </p>
                       </div>
                     </div>
-                    <ProductsPlatformChart data={dashboard.charts.productsByPlatform} />
+                    <ProductsPlatformChart
+                      data={dashboard.charts.productsByPlatform}
+                    />
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('dashboard.analytics.tasksAnalytics')}</CardTitle>
-                    <CardDescription>{t('dashboard.analytics.tasksAnalyticsDesc')}</CardDescription>
+                    <CardTitle>
+                      {t('dashboard.analytics.tasksAnalytics')}
+                    </CardTitle>
+                    <CardDescription>
+                      {t('dashboard.analytics.tasksAnalyticsDesc')}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className='space-y-4'>
                     <div className='grid grid-cols-2 gap-4'>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.totalTasks')}</p>
-                        <p className='text-2xl font-bold'>{dashboard.stats.tasks.total}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.totalTasks')}
+                        </p>
+                        <p className='text-2xl font-bold'>
+                          {dashboard.stats.tasks.total}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.completed')}</p>
-                        <p className='text-2xl font-bold text-green-600'>{dashboard.stats.tasks.completed}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.completed')}
+                        </p>
+                        <p className='text-2xl font-bold text-green-600'>
+                          {dashboard.stats.tasks.completed}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.inProgress')}</p>
-                        <p className='text-2xl font-bold text-blue-600'>{dashboard.stats.tasks.inProgress}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.inProgress')}
+                        </p>
+                        <p className='text-2xl font-bold text-blue-600'>
+                          {dashboard.stats.tasks.inProgress}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.overdue')}</p>
-                        <p className='text-2xl font-bold text-red-600'>{dashboard.stats.tasks.overdue}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.overdue')}
+                        </p>
+                        <p className='text-2xl font-bold text-red-600'>
+                          {dashboard.stats.tasks.overdue}
+                        </p>
                       </div>
                     </div>
                     <TasksChart data={dashboard.charts.tasksByStatus} />
@@ -361,32 +475,54 @@ export function Dashboard() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('dashboard.analytics.reviewsAnalytics')}</CardTitle>
-                    <CardDescription>{t('dashboard.analytics.reviewsAnalyticsDesc')}</CardDescription>
+                    <CardTitle>
+                      {t('dashboard.analytics.reviewsAnalytics')}
+                    </CardTitle>
+                    <CardDescription>
+                      {t('dashboard.analytics.reviewsAnalyticsDesc')}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className='space-y-4'>
                     <div className='grid grid-cols-2 gap-4'>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.totalReviews')}</p>
-                        <p className='text-2xl font-bold'>{dashboard.stats.reviews.total.toLocaleString()}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.totalReviews')}
+                        </p>
+                        <p className='text-2xl font-bold'>
+                          {dashboard.stats.reviews.total.toLocaleString()}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.analyzed')}</p>
-                        <p className='text-2xl font-bold text-green-600'>{dashboard.stats.reviews.analyzed.toLocaleString()}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.analyzed')}
+                        </p>
+                        <p className='text-2xl font-bold text-green-600'>
+                          {dashboard.stats.reviews.analyzed.toLocaleString()}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.positive')}</p>
-                        <p className='text-2xl font-bold text-green-600'>{dashboard.stats.reviews.positive.toLocaleString()}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.positive')}
+                        </p>
+                        <p className='text-2xl font-bold text-green-600'>
+                          {dashboard.stats.reviews.positive.toLocaleString()}
+                        </p>
                       </div>
                       <div>
-                        <p className='text-sm text-muted-foreground'>{t('dashboard.stats.negative')}</p>
-                        <p className='text-2xl font-bold text-red-600'>{dashboard.stats.reviews.negative.toLocaleString()}</p>
+                        <p className='text-muted-foreground text-sm'>
+                          {t('dashboard.stats.negative')}
+                        </p>
+                        <p className='text-2xl font-bold text-red-600'>
+                          {dashboard.stats.reviews.negative.toLocaleString()}
+                        </p>
                       </div>
                     </div>
-                    <ReviewsSentimentChart data={dashboard.charts.reviewsBySentiment} />
-                </CardContent>
-              </Card>
-            </div>
+                    <ReviewsSentimentChart
+                      data={dashboard.charts.reviewsBySentiment}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
             ) : null}
           </TabsContent>
 
@@ -397,14 +533,18 @@ export function Dashboard() {
             ) : dashboard ? (
               <div className='grid gap-4'>
                 <Card>
-                <CardHeader>
-                    <CardTitle>{t('dashboard.charts.projectsByStatus')}</CardTitle>
-                    <CardDescription>{t('dashboard.charts.projectsByStatusDesc')}</CardDescription>
-                </CardHeader>
+                  <CardHeader>
+                    <CardTitle>
+                      {t('dashboard.charts.projectsByStatus')}
+                    </CardTitle>
+                    <CardDescription>
+                      {t('dashboard.charts.projectsByStatusDesc')}
+                    </CardDescription>
+                  </CardHeader>
                   <CardContent>
                     <ProjectsChart data={dashboard.charts.projectsByStatus} />
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
               </div>
             ) : null}
           </TabsContent>
@@ -416,18 +556,26 @@ export function Dashboard() {
             ) : dashboard ? (
               <div className='grid gap-4'>
                 <Card>
-                <CardHeader>
-                    <CardTitle>{t('dashboard.charts.productsByPlatform')}</CardTitle>
-                    <CardDescription>{t('dashboard.charts.productsByPlatformDesc')}</CardDescription>
-                </CardHeader>
-                <CardContent>
+                  <CardHeader>
+                    <CardTitle>
+                      {t('dashboard.charts.productsByPlatform')}
+                    </CardTitle>
+                    <CardDescription>
+                      {t('dashboard.charts.productsByPlatformDesc')}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
                     <div className='grid gap-4 md:grid-cols-2'>
-                      <ProductsPlatformChart data={dashboard.charts.productsByPlatform} />
-                      <TrustScoreChart data={dashboard.charts.trustScoreDistribution} />
+                      <ProductsPlatformChart
+                        data={dashboard.charts.productsByPlatform}
+                      />
+                      <TrustScoreChart
+                        data={dashboard.charts.trustScoreDistribution}
+                      />
                     </div>
-                </CardContent>
-              </Card>
-            </div>
+                  </CardContent>
+                </Card>
+              </div>
             ) : null}
           </TabsContent>
         </Tabs>

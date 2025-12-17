@@ -40,7 +40,7 @@ export function decodeJWT(token: string): JWTPayload | null {
 export function getUserIdFromToken(): string | null {
   const token = localStorage.getItem('accessToken')
   if (!token) return null
-  
+
   const payload = decodeJWT(token)
   return payload?.sub || null
 }
@@ -51,7 +51,7 @@ export function getUserIdFromToken(): string | null {
 export function getRolesFromToken(): string[] {
   const token = localStorage.getItem('accessToken')
   if (!token) return []
-  
+
   const payload = decodeJWT(token)
   return payload?.roles || []
 }
@@ -78,7 +78,7 @@ export function hasRole(role: string): boolean {
 export function getGlobalPermissionsFromToken(): string[] {
   const token = localStorage.getItem('accessToken')
   if (!token) return []
-  
+
   const payload = decodeJWT(token)
   return payload?.global_permissions || []
 }
@@ -90,4 +90,3 @@ export function hasPermission(permission: string): boolean {
   const permissions = getGlobalPermissionsFromToken()
   return permissions.includes(permission)
 }
-

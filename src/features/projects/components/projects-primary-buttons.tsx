@@ -1,8 +1,8 @@
-import { Plus, FolderPlus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
-import { useProjects } from './projects-provider'
+import { Plus, FolderPlus } from 'lucide-react'
 import { useTranslation } from '@/hooks/use-translation'
+import { Button } from '@/components/ui/button'
+import { useProjects } from './projects-provider'
 
 export function ProjectsPrimaryButtons() {
   const { t } = useTranslation()
@@ -17,7 +17,7 @@ export function ProjectsPrimaryButtons() {
         <span>{t('projects.quickAdd')}</span> <FolderPlus size={18} />
       </Button>
       <Button className='space-x-1' asChild>
-        <Link to="/projects/add">
+        <Link to='/projects/add'>
           <span>{t('projects.addProject')}</span> <Plus size={18} />
         </Link>
       </Button>

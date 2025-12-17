@@ -17,8 +17,8 @@
   body {
     @apply bg-background text-foreground has-[div[data-variant='inset']]:bg-sidebar min-h-svh w-full;
   }
-  
-  main[data-layout="fixed"] .overflow-auto {
+
+  main[data-layout='fixed'] .overflow-auto {
     scrollbar-width: thin;
   }
 
