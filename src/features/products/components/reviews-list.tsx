@@ -113,7 +113,7 @@ export function ReviewsList({ productId }: ReviewsListProps) {
             <div className='flex items-center gap-2'>
               <Select
                 value={platform || 'all'}
-                onValueChange={(value) =>
+                onValueChange={(value: string) =>
                   setPlatform(value === 'all' ? '' : value)
                 }
               >
