@@ -56,10 +56,9 @@ export class ProductReviewApi {
       product_id: string
       unanalyzed_count: number
       reviews: ProductReview[]
-    }>(
-      `${this.BASE_PATH}/${productId}/reviews/unanalyzed`,
-      { params: { limit } }
-    )
+    }>(`${this.BASE_PATH}/${productId}/reviews/unanalyzed`, {
+      params: { limit },
+    })
     return response.data
   }
 
@@ -136,9 +135,7 @@ export class ProductReviewApi {
       analyses_created: number
       trust_score: number | null
       message: string
-    }>(
-      `${this.BASE_PATH}/${productId}/reviews/analyze`
-    )
+    }>(`${this.BASE_PATH}/${productId}/reviews/analyze`)
     return response.data
   }
 }

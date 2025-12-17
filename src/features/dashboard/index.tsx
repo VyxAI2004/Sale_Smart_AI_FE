@@ -44,8 +44,13 @@ import { useDashboard } from './hooks/use-dashboard'
 
 export function Dashboard() {
   const { t } = useTranslation()
-  const { dashboard: dashboardData, isLoading, isError, error, refetch } =
-    useDashboard()
+  const {
+    dashboard: dashboardData,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useDashboard()
   const { activeProject, setActiveProject } = useProjectContext()
 
   const handleStatusChange = (updatedProject: any) => {
@@ -311,7 +316,9 @@ export function Dashboard() {
                 </Card>
 
                 {/* Recent Activity */}
-                <RecentActivity activities={dashboardData.charts.recentActivity} />
+                <RecentActivity
+                  activities={dashboardData.charts.recentActivity}
+                />
               </>
             ) : null}
           </TabsContent>
@@ -369,7 +376,9 @@ export function Dashboard() {
                         </p>
                       </div>
                     </div>
-                    <ProjectsChart data={dashboardData.charts.projectsByStatus} />
+                    <ProjectsChart
+                      data={dashboardData.charts.projectsByStatus}
+                    />
                   </CardContent>
                 </Card>
 
@@ -543,7 +552,9 @@ export function Dashboard() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ProjectsChart data={dashboardData.charts.projectsByStatus} />
+                    <ProjectsChart
+                      data={dashboardData.charts.projectsByStatus}
+                    />
                   </CardContent>
                 </Card>
               </div>

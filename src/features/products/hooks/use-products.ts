@@ -92,8 +92,7 @@ export const useDeleteProduct = () => {
     }: {
       id: string
       projectId: string
-    }) =>
-      ProductApi.delete(id),
+    }) => ProductApi.delete(id),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ['products', variables.projectId],

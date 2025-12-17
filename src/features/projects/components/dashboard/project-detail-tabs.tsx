@@ -17,10 +17,7 @@ import {
 import { useTranslation } from '@/hooks/use-translation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 // Import new product components
-import {
-  ProductsList,
-  FindProductWorkflow,
-} from '@/features/products'
+import { ProductsList, FindProductWorkflow } from '@/features/products'
 import type { ProjectDetailData } from '../../types/project-detail.types'
 import { AnalyticsCard } from './analytics-card'
 import { CompetitorProductsCard } from './competitor-products-card'

@@ -78,10 +78,7 @@ export function ProductDetailPage() {
       <Main>
         <ProductHeader product={product} />
 
-        <ProductDetailTabs
-          product={product}
-          productId={productId}
-        />
+        <ProductDetailTabs product={product} productId={productId} />
       </Main>
     </div>
   )

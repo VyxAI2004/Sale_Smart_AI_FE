@@ -25,9 +25,12 @@ export class DashboardApi {
    */
   static async getDashboardData(): Promise<DashboardResponse> {
     try {
-      const projectsResponse = await http.get<{ items?: any[] }>('/projects/my', {
-        params: { limit: 100 },
-      })
+      const projectsResponse = await http.get<{ items?: any[] }>(
+        '/projects/my',
+        {
+          params: { limit: 100 },
+        }
+      )
       const projectList = DashboardApi.ensureArray(projectsResponse.data?.items)
 
       const [dashboardStatsResponse, projectSummaries, products, tasks] =
@@ -47,7 +50,8 @@ export class DashboardApi {
       const reviews = await this.getReviewsSummary(projectList)
 
       const dashboardStats =
-        dashboardStatsResponse && typeof dashboardStatsResponse.data === 'object'
+        dashboardStatsResponse &&
+        typeof dashboardStatsResponse.data === 'object'
           ? (dashboardStatsResponse.data as {
               total_reviews?: number
               active_projects?: number
@@ -103,12 +107,9 @@ export class DashboardApi {
             const productsResponse = await http.get<{
               items?: any[]
               total?: number
-            }>(
-              `/products/project/${project.id}`,
-              {
-                params: { limit: 100 },
-              }
-            )
+            }>(`/products/project/${project.id}`, {
+              params: { limit: 100 },
+            })
 
             // Get tasks count for this project
             const tasksResponse = await http.get<any[]>('/tasks', {
@@ -258,9 +259,7 @@ export class DashboardApi {
             const projectResponse = await http.get<{ name?: string }>(
               `/projects/${projectId}`
             )
-            const projectData = DashboardApi.ensureObject(
-              projectResponse.data
-            )
+            const projectData = DashboardApi.ensureObject(projectResponse.data)
             projectMap.set(
               projectId,
               String(projectData.name ?? 'Unknown Project')
@@ -338,8 +337,7 @@ export class DashboardApi {
       const reviewStats = await Promise.all(
         productsToAnalyze.map(async (product: any) => {
           try {
-            const statsResponse =
-              await http.get<Record<string, unknown>>(
+            const statsResponse = await http.get<Record<string, unknown>>(
               `/products/${product.id}/reviews/statistics`
             )
             const statsData = DashboardApi.ensureObject(statsResponse.data)
