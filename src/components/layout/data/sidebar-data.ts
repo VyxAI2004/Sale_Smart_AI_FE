@@ -15,7 +15,7 @@ import {
   BarChart3,
 } from 'lucide-react'
 import i18n from '@/lib/i18n'
-import { type SidebarData } from '../types'
+import { type SidebarData, type Project } from '../types'
 
 export const getSidebarData = (): SidebarData => {
   const t = (key: string) => i18n.t(key) || key
@@ -26,7 +26,7 @@ export const getSidebarData = (): SidebarData => {
       email: 'satnaingdev@gmail.com',
       avatar: '/avatars/shadcn.jpg',
     },
-    projects: [],
+    projects: [] as Project[],
     teams: [
       {
         name: 'Shadcn Admin',

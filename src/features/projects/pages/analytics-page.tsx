@@ -59,11 +59,11 @@ export function AnalyticsPage() {
 
       {/* ===== Main ===== */}
       <Main>
-        <div className='mb-4 flex items-center justify-between space-y-2'>
+        <div className='mb-6 flex flex-wrap items-center justify-between space-y-2 gap-x-4'>
           <div>
-            <h1 className='text-3xl font-bold tracking-tight'>
+            <h2 className='text-2xl font-bold tracking-tight'>
               {t('dashboard.tabs.analytics')}
-            </h1>
+            </h2>
             <p className='text-muted-foreground'>
               {t('dashboard.analytics.projectsAnalyticsDesc')}
             </p>
