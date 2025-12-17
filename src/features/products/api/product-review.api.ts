@@ -52,7 +52,11 @@ export class ProductReviewApi {
     unanalyzed_count: number
     reviews: ProductReview[]
   }> {
-    const response = await http.get(
+    const response = await http.get<{
+      product_id: string
+      unanalyzed_count: number
+      reviews: ProductReview[]
+    }>(
       `${this.BASE_PATH}/${productId}/reviews/unanalyzed`,
       { params: { limit } }
     )
@@ -127,7 +131,12 @@ export class ProductReviewApi {
     trust_score: number | null
     message: string
   }> {
-    const response = await http.post(
+    const response = await http.post<{
+      product_id: string
+      analyses_created: number
+      trust_score: number | null
+      message: string
+    }>(
       `${this.BASE_PATH}/${productId}/reviews/analyze`
     )
     return response.data

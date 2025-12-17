@@ -145,7 +145,6 @@ export function AccountForm() {
               <DatePicker
                 selected={field.value || undefined}
                 onSelect={field.onChange}
-                disabled={isLoading}
               />
               <FormDescription>
                 {t('account.dateOfBirthDescription')}

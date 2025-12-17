@@ -2,7 +2,6 @@ import { useState } from 'react'
 import {
   Loader2,
   Search,
-  CheckCircle2,
   XCircle,
   Sparkles,
   Copy,
@@ -27,7 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
 import { useProductAISearchMutation } from '../hooks/use-product-ai'
 import { useCrawlSearch } from '../hooks/use-product-crawler'
 import type { PlatformEnum } from '../types/product-ai.types'

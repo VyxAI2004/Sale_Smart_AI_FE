@@ -1,16 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import {
   Loader2,
   Search,
   CheckCircle2,
   XCircle,
   Sparkles,
-  Copy,
-  ExternalLink,
   Package,
-  MessageSquare,
-  Brain,
-  Shield,
   ArrowRight,
   Circle,
   ArrowLeft,
@@ -75,7 +70,7 @@ export function FindProductWorkflow({
   const [searchUrl, setSearchUrl] = useState('')
   const [maxProducts, setMaxProducts] = useState(10)
   const [productUrls, setProductUrls] = useState<string[]>([])
-  const [searchUrls, setSearchUrls] = useState<string[]>([])
+  const [, setSearchUrls] = useState<string[]>([])
   const [selectedPlatform, setSelectedPlatform] = useState<PlatformEnum>('all')
   const [aiSearchResult, setAiSearchResult] =
     useState<ProductSearchResponse | null>(null)
@@ -146,7 +141,7 @@ export function FindProductWorkflow({
       ...prev,
       calculate: {
         status: 'in-progress',
-        message: 'Calculating trust scores...',
+        message: `Calculating trust scores for ${productIds.length} products...`,
       },
     }))
 
@@ -236,15 +231,6 @@ export function FindProductWorkflow({
       ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
-  const handleCopySearchUrl = async (url: string) => {
-    try {
-      await navigator.clipboard.writeText(url)
-      toast.success('URL copied to clipboard')
-    } catch (error) {
-      toast.error('Failed to copy URL')
-    }
-  }
-
   const handleCrawlSearch = async () => {
     if (!searchUrl.trim()) {
       toast.error('Please enter a search URL')
@@ -296,7 +282,7 @@ export function FindProductWorkflow({
     }
   }
 
-  const getStepIcon = (step: WorkflowStep, status: StepStatus['status']) => {
+  const getStepIcon = (status: StepStatus['status']) => {
     if (status === 'completed') {
       return <CheckCircle2 className='h-5 w-5 text-green-600' />
     }
@@ -411,8 +397,6 @@ export function FindProductWorkflow({
             setMaxProducts={setMaxProducts}
             productUrls={productUrls}
             setProductUrls={setProductUrls}
-            searchUrls={searchUrls}
-            setSearchUrls={setSearchUrls}
             selectedPlatform={selectedPlatform}
             setSelectedPlatform={setSelectedPlatform}
             aiSearchResult={aiSearchResult}
@@ -421,23 +405,17 @@ export function FindProductWorkflow({
             setStepStatuses={setStepStatuses}
             crawlSearch={crawlSearch}
             aiSearch={aiSearch}
-            productsData={productsData}
             refetchProducts={refetchProducts}
-            handleAutoAnalyze={handleAutoAnalyze}
-            handleAutoCalculate={handleAutoCalculate}
             handleAISearch={handleAISearch}
             handleUseSearchUrl={handleUseSearchUrl}
-            handleCopySearchUrl={handleCopySearchUrl}
             handleCrawlSearch={handleCrawlSearch}
             getStepIcon={getStepIcon}
             getStepLabel={getStepLabel}
             getStepDescription={getStepDescription}
             steps={steps}
-            currentStepIndex={currentStepIndex}
             progress={progress}
             handleBack={handleBack}
             canGoBack={canGoBack}
-            onComplete={onComplete}
           />
         </TabsContent>
       </Tabs>
@@ -456,8 +434,6 @@ interface ManualWorkflowContentProps {
   setMaxProducts: (max: number) => void
   productUrls: string[]
   setProductUrls: (urls: string[]) => void
-  searchUrls: string[]
-  setSearchUrls: (urls: string[]) => void
   selectedPlatform: PlatformEnum
   setSelectedPlatform: (platform: PlatformEnum) => void
   aiSearchResult: ProductSearchResponse | null
@@ -466,26 +442,21 @@ interface ManualWorkflowContentProps {
   setStepStatuses: (statuses: Record<WorkflowStep, StepStatus>) => void
   crawlSearch: any
   aiSearch: any
-  productsData: any
   refetchProducts: () => void
-  handleAutoAnalyze: (productIds: string[]) => Promise<void>
-  handleAutoCalculate: (productIds: string[]) => Promise<void>
   handleAISearch: () => Promise<void>
   handleUseSearchUrl: (url: string) => void
-  handleCopySearchUrl: (url: string) => Promise<void>
   handleCrawlSearch: () => Promise<void>
-  getStepIcon: (step: WorkflowStep, status: StepStatus['status']) => JSX.Element
+  getStepIcon: (status: StepStatus['status']) => ReactNode
   getStepLabel: (step: WorkflowStep) => string
   getStepDescription: (step: WorkflowStep) => string
   steps: WorkflowStep[]
-  currentStepIndex: number
   progress: number
   handleBack: () => void
   canGoBack: boolean
-  onComplete?: () => void
 }
 
 function ManualWorkflowContent({
+  projectId,
   currentStep,
   setCurrentStep,
   searchUrl,
@@ -499,25 +470,20 @@ function ManualWorkflowContent({
   aiSearchResult,
   setAiSearchResult,
   stepStatuses,
+  setStepStatuses,
   crawlSearch,
   aiSearch,
-  productsData,
   refetchProducts,
-  handleAutoAnalyze,
-  handleAutoCalculate,
   handleAISearch,
   handleUseSearchUrl,
-  handleCopySearchUrl,
   handleCrawlSearch,
   getStepIcon,
   getStepLabel,
   getStepDescription,
   steps,
-  currentStepIndex,
   progress,
   handleBack,
   canGoBack,
-  onComplete,
 }: ManualWorkflowContentProps) {
   return (
     <div className='space-y-6'>
@@ -546,7 +512,7 @@ function ManualWorkflowContent({
               <div key={step} className='flex flex-1 items-center'>
                 <div className='flex flex-1 flex-col items-center'>
                   <div className='mb-2 flex items-center gap-2'>
-                    {getStepIcon(step, stepStatuses[step].status)}
+                    {getStepIcon(stepStatuses[step].status)}
                     <span className='text-sm font-medium'>
                       {getStepLabel(step)}
                     </span>
@@ -881,7 +847,6 @@ function ManualWorkflowContent({
                     complete: { status: 'pending' },
                   })
                   setProductUrls([])
-                  setSearchUrls([])
                   setSearchUrl('')
                   setAiSearchResult(null)
                 }}

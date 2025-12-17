@@ -1,5 +1,5 @@
 import { Outlet } from '@tanstack/react-router'
-import { Monitor, Bell, Palette, Wrench, UserCog, Cpu } from 'lucide-react'
+import { Monitor, Bell, Palette, UserCog, Cpu } from 'lucide-react'
 import { useTranslation } from '@/hooks/use-translation'
 import { Separator } from '@/components/ui/separator'
 import { ConfigDrawer } from '@/components/config-drawer'

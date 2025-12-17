@@ -16,7 +16,7 @@ export function useDashboard() {
     })
 
   return {
-    dashboard: data,
+    dashboard: data ?? null,
     isLoading,
     isError,
     error,

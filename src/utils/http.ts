@@ -28,15 +28,15 @@ function withApiPrefix(url: string) {
 }
 
 const http = {
-  get: <T>(url: string, config?: AxiosRequestConfig) =>
+  get: <T = any>(url: string, config?: AxiosRequestConfig) =>
     axiosInstance.get<T>(withApiPrefix(url), config),
-  post: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
+  post: <T = any>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
     axiosInstance.post<T>(withApiPrefix(url), data, config),
-  put: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
+  put: <T = any>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
     axiosInstance.put<T>(withApiPrefix(url), data, config),
-  patch: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
+  patch: <T = any>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
     axiosInstance.patch<T>(withApiPrefix(url), data, config),
-  delete: <T>(url: string, config?: AxiosRequestConfig) =>
+  delete: <T = any>(url: string, config?: AxiosRequestConfig) =>
     axiosInstance.delete<T>(withApiPrefix(url), config),
 }
 

@@ -78,7 +78,10 @@ export class ReviewAnalysisApi {
     created: number
     items: ReviewAnalysis[]
   }> {
-    const response = await http.post(
+    const response = await http.post<{
+      created: number
+      items: ReviewAnalysis[]
+    }>(
       `${this.BASE_PATH}/${productId}/analyses/bulk`,
       payload
     )

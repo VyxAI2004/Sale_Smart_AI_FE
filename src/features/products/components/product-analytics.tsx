@@ -12,7 +12,6 @@ import {
   Lightbulb,
   Shield,
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -119,6 +118,13 @@ export function ProductAnalytics({ productId }: ProductAnalyticsProps) {
   }
 
   const { analysis, metadata } = analytics
+  const overallRisk = analysis.risk_assessment.overall_risk
+  const riskLabel =
+    overallRisk === 'low'
+      ? 'THẤP'
+      : overallRisk === 'medium'
+        ? 'TRUNG BÌNH'
+        : 'CAO'
 
   return (
     <div className='space-y-6'>
@@ -174,13 +180,7 @@ export function ProductAnalytics({ productId }: ProductAnalyticsProps) {
               >
                 <span className='flex items-center gap-2'>
                   {getRiskIcon(analysis.risk_assessment.overall_risk)}
-                  {analysis.risk_assessment.overall_risk === 'low'
-                    ? 'THẤP'
-                    : analysis.risk_assessment.overall_risk === 'medium'
-                      ? 'TRUNG BÌNH'
-                      : analysis.risk_assessment.overall_risk === 'high'
-                        ? 'CAO'
-                        : analysis.risk_assessment.overall_risk.toUpperCase()}
+                  {riskLabel}
                 </span>
               </Badge>
               <p className='text-muted-foreground text-center text-sm'>

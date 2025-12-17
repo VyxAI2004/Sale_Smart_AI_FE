@@ -107,7 +107,7 @@ export const useCreateReview = () => {
       productId: string
       payload: ProductReviewCreate
     }) => ProductReviewApi.create(productId, payload),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ['reviews', variables.productId],
       })
@@ -138,7 +138,7 @@ export const useUpdateReview = () => {
       reviewId: string
       payload: ProductReviewUpdate
     }) => ProductReviewApi.update(productId, reviewId, payload),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ['review', variables.productId, variables.reviewId],
       })

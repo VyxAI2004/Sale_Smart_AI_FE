@@ -81,7 +81,6 @@ export function ProductDetailPage() {
         <ProductDetailTabs
           product={product}
           productId={productId}
-          isLoading={isLoading}
         />
       </Main>
     </div>

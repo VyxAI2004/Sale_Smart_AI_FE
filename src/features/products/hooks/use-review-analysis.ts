@@ -67,7 +67,7 @@ export const useCreateAnalysis = () => {
       productId: string
       payload: ReviewAnalysisCreate
     }) => ReviewAnalysisApi.create(productId, payload),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ['review-analyses', variables.productId],
       })
@@ -133,7 +133,7 @@ export const useUpdateAnalysis = () => {
       analysisId: string
       payload: ReviewAnalysisUpdate
     }) => ReviewAnalysisApi.update(productId, analysisId, payload),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: [
           'review-analysis',

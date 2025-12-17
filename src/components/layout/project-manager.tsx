@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link, useNavigate, useLocation } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { useProjectContext } from '@/contexts/project-context'
 import { ChevronsUpDown, Plus, FolderOpen, Loader2 } from 'lucide-react'
 import { useTranslation } from '@/hooks/use-translation'
@@ -27,8 +27,6 @@ import {
 export function ProjectManager() {
   const { t } = useTranslation()
   const { isMobile } = useSidebar()
-  const navigate = useNavigate()
-  const location = useLocation()
   const { activeProject, isLoading, setActiveProject } = useProjectContext()
   const [projects, setProjects] = React.useState<ProjectApiResponse[]>([])
 
@@ -200,7 +198,7 @@ export function ProjectManager() {
             <DropdownMenuLabel className='text-muted-foreground text-xs'>
               {t('projects.title')} ({projects.length})
             </DropdownMenuLabel>
-            {projects.map((project, index) => {
+            {projects.map((project) => {
               const statusInfo = getStatusBadge(project.status || '')
               const isActive = activeProject?.id === project.id
               return (

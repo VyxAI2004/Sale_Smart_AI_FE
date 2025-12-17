@@ -619,7 +619,7 @@ export function ProjectDetailsCard({
                       onChange={(date) =>
                         setEditData({
                           ...editData,
-                          deadline: date?.toISOString(),
+                          deadline: date ?? undefined,
                         })
                       }
                       placeholder={t('projects.settings.selectDeadline')}

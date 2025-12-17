@@ -20,8 +20,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   ProductsList,
   FindProductWorkflow,
-  ReviewsList,
-  TrustScoreCard,
 } from '@/features/products'
 import type { ProjectDetailData } from '../../types/project-detail.types'
 import { AnalyticsCard } from './analytics-card'

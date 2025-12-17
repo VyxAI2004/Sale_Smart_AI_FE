@@ -1,9 +1,8 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { useProjectContext } from '@/contexts/project-context'
 import {
   AlertCircle,
   RefreshCw,
-  Download,
   Package,
   ShoppingCart,
   ListTodo,
@@ -45,9 +44,9 @@ import { useDashboard } from './hooks/use-dashboard'
 
 export function Dashboard() {
   const { t } = useTranslation()
-  const { dashboard, isLoading, isError, error, refetch } = useDashboard()
+  const { dashboard: dashboardData, isLoading, isError, error, refetch } =
+    useDashboard()
   const { activeProject, setActiveProject } = useProjectContext()
-  const navigate = useNavigate()
 
   const handleStatusChange = (updatedProject: any) => {
     // Update active project with new status
@@ -110,7 +109,7 @@ export function Dashboard() {
               />
               {t('dashboard.refresh')}
             </Button>
-            <ExportButton dashboard={dashboard} disabled={isLoading} />
+            <ExportButton dashboard={dashboardData} disabled={isLoading} />
           </div>
         </div>
 
@@ -158,31 +157,31 @@ export function Dashboard() {
                   </Card>
                 ))}
               </div>
-            ) : dashboard ? (
+            ) : dashboardData ? (
               <>
                 <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
                   <StatsCard
                     title={t('dashboard.stats.totalProjects')}
-                    value={dashboard.stats.projects.total}
-                    description={`${dashboard.stats.projects.active} ${t('dashboard.stats.active')}, ${dashboard.stats.projects.completed} ${t('dashboard.stats.completed')}`}
+                    value={dashboardData.stats.projects.total}
+                    description={`${dashboardData.stats.projects.active} ${t('dashboard.stats.active')}, ${dashboardData.stats.projects.completed} ${t('dashboard.stats.completed')}`}
                     icon={Package}
                   />
                   <StatsCard
                     title={t('dashboard.stats.totalProducts')}
-                    value={dashboard.stats.products.total}
-                    description={`${dashboard.stats.products.analyzed} ${t('dashboard.stats.analyzed')}, ${dashboard.stats.products.withReviews} ${t('dashboard.stats.withReviews')}`}
+                    value={dashboardData.stats.products.total}
+                    description={`${dashboardData.stats.products.analyzed} ${t('dashboard.stats.analyzed')}, ${dashboardData.stats.products.withReviews} ${t('dashboard.stats.withReviews')}`}
                     icon={ShoppingCart}
                   />
                   <StatsCard
                     title={t('dashboard.stats.totalTasks')}
-                    value={dashboard.stats.tasks.total}
-                    description={`${dashboard.stats.tasks.completed} ${t('dashboard.stats.completed')}, ${dashboard.stats.tasks.pending} ${t('dashboard.stats.pending')}`}
+                    value={dashboardData.stats.tasks.total}
+                    description={`${dashboardData.stats.tasks.completed} ${t('dashboard.stats.completed')}, ${dashboardData.stats.tasks.pending} ${t('dashboard.stats.pending')}`}
                     icon={ListTodo}
                   />
                   <StatsCard
                     title={t('dashboard.stats.totalReviews')}
-                    value={dashboard.stats.reviews.total.toLocaleString()}
-                    description={`${dashboard.stats.reviews.analyzed} ${t('dashboard.stats.analyzed')}, ${dashboard.stats.reviews.spam} spam`}
+                    value={dashboardData.stats.reviews.total.toLocaleString()}
+                    description={`${dashboardData.stats.reviews.analyzed} ${t('dashboard.stats.analyzed')}, ${dashboardData.stats.reviews.spam} spam`}
                     icon={MessageSquare}
                   />
                 </div>
@@ -190,26 +189,26 @@ export function Dashboard() {
                 <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
                   <StatsCard
                     title={t('dashboard.stats.activeProjects')}
-                    value={dashboard.stats.projects.active}
-                    description={`${((dashboard.stats.projects.active / dashboard.stats.projects.total) * 100 || 0).toFixed(1)}% ${t('dashboard.stats.ofTotal')}`}
+                    value={dashboardData.stats.projects.active}
+                    description={`${((dashboardData.stats.projects.active / dashboardData.stats.projects.total) * 100 || 0).toFixed(1)}% ${t('dashboard.stats.ofTotal')}`}
                     icon={TrendingUp}
                   />
                   <StatsCard
                     title={t('dashboard.stats.avgTrustScore')}
-                    value={`${(dashboard.stats.products.averageTrustScore * 100).toFixed(1)}%`}
-                    description={`${t('dashboard.stats.high')}: ${dashboard.stats.trustScores.high}, ${t('dashboard.stats.medium')}: ${dashboard.stats.trustScores.medium}, ${t('dashboard.stats.low')}: ${dashboard.stats.trustScores.low}`}
+                    value={`${(dashboardData.stats.products.averageTrustScore * 100).toFixed(1)}%`}
+                    description={`${t('dashboard.stats.high')}: ${dashboardData.stats.trustScores.high}, ${t('dashboard.stats.medium')}: ${dashboardData.stats.trustScores.medium}, ${t('dashboard.stats.low')}: ${dashboardData.stats.trustScores.low}`}
                     icon={Shield}
                   />
                   <StatsCard
                     title={t('dashboard.stats.completedTasks')}
-                    value={dashboard.stats.tasks.completed}
-                    description={`${((dashboard.stats.tasks.completed / dashboard.stats.tasks.total) * 100 || 0).toFixed(1)}% ${t('dashboard.stats.completionRate')}`}
+                    value={dashboardData.stats.tasks.completed}
+                    description={`${((dashboardData.stats.tasks.completed / dashboardData.stats.tasks.total) * 100 || 0).toFixed(1)}% ${t('dashboard.stats.completionRate')}`}
                     icon={BarChart3}
                   />
                   <StatsCard
                     title={t('dashboard.stats.avgRating')}
-                    value={dashboard.stats.reviews.averageRating.toFixed(1)}
-                    description={`${t('dashboard.stats.positive')}: ${dashboard.stats.reviews.positive}, ${t('dashboard.stats.negative')}: ${dashboard.stats.reviews.negative}`}
+                    value={dashboardData.stats.reviews.averageRating.toFixed(1)}
+                    description={`${t('dashboard.stats.positive')}: ${dashboardData.stats.reviews.positive}, ${t('dashboard.stats.negative')}: ${dashboardData.stats.reviews.negative}`}
                     icon={TrendingUp}
                   />
                 </div>
@@ -225,7 +224,7 @@ export function Dashboard() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <TimeSeriesChart data={dashboard.charts.timeSeries} />
+                    <TimeSeriesChart data={dashboardData.charts.timeSeries} />
                   </CardContent>
                 </Card>
 
@@ -241,7 +240,9 @@ export function Dashboard() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <ProjectsChart data={dashboard.charts.projectsByStatus} />
+                      <ProjectsChart
+                        data={dashboardData.charts.projectsByStatus}
+                      />
                     </CardContent>
                   </Card>
 
@@ -255,7 +256,7 @@ export function Dashboard() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <TasksChart data={dashboard.charts.tasksByStatus} />
+                      <TasksChart data={dashboardData.charts.tasksByStatus} />
                     </CardContent>
                   </Card>
 
@@ -270,7 +271,7 @@ export function Dashboard() {
                     </CardHeader>
                     <CardContent>
                       <ReviewsSentimentChart
-                        data={dashboard.charts.reviewsBySentiment}
+                        data={dashboardData.charts.reviewsBySentiment}
                       />
                     </CardContent>
                   </Card>
@@ -286,7 +287,7 @@ export function Dashboard() {
                     </CardHeader>
                     <CardContent>
                       <ProductsPlatformChart
-                        data={dashboard.charts.productsByPlatform}
+                        data={dashboardData.charts.productsByPlatform}
                       />
                     </CardContent>
                   </Card>
@@ -304,13 +305,13 @@ export function Dashboard() {
                   </CardHeader>
                   <CardContent>
                     <TrustScoreChart
-                      data={dashboard.charts.trustScoreDistribution}
+                      data={dashboardData.charts.trustScoreDistribution}
                     />
                   </CardContent>
                 </Card>
 
                 {/* Recent Activity */}
-                <RecentActivity activities={dashboard.charts.recentActivity} />
+                <RecentActivity activities={dashboardData.charts.recentActivity} />
               </>
             ) : null}
           </TabsContent>
@@ -322,7 +323,7 @@ export function Dashboard() {
                 <Skeleton className='h-64 w-full' />
                 <Skeleton className='h-64 w-full' />
               </div>
-            ) : dashboard ? (
+            ) : dashboardData ? (
               <div className='grid gap-4 md:grid-cols-2'>
                 <Card>
                   <CardHeader>
@@ -340,7 +341,7 @@ export function Dashboard() {
                           {t('dashboard.stats.totalProjects')}
                         </p>
                         <p className='text-2xl font-bold'>
-                          {dashboard.stats.projects.total}
+                          {dashboardData.stats.projects.total}
                         </p>
                       </div>
                       <div>
@@ -348,7 +349,7 @@ export function Dashboard() {
                           {t('dashboard.stats.active')}
                         </p>
                         <p className='text-2xl font-bold text-green-600'>
-                          {dashboard.stats.projects.active}
+                          {dashboardData.stats.projects.active}
                         </p>
                       </div>
                       <div>
@@ -356,7 +357,7 @@ export function Dashboard() {
                           {t('dashboard.stats.completed')}
                         </p>
                         <p className='text-2xl font-bold text-blue-600'>
-                          {dashboard.stats.projects.completed}
+                          {dashboardData.stats.projects.completed}
                         </p>
                       </div>
                       <div>
@@ -364,11 +365,11 @@ export function Dashboard() {
                           {t('dashboard.stats.pending')}
                         </p>
                         <p className='text-2xl font-bold text-yellow-600'>
-                          {dashboard.stats.projects.pending}
+                          {dashboardData.stats.projects.pending}
                         </p>
                       </div>
                     </div>
-                    <ProjectsChart data={dashboard.charts.projectsByStatus} />
+                    <ProjectsChart data={dashboardData.charts.projectsByStatus} />
                   </CardContent>
                 </Card>
 
@@ -388,7 +389,7 @@ export function Dashboard() {
                           {t('dashboard.stats.totalProducts')}
                         </p>
                         <p className='text-2xl font-bold'>
-                          {dashboard.stats.products.total}
+                          {dashboardData.stats.products.total}
                         </p>
                       </div>
                       <div>
@@ -396,7 +397,7 @@ export function Dashboard() {
                           {t('dashboard.stats.analyzed')}
                         </p>
                         <p className='text-2xl font-bold text-green-600'>
-                          {dashboard.stats.products.analyzed}
+                          {dashboardData.stats.products.analyzed}
                         </p>
                       </div>
                       <div>
@@ -404,7 +405,7 @@ export function Dashboard() {
                           {t('dashboard.stats.withReviews')}
                         </p>
                         <p className='text-2xl font-bold text-blue-600'>
-                          {dashboard.stats.products.withReviews}
+                          {dashboardData.stats.products.withReviews}
                         </p>
                       </div>
                       <div>
@@ -413,14 +414,14 @@ export function Dashboard() {
                         </p>
                         <p className='text-2xl font-bold text-purple-600'>
                           {(
-                            dashboard.stats.products.averageTrustScore * 100
+                            dashboardData.stats.products.averageTrustScore * 100
                           ).toFixed(1)}
                           %
                         </p>
                       </div>
                     </div>
                     <ProductsPlatformChart
-                      data={dashboard.charts.productsByPlatform}
+                      data={dashboardData.charts.productsByPlatform}
                     />
                   </CardContent>
                 </Card>
@@ -441,7 +442,7 @@ export function Dashboard() {
                           {t('dashboard.stats.totalTasks')}
                         </p>
                         <p className='text-2xl font-bold'>
-                          {dashboard.stats.tasks.total}
+                          {dashboardData.stats.tasks.total}
                         </p>
                       </div>
                       <div>
@@ -449,7 +450,7 @@ export function Dashboard() {
                           {t('dashboard.stats.completed')}
                         </p>
                         <p className='text-2xl font-bold text-green-600'>
-                          {dashboard.stats.tasks.completed}
+                          {dashboardData.stats.tasks.completed}
                         </p>
                       </div>
                       <div>
@@ -457,7 +458,7 @@ export function Dashboard() {
                           {t('dashboard.stats.inProgress')}
                         </p>
                         <p className='text-2xl font-bold text-blue-600'>
-                          {dashboard.stats.tasks.inProgress}
+                          {dashboardData.stats.tasks.inProgress}
                         </p>
                       </div>
                       <div>
@@ -465,11 +466,11 @@ export function Dashboard() {
                           {t('dashboard.stats.overdue')}
                         </p>
                         <p className='text-2xl font-bold text-red-600'>
-                          {dashboard.stats.tasks.overdue}
+                          {dashboardData.stats.tasks.overdue}
                         </p>
                       </div>
                     </div>
-                    <TasksChart data={dashboard.charts.tasksByStatus} />
+                    <TasksChart data={dashboardData.charts.tasksByStatus} />
                   </CardContent>
                 </Card>
 
@@ -489,7 +490,7 @@ export function Dashboard() {
                           {t('dashboard.stats.totalReviews')}
                         </p>
                         <p className='text-2xl font-bold'>
-                          {dashboard.stats.reviews.total.toLocaleString()}
+                          {dashboardData.stats.reviews.total.toLocaleString()}
                         </p>
                       </div>
                       <div>
@@ -497,7 +498,7 @@ export function Dashboard() {
                           {t('dashboard.stats.analyzed')}
                         </p>
                         <p className='text-2xl font-bold text-green-600'>
-                          {dashboard.stats.reviews.analyzed.toLocaleString()}
+                          {dashboardData.stats.reviews.analyzed.toLocaleString()}
                         </p>
                       </div>
                       <div>
@@ -505,7 +506,7 @@ export function Dashboard() {
                           {t('dashboard.stats.positive')}
                         </p>
                         <p className='text-2xl font-bold text-green-600'>
-                          {dashboard.stats.reviews.positive.toLocaleString()}
+                          {dashboardData.stats.reviews.positive.toLocaleString()}
                         </p>
                       </div>
                       <div>
@@ -513,12 +514,12 @@ export function Dashboard() {
                           {t('dashboard.stats.negative')}
                         </p>
                         <p className='text-2xl font-bold text-red-600'>
-                          {dashboard.stats.reviews.negative.toLocaleString()}
+                          {dashboardData.stats.reviews.negative.toLocaleString()}
                         </p>
                       </div>
                     </div>
                     <ReviewsSentimentChart
-                      data={dashboard.charts.reviewsBySentiment}
+                      data={dashboardData.charts.reviewsBySentiment}
                     />
                   </CardContent>
                 </Card>
@@ -530,7 +531,7 @@ export function Dashboard() {
           <TabsContent value='projects' className='space-y-4'>
             {isLoading ? (
               <Skeleton className='h-64 w-full' />
-            ) : dashboard ? (
+            ) : dashboardData ? (
               <div className='grid gap-4'>
                 <Card>
                   <CardHeader>
@@ -542,7 +543,7 @@ export function Dashboard() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ProjectsChart data={dashboard.charts.projectsByStatus} />
+                    <ProjectsChart data={dashboardData.charts.projectsByStatus} />
                   </CardContent>
                 </Card>
               </div>
@@ -553,7 +554,7 @@ export function Dashboard() {
           <TabsContent value='products' className='space-y-4'>
             {isLoading ? (
               <Skeleton className='h-64 w-full' />
-            ) : dashboard ? (
+            ) : dashboardData ? (
               <div className='grid gap-4'>
                 <Card>
                   <CardHeader>
@@ -567,10 +568,10 @@ export function Dashboard() {
                   <CardContent>
                     <div className='grid gap-4 md:grid-cols-2'>
                       <ProductsPlatformChart
-                        data={dashboard.charts.productsByPlatform}
+                        data={dashboardData.charts.productsByPlatform}
                       />
                       <TrustScoreChart
-                        data={dashboard.charts.trustScoreDistribution}
+                        data={dashboardData.charts.trustScoreDistribution}
                       />
                     </div>
                   </CardContent>

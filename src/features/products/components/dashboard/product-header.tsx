@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import {
   Calendar,
   ExternalLink,
@@ -24,8 +24,6 @@ export function ProductHeader({
   product,
   isLoading = false,
 }: ProductHeaderProps) {
-  const navigate = useNavigate()
-
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return 'N/A'
     return new Date(dateStr).toLocaleDateString('vi-VN', {

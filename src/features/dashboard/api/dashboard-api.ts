@@ -7,44 +7,68 @@ import type {
   ProjectSummary,
   ProductSummary,
   TaskSummary,
-  RecentActivity,
 } from '../types/dashboard.types'
 
 export class DashboardApi {
-  private static readonly BASE_PATH = '/dashboard'
+  private static ensureArray<T = any>(value: unknown): T[] {
+    return Array.isArray(value) ? value : []
+  }
+
+  private static ensureObject(value: unknown): Record<string, any> {
+    return value && typeof value === 'object'
+      ? (value as Record<string, any>)
+      : {}
+  }
 
   /**
    * Get comprehensive dashboard data
    */
   static async getDashboardData(): Promise<DashboardResponse> {
     try {
-      // First get all projects (needed for products and reviews)
-      const projectsResponse = await http.get('/projects/my', {
+      const projectsResponse = await http.get<{ items?: any[] }>('/projects/my', {
         params: { limit: 100 },
       })
-      const projects = projectsResponse.data?.items || []
+      const projectList = DashboardApi.ensureArray(projectsResponse.data?.items)
 
-      // Fetch dashboard statistics and other data in parallel
-      const [dashboardStats, products, tasks] = await Promise.all([
-        http.get('/dashboard/statistics').catch(() => ({ data: null })),
-        this.getProductsSummary(projects),
-        this.getTasksSummary(),
-      ])
+      const [dashboardStatsResponse, projectSummaries, products, tasks] =
+        await Promise.all([
+          http
+            .get<{
+              total_reviews?: number
+              active_projects?: number
+              average_trust_score?: number
+            }>('/dashboard/statistics')
+            .catch(() => ({ data: null })),
+          this.getProjectsSummary(projectList),
+          this.getProductsSummary(projectList),
+          this.getTasksSummary(),
+        ])
 
-      // Get reviews (uses products data, so we can optimize)
-      const reviews = await this.getReviewsSummary(projects)
+      const reviews = await this.getReviewsSummary(projectList)
 
-      // Calculate stats
+      const dashboardStats =
+        dashboardStatsResponse && typeof dashboardStatsResponse.data === 'object'
+          ? (dashboardStatsResponse.data as {
+              total_reviews?: number
+              active_projects?: number
+              average_trust_score?: number
+            })
+          : null
+
       const stats = this.calculateStats(
-        projects,
+        projectSummaries,
         products,
         tasks,
         reviews,
-        dashboardStats.data
+        dashboardStats
       )
 
-      // Generate chart data
-      const charts = this.generateChartData(projects, products, tasks, reviews)
+      const charts = this.generateChartData(
+        projectSummaries,
+        products,
+        tasks,
+        reviews
+      )
 
       return {
         stats,
@@ -62,20 +86,24 @@ export class DashboardApi {
    */
   static async getProjectsSummary(projects?: any[]): Promise<ProjectSummary[]> {
     try {
-      // If projects not provided, fetch them
-      if (!projects) {
-        const response = await http.get('/projects/my', {
+      let projectList = DashboardApi.ensureArray(projects)
+
+      if (projectList.length === 0) {
+        const response = await http.get<{ items?: any[] }>('/projects/my', {
           params: { limit: 100 },
         })
-        projects = response.data.items || []
+        projectList = DashboardApi.ensureArray(response.data?.items)
       }
 
       // For each project, get additional stats
       const projectsWithStats = await Promise.all(
-        projects.map(async (project: any) => {
+        projectList.map(async (project: any) => {
           try {
             // Get products count for this project
-            const productsResponse = await http.get(
+            const productsResponse = await http.get<{
+              items?: any[]
+              total?: number
+            }>(
               `/products/project/${project.id}`,
               {
                 params: { limit: 100 },
@@ -83,17 +111,19 @@ export class DashboardApi {
             )
 
             // Get tasks count for this project
-            const tasksResponse = await http.get('/tasks', {
+            const tasksResponse = await http.get<any[]>('/tasks', {
               params: { project_id: project.id, limit: 1000 },
             })
 
-            const tasks = tasksResponse.data || []
+            const tasks = DashboardApi.ensureArray(tasksResponse.data)
             const completedTasks = tasks.filter(
               (t: any) => t.status === 'completed'
             ).length
 
             // Calculate average trust score from products
-            const products = productsResponse.data?.items || []
+            const products = DashboardApi.ensureArray(
+              productsResponse.data?.items
+            )
             const trustScores = products
               .map((p: any) => p.trust_score?.score)
               .filter((score: any) => score != null)
@@ -107,7 +137,8 @@ export class DashboardApi {
               id: project.id,
               name: project.name,
               status: project.status || 'pending',
-              productCount: productsResponse.data?.total || products.length,
+              productCount:
+                productsResponse.data?.total ?? products.length ?? 0,
               taskCount: tasks.length,
               completedTasks,
               trustScore: avgTrustScore,
@@ -145,27 +176,33 @@ export class DashboardApi {
   static async getProductsSummary(projects?: any[]): Promise<ProductSummary[]> {
     try {
       // If projects not provided, fetch them
-      if (!projects) {
-        const projectsResponse = await http.get('/projects/my', {
-          params: { limit: 100 },
-        })
-        projects = projectsResponse.data?.items || []
+      let projectList = DashboardApi.ensureArray(projects)
+      if (projectList.length === 0) {
+        const projectsResponse = await http.get<{ items?: any[] }>(
+          '/projects/my',
+          {
+            params: { limit: 100 },
+          }
+        )
+        projectList = DashboardApi.ensureArray(projectsResponse.data?.items)
       }
 
       // Get products from each project
       const allProducts: any[] = []
 
       await Promise.all(
-        projects.map(async (project: any) => {
+        projectList.map(async (project: any) => {
           try {
-            const productsResponse = await http.get(
+            const productsResponse = await http.get<{ items?: any[] }>(
               `/products/project/${project.id}`,
               {
                 params: { limit: 100 },
               }
             )
 
-            const products = productsResponse.data?.items || []
+            const products = DashboardApi.ensureArray(
+              productsResponse.data?.items
+            )
             allProducts.push(...products)
           } catch (err) {
             console.error(
@@ -199,23 +236,35 @@ export class DashboardApi {
    */
   static async getTasksSummary(): Promise<TaskSummary[]> {
     try {
-      const response = await http.get('/tasks', {
+      const response = await http.get<any[]>('/tasks', {
         params: { limit: 1000 },
       })
 
-      const tasks = response.data || []
+      const tasks = DashboardApi.ensureArray(response.data)
 
       // Get project names for tasks
-      const projectIds = [
-        ...new Set(tasks.map((t: any) => t.project_id).filter(Boolean)),
-      ]
+      const projectIds: string[] = Array.from(
+        new Set(
+          tasks
+            .map((t: any) => t.project_id)
+            .filter((id: unknown): id is string => typeof id === 'string')
+        )
+      )
       const projectMap = new Map<string, string>()
 
       await Promise.all(
         projectIds.map(async (projectId: string) => {
           try {
-            const projectResponse = await http.get(`/projects/${projectId}`)
-            projectMap.set(projectId, projectResponse.data.name)
+            const projectResponse = await http.get<{ name?: string }>(
+              `/projects/${projectId}`
+            )
+            const projectData = DashboardApi.ensureObject(
+              projectResponse.data
+            )
+            projectMap.set(
+              projectId,
+              String(projectData.name ?? 'Unknown Project')
+            )
           } catch (err) {
             projectMap.set(projectId, 'Unknown Project')
           }
@@ -245,26 +294,32 @@ export class DashboardApi {
   static async getReviewsSummary(projects?: any[]): Promise<any> {
     try {
       // If projects not provided, fetch them
-      if (!projects) {
-        const projectsResponse = await http.get('/projects/my', {
-          params: { limit: 100 },
-        })
-        projects = projectsResponse.data?.items || []
+      let projectList = DashboardApi.ensureArray(projects)
+      if (projectList.length === 0) {
+        const projectsResponse = await http.get<{ items?: any[] }>(
+          '/projects/my',
+          {
+            params: { limit: 100 },
+          }
+        )
+        projectList = DashboardApi.ensureArray(projectsResponse.data?.items)
       }
 
       // Get all products from all projects
       const allProducts: any[] = []
 
       await Promise.all(
-        projects.map(async (project: any) => {
+        projectList.map(async (project: any) => {
           try {
-            const productsResponse = await http.get(
+            const productsResponse = await http.get<{ items?: any[] }>(
               `/products/project/${project.id}`,
               {
                 params: { limit: 100 },
               }
             )
-            const products = productsResponse.data?.items || []
+            const products = DashboardApi.ensureArray(
+              productsResponse.data?.items
+            )
             allProducts.push(...products)
           } catch (err) {
             console.error(
@@ -276,16 +331,21 @@ export class DashboardApi {
       )
 
       // Get review statistics for each product (limit to first 50 to avoid too many requests)
-      const productsToAnalyze = allProducts.slice(0, 50)
+      const productsToAnalyze = DashboardApi.ensureArray(allProducts).slice(
+        0,
+        50
+      )
       const reviewStats = await Promise.all(
         productsToAnalyze.map(async (product: any) => {
           try {
-            const statsResponse = await http.get(
+            const statsResponse =
+              await http.get<Record<string, unknown>>(
               `/products/${product.id}/reviews/statistics`
             )
+            const statsData = DashboardApi.ensureObject(statsResponse.data)
             return {
               productId: product.id,
-              ...statsResponse.data,
+              ...statsData,
             }
           } catch (err) {
             return {

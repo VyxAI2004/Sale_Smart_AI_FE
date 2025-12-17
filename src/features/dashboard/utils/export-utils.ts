@@ -6,7 +6,6 @@ import type { DashboardResponse } from '../types/dashboard.types'
 // Dynamic import for libraries
 let XLSX: any
 let jsPDF: any
-let autoTable: any
 
 // Lazy load libraries
 async function loadXLSX() {
@@ -212,9 +211,7 @@ export async function exportToPDF(
     const doc = new jsPDFClass()
 
     let yPos = 20
-    const pageWidth = doc.internal.pageSize.getWidth()
     const margin = 20
-    const contentWidth = pageWidth - 2 * margin
 
     // Title
     doc.setFontSize(20)

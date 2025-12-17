@@ -6,9 +6,7 @@ import {
   Palette,
   Cpu,
   Settings,
-  Wrench,
   UserCog,
-  Users,
   AudioWaveform,
   Command,
   GalleryVerticalEnd,
@@ -28,6 +26,7 @@ export const getSidebarData = (): SidebarData => {
       email: 'satnaingdev@gmail.com',
       avatar: '/avatars/shadcn.jpg',
     },
+    projects: [],
     teams: [
       {
         name: 'Shadcn Admin',

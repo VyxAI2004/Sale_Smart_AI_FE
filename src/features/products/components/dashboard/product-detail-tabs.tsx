@@ -17,13 +17,11 @@ import { TrustScoreCard } from '../trust-score-card'
 interface ProductDetailTabsProps {
   product: Product | null
   productId: string
-  isLoading?: boolean
 }
 
 export function ProductDetailTabs({
   product,
   productId,
-  isLoading = false,
 }: ProductDetailTabsProps) {
   const [activeTab, setActiveTab] = useState('overview')
 

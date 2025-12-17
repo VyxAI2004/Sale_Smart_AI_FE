@@ -2,7 +2,6 @@ import http from '@/utils/http'
 import type {
   CrawlSearchRequest,
   CrawlReviewsRequest,
-  CrawlSearchResponse,
   CrawlReviewsResponse,
 } from '../types/crawler.types'
 
