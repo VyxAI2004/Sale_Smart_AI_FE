@@ -12,7 +12,7 @@ import {
 const API_PREFIX = '/api/v1'
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
+  baseURL: import.meta.env.VITE_API_URL || 'https://b.3aa.uk',
   headers: { 'Content-Type': 'application/json' },
 })
 
