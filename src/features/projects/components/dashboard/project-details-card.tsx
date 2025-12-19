@@ -497,11 +497,13 @@ export function ProjectDetailsCard({
                     <Input
                       id='budget'
                       type='number'
-                      value={editData.target_budget_range || ''}
+                      value={editData.target_budget_range ?? ''}
                       onChange={(e) =>
                         setEditData({
                           ...editData,
-                          target_budget_range: Number(e.target.value),
+                          target_budget_range: e.target.value
+                            ? Number(e.target.value)
+                            : undefined,
                         })
                       }
                       className={errors.budget ? 'border-destructive' : ''}

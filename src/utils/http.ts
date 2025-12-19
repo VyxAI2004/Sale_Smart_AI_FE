@@ -13,7 +13,7 @@ const API_PREFIX = '/api/v1'
 
 // Normalize baseURL to remove trailing slashes
 const getBaseURL = () => {
-  const url = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+  const url = import.meta.env.VITE_API_URL || 'https://b.3aa.uk'
   return url.replace(/\/+$/, '')
 }
 

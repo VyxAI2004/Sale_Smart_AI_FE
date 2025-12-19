@@ -80,7 +80,7 @@ export function AnalyticsPage() {
               />
               {t('dashboard.refresh')}
             </Button>
-            <ExportButton dashboard={dashboard} disabled={isLoading} />
+            <ExportButton dashboard={dashboard || null} disabled={isLoading} />
           </div>
         </div>
 

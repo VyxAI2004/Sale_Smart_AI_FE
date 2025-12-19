@@ -9,6 +9,8 @@ import type {
   AutoDiscoveryFinalResult,
 } from '../types/auto-discovery.types'
 
+// AutoDiscoveryRequest is imported but unused
+
 export const useAutoDiscovery = (projectId: string) => {
   const queryClient = useQueryClient()
   const [state, setState] = useState<AutoDiscoveryState>({

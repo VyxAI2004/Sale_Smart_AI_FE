@@ -110,6 +110,7 @@ export const useBulkCreateAnalyses = () => {
         queryKey: ['reviews', variables.productId],
       })
       toast.success(`Created ${data.created} analyses successfully`)
+      // data is used above
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to create analyses')

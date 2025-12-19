@@ -86,6 +86,7 @@ export const useAnalyzeProductReviews = () => {
       })
       queryClient.invalidateQueries({ queryKey: ['product', data.product_id] })
       toast.success(data.message || `Analyzed ${data.analyses_created} reviews`)
+      // data is used above
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to analyze reviews')
