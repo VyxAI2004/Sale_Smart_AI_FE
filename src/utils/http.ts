@@ -11,8 +11,14 @@ import {
 
 const API_PREFIX = '/api/v1'
 
+// Normalize baseURL to remove trailing slashes
+const getBaseURL = () => {
+  const url = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+  return url.replace(/\/+$/, '')
+}
+
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
+  baseURL: getBaseURL(),
   headers: { 'Content-Type': 'application/json' },
 })
 

@@ -16,7 +16,7 @@ export class AutoDiscoveryApi {
     onComplete?: () => void
   ): Promise<void> {
     const accessToken = getAccessTokenFromLocalStorage() || ''
-    const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/+$/, '')
     const url = `${baseURL}/api/v1${this.BASE_PATH}/execute-stream`
 
     try {
