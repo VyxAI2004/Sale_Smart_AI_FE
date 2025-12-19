@@ -44,6 +44,15 @@ const getSchema = (t: (key: string) => string) =>
       .string()
       .min(1, t('settings.aiModels.provider') + ' is required'),
     model_type: z.string().min(1, t('settings.aiModels.type') + ' is required'),
+    base_url: z
+      .string()
+      .optional()
+      .refine(
+        (val) => !val || val === '' || z.string().url().safeParse(val).success,
+        {
+          message: t('settings.aiModels.baseUrlInvalid'),
+        }
+      ),
   })
 
 type Props = {
@@ -63,13 +72,17 @@ export function CreateModelDialog({ open, onOpenChange }: Props) {
       model_name: '',
       provider: '',
       model_type: 'llm',
+      base_url: '',
     },
   })
 
   const { createModel } = useAiModels()
 
   const onSubmit = async (values: FormValues) => {
-    await createModel(values)
+    await createModel({
+      ...values,
+      base_url: values.base_url || undefined,
+    })
     form.reset()
     onOpenChange(false)
   }
@@ -212,6 +225,27 @@ export function CreateModelDialog({ open, onOpenChange }: Props) {
                       </Select>
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='base_url'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('settings.aiModels.baseUrl')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='url'
+                        placeholder={t('settings.aiModels.baseUrlPlaceholder')}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                    <p className='text-muted-foreground text-xs'>
+                      {t('settings.aiModels.baseUrlDescription')}
+                    </p>
                   </FormItem>
                 )}
               />

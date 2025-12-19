@@ -67,8 +67,27 @@ export function useAiModels() {
       model_name: string
       provider: string
       model_type: string
+      base_url?: string
     }) => {
       await aiModelApi.create(payload)
+      await fetchMyModels()
+    },
+    [fetchMyModels]
+  )
+
+  const updateModel = useCallback(
+    async (
+      id: string,
+      payload: {
+        name?: string
+        model_name?: string
+        provider?: string
+        model_type?: string
+        base_url?: string
+        is_active?: boolean
+      }
+    ) => {
+      await aiModelApi.update(id, payload)
       await fetchMyModels()
     },
     [fetchMyModels]
@@ -81,5 +100,6 @@ export function useAiModels() {
     deactivateModel,
     removeModel,
     createModel,
+    updateModel,
   }
 }

@@ -385,7 +385,16 @@
       "apiKeyUpdated": "Đã cập nhật khóa API thành công",
       "failedToUpdateApiKey": "Không thể cập nhật khóa API",
       "aiModelConfigurationDeleted": "Đã xóa cấu hình Mô hình AI thành công",
-      "failedToDeleteAIModelConfiguration": "Không thể xóa cấu hình Mô hình AI"
+      "failedToDeleteAIModelConfiguration": "Không thể xóa cấu hình Mô hình AI",
+      "baseUrl": "URL Endpoint",
+      "baseUrlPlaceholder": "http://192.168.50.4:8317",
+      "baseUrlDescription": "URL endpoint tùy chỉnh cho model (tùy chọn). Để trống để sử dụng endpoint mặc định của provider.",
+      "baseUrlInvalid": "Vui lòng nhập URL hợp lệ",
+      "edit": "Chỉnh sửa",
+      "editModel": "Chỉnh sửa Mô hình AI",
+      "editModelDescription": "Cập nhật cấu hình mô hình AI",
+      "modelUpdated": "Đã cập nhật Mô hình AI thành công",
+      "failedToUpdateModel": "Không thể cập nhật Mô hình AI"
     }
   },
   "account": {

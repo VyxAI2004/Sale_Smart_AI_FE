@@ -24,8 +24,14 @@ export default function SettingsAIAndModels() {
     createOrUpdateUserModel,
     deleteUserModel,
   } = useUserAiModels()
-  const { models, fetchMyModels, activateModel, deactivateModel, removeModel } =
-    useAiModels()
+  const {
+    models,
+    fetchMyModels,
+    activateModel,
+    deactivateModel,
+    removeModel,
+    updateModel,
+  } = useAiModels()
   const {
     hasPermission,
     isLoading: isLoadingPermissions,
@@ -100,6 +106,26 @@ export default function SettingsAIAndModels() {
     }
   }
 
+  const handleUpdateModel = async (
+    id: string,
+    payload: {
+      name?: string
+      model_name?: string
+      provider?: string
+      model_type?: string
+      base_url?: string
+      is_active?: boolean
+    }
+  ) => {
+    try {
+      await updateModel(id, payload)
+      toast.success(t('settings.aiModels.modelUpdated'))
+    } catch (error) {
+      toast.error(t('settings.aiModels.failedToUpdateModel'))
+      console.error(error)
+    }
+  }
+
   return (
     <div className='w-full'>
       <ContentSection
@@ -154,6 +180,7 @@ export default function SettingsAIAndModels() {
                   onActivate={activateModel}
                   onDeactivate={deactivateModel}
                   onDelete={removeModel}
+                  onUpdate={handleUpdateModel}
                 />
                 <CreateModelDialog
                   open={openCreateModel}

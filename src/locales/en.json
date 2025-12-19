@@ -384,7 +384,16 @@
       "apiKeyUpdated": "API key updated successfully",
       "failedToUpdateApiKey": "Failed to update API key",
       "aiModelConfigurationDeleted": "AI Model configuration deleted successfully",
-      "failedToDeleteAIModelConfiguration": "Failed to delete AI Model configuration"
+      "failedToDeleteAIModelConfiguration": "Failed to delete AI Model configuration",
+      "baseUrl": "Base URL",
+      "baseUrlPlaceholder": "http://192.168.50.4:8317",
+      "baseUrlDescription": "Optional custom endpoint URL for the model. Leave empty to use default provider endpoint.",
+      "baseUrlInvalid": "Please enter a valid URL",
+      "edit": "Edit",
+      "editModel": "Edit AI Model",
+      "editModelDescription": "Update the AI model configuration",
+      "modelUpdated": "AI Model updated successfully",
+      "failedToUpdateModel": "Failed to update AI Model"
     }
   },
   "account": {
