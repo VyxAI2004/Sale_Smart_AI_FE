@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { Maximize2, Minimize2, Loader2, Users } from 'lucide-react'
+import { Maximize2, Minimize2, Loader2 } from 'lucide-react'
 import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
 import {

@@ -14,6 +14,9 @@ export const taskSchema = z.object({
   assigned_to: z.string().optional().nullable(),
   project_id: z.string(),
   pipeline_stage: z.string().optional(),
+  stage_order: z.number().optional(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
 })
 
 export type Task = z.infer<typeof taskSchema>

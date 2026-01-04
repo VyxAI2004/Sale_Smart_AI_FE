@@ -2,8 +2,7 @@
  * Custom hooks for Task Collaborator management
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { TaskCollaboratorApi, type TaskCollaboratorResponse, type TaskInvitePayload } from '../api/task-collaborator-api'
-import type { UUID } from 'crypto'
+import { TaskCollaboratorApi, type TaskInvitePayload } from '../api/task-collaborator-api'
 
 const TASK_COLLABORATORS_QUERY_KEY = 'task-collaborators'
 
@@ -38,7 +37,7 @@ export const useInviteTaskCollaborator = () => {
     }) => {
       return TaskCollaboratorApi.invite(taskId, payload)
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       // Invalidate and refetch task collaborators
       queryClient.invalidateQueries({
         queryKey: [TASK_COLLABORATORS_QUERY_KEY, variables.taskId],
@@ -70,7 +69,7 @@ export const useUpdateTaskCollaborator = () => {
         permissions,
       })
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: [TASK_COLLABORATORS_QUERY_KEY, variables.taskId],
       })
@@ -88,7 +87,7 @@ export const useRemoveTaskCollaborator = () => {
     mutationFn: async ({ taskId, userId }: { taskId: string; userId: string }) => {
       return TaskCollaboratorApi.removeCollaborator(taskId, userId)
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: [TASK_COLLABORATORS_QUERY_KEY, variables.taskId],
       })

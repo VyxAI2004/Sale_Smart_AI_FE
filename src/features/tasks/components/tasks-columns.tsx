@@ -93,7 +93,7 @@ export const tasksColumns: ColumnDef<Task>[] = [
       )
 
       if (!status) {
-        return null
+        return <span className='text-muted-foreground'>-</span>
       }
 
       return (
@@ -136,7 +136,7 @@ export const tasksColumns: ColumnDef<Task>[] = [
       )
 
       if (!priority) {
-        return null
+        return <span className='text-muted-foreground'>-</span>
       }
 
       return (
