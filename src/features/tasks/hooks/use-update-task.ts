@@ -11,13 +11,7 @@ export const useUpdateTask = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: string
-      data: TaskUpdate
-    }) => {
+    mutationFn: async ({ id, data }: { id: string; data: TaskUpdate }) => {
       return TaskApi.update(id, data)
     },
     onSuccess: () => {

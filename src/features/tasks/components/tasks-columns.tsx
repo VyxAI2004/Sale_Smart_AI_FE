@@ -66,13 +66,13 @@ export const tasksColumns: ColumnDef<Task>[] = [
     ),
     cell: ({ row }) => {
       const productName = row.getValue('product_name')
-      
+
       if (!productName) {
         return <span className='text-muted-foreground'>-</span>
       }
 
       return (
-        <Badge variant='secondary' className='truncate max-w-[150px]'>
+        <Badge variant='secondary' className='max-w-[150px] truncate'>
           {String(productName)}
         </Badge>
       )
@@ -116,7 +116,7 @@ export const tasksColumns: ColumnDef<Task>[] = [
     ),
     cell: ({ row }) => {
       const assignedTo = row.getValue('assigned_to') as string | null
-      
+
       return (
         <div className='w-[120px]'>
           <TaskAssigneeMenu task={row.original} currentAssignee={assignedTo} />

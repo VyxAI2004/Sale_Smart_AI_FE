@@ -345,7 +345,11 @@ export function TaskDetailDialog({
           {/* Tags */}
           <div className='flex flex-wrap items-center gap-2'>
             <Badge
-              variant={task.priority ? (getPriorityColor(task.priority) as any) : 'default'}
+              variant={
+                task.priority
+                  ? (getPriorityColor(task.priority) as any)
+                  : 'default'
+              }
               className='text-xs'
             >
               {task.priority === 'high'
@@ -422,25 +426,29 @@ export function TaskDetailDialog({
               <div>
                 <p className='text-muted-foreground'>Ngày tạo</p>
                 <p className='mt-1'>
-                  {task.created_at ? new Date(task.created_at).toLocaleDateString('vi-VN', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  }) : '-'}
+                  {task.created_at
+                    ? new Date(task.created_at).toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : '-'}
                 </p>
               </div>
               <div>
                 <p className='text-muted-foreground'>Cập nhật lần cuối</p>
                 <p className='mt-1'>
-                  {task.updated_at ? new Date(task.updated_at).toLocaleDateString('vi-VN', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  }) : '-'}
+                  {task.updated_at
+                    ? new Date(task.updated_at).toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : '-'}
                 </p>
               </div>
             </div>

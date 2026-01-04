@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Plus, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -10,9 +10,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useInviteProjectUser } from '@/features/projects/hooks/use-project-users'
+import { Input } from '@/components/ui/input'
 import { useProjectMembers } from '@/features/projects/hooks/use-project-members'
+import { useInviteProjectUser } from '@/features/projects/hooks/use-project-users'
 
 interface ProjectMemberInviteProps {
   projectId: string
@@ -27,7 +27,7 @@ export function ProjectMemberInvite({
 }: ProjectMemberInviteProps) {
   const [email, setEmail] = useState('')
   const [role, setRole] = useState('member')
-  
+
   const { data: projectMembers = [] } = useProjectMembers(projectId)
   const inviteUser = useInviteProjectUser()
 
@@ -53,7 +53,8 @@ export function ProjectMemberInvite({
         <DialogHeader>
           <DialogTitle>Invite Team Member</DialogTitle>
           <DialogDescription>
-            Invite team members to this project so they can be assigned to tasks.
+            Invite team members to this project so they can be assigned to
+            tasks.
           </DialogDescription>
         </DialogHeader>
 
@@ -77,7 +78,7 @@ export function ProjectMemberInvite({
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 disabled={inviteUser.isPending}
-                className='w-full px-3 py-2 border rounded-md text-sm'
+                className='w-full rounded-md border px-3 py-2 text-sm'
               >
                 <option value='member'>Member</option>
                 <option value='admin'>Admin</option>
@@ -108,7 +109,7 @@ export function ProjectMemberInvite({
             <h3 className='text-sm font-semibold'>Current Members</h3>
             <div className='max-h-[300px] space-y-2 overflow-y-auto'>
               {projectMembers.length === 0 ? (
-                <p className='text-sm text-muted-foreground'>
+                <p className='text-muted-foreground text-sm'>
                   No members yet. Invite someone to get started.
                 </p>
               ) : (
@@ -130,8 +131,10 @@ export function ProjectMemberInvite({
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className='text-sm font-medium'>{member.name || 'User'}</p>
-                        <p className='text-xs text-muted-foreground'>
+                        <p className='text-sm font-medium'>
+                          {member.name || 'User'}
+                        </p>
+                        <p className='text-muted-foreground text-xs'>
                           {member.email}
                         </p>
                       </div>

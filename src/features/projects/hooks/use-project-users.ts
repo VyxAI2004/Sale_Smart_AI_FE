@@ -2,8 +2,11 @@
  * Hook for project user management
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ProjectUserApi, type InviteProjectUserPayload } from '../api/project-user-api'
 import { toast } from 'sonner'
+import {
+  ProjectUserApi,
+  type InviteProjectUserPayload,
+} from '../api/project-user-api'
 
 const PROJECT_USERS_QUERY_KEY = 'project-users'
 
@@ -50,7 +53,8 @@ export const useInviteProjectUser = () => {
       toast.success('User invited successfully')
     },
     onError: (error: any) => {
-      const message = error.response?.data?.detail || error.message || 'Failed to invite user'
+      const message =
+        error.response?.data?.detail || error.message || 'Failed to invite user'
       toast.error('Failed to invite user', {
         description: message,
       })
@@ -81,7 +85,8 @@ export const useRemoveProjectUser = () => {
       toast.success('User removed successfully')
     },
     onError: (error: any) => {
-      const message = error.response?.data?.detail || error.message || 'Failed to remove user'
+      const message =
+        error.response?.data?.detail || error.message || 'Failed to remove user'
       toast.error('Failed to remove user', {
         description: message,
       })

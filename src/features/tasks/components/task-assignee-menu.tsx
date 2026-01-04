@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Check, ChevronDown, Loader2, Users } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -9,9 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useUpdateTask } from '../hooks/use-update-task'
 import { useProjectMembers } from '@/features/projects/hooks/use-project-members'
+import { useUpdateTask } from '../hooks/use-update-task'
 import { type Task } from '../types/task.types'
 
 interface TaskAssigneeMenuProps {
@@ -25,7 +25,8 @@ export function TaskAssigneeMenu({
 }: TaskAssigneeMenuProps) {
   const [open, setOpen] = useState(false)
   const updateTask = useUpdateTask()
-  const { data: projectMembers = [], isLoading: isLoadingMembers } = useProjectMembers(task.project_id)
+  const { data: projectMembers = [], isLoading: isLoadingMembers } =
+    useProjectMembers(task.project_id)
 
   const handleAssign = async (userId: string) => {
     try {
@@ -67,14 +68,16 @@ export function TaskAssigneeMenu({
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant='ghost' size='sm' className='w-full justify-start gap-2'>
+        <Button
+          variant='ghost'
+          size='sm'
+          className='w-full justify-start gap-2'
+        >
           {currentAssignee && currentMember ? (
             <>
               <Avatar className='h-5 w-5'>
                 <AvatarImage src={currentMember.email} />
-                <AvatarFallback className='text-xs'>
-                  {initials}
-                </AvatarFallback>
+                <AvatarFallback className='text-xs'>{initials}</AvatarFallback>
               </Avatar>
               <span className='truncate text-xs'>
                 {currentMember.name.split(' ')[0]}
@@ -83,7 +86,7 @@ export function TaskAssigneeMenu({
           ) : (
             <>
               <Users className='h-4 w-4' />
-              <span className='text-xs text-muted-foreground'>Assign</span>
+              <span className='text-muted-foreground text-xs'>Assign</span>
             </>
           )}
           <ChevronDown className='ml-auto h-3 w-3 opacity-50' />
@@ -99,7 +102,7 @@ export function TaskAssigneeMenu({
             <Loader2 className='h-4 w-4 animate-spin' />
           </div>
         ) : projectMembers.length === 0 ? (
-          <div className='p-2 text-xs text-muted-foreground'>
+          <div className='text-muted-foreground p-2 text-xs'>
             No team members. Invite members to the project.
           </div>
         ) : (
@@ -123,7 +126,7 @@ export function TaskAssigneeMenu({
                 </Avatar>
                 <span className='flex-1 text-sm'>{member.name || 'User'}</span>
                 {currentAssignee === member.id && (
-                  <Check className='h-4 w-4 text-primary' />
+                  <Check className='text-primary h-4 w-4' />
                 )}
               </DropdownMenuItem>
             ))}
@@ -135,7 +138,7 @@ export function TaskAssigneeMenu({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={handleUnassign}
-              className='text-xs text-muted-foreground cursor-pointer'
+              className='text-muted-foreground cursor-pointer text-xs'
             >
               Unassign
             </DropdownMenuItem>

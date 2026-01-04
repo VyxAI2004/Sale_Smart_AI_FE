@@ -232,16 +232,22 @@ export function ProductCrawl() {
                   id='review-limit'
                   value={reviewLimit}
                   onChange={(e) =>
-                    setReviewLimit(e.target.value === 'max' ? 999999 : parseInt(e.target.value) || 30)
+                    setReviewLimit(
+                      e.target.value === 'max'
+                        ? 999999
+                        : parseInt(e.target.value) || 30
+                    )
                   }
-                  className='w-full px-3 py-2 border rounded-md bg-background'
+                  className='bg-background w-full rounded-md border px-3 py-2'
                 >
-                  <option value="30">30 reviews</option>
-                  <option value="50">50 reviews</option>
-                  <option value="100">100 reviews</option>
-                  <option value="200">200 reviews</option>
-                  <option value="500">500 reviews</option>
-                  <option value="999999">Max ({product?.review_count || 0} reviews available)</option>
+                  <option value='30'>30 reviews</option>
+                  <option value='50'>50 reviews</option>
+                  <option value='100'>100 reviews</option>
+                  <option value='200'>200 reviews</option>
+                  <option value='500'>500 reviews</option>
+                  <option value='999999'>
+                    Max ({product?.review_count || 0} reviews available)
+                  </option>
                 </select>
                 <p className='text-muted-foreground text-xs'>
                   Select the maximum number of reviews to crawl

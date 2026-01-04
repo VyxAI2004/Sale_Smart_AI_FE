@@ -10,8 +10,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import type { Task } from '../types/task.types'
-import { TaskDetailDialog } from './task-detail-dialog'
 import { TaskAssigneeMenu } from './task-assignee-menu'
+import { TaskDetailDialog } from './task-detail-dialog'
 
 interface TasksKanbanCardProps {
   task: Task
@@ -112,7 +112,11 @@ export function TasksKanbanCard({
           {/* Tags: Priority and Task Type */}
           <div className='flex flex-wrap items-center gap-1.5'>
             <Badge
-              variant={task.priority ? (getPriorityColor(task.priority) as any) : 'default'}
+              variant={
+                task.priority
+                  ? (getPriorityColor(task.priority) as any)
+                  : 'default'
+              }
               className='text-xs'
             >
               {task.priority === 'high'
@@ -125,7 +129,7 @@ export function TasksKanbanCard({
               {getTaskTypeLabel(task.task_type)}
             </Badge>
             {task.product_name && (
-              <Badge variant='secondary' className='text-xs truncate max-w-40'>
+              <Badge variant='secondary' className='max-w-40 truncate text-xs'>
                 {task.product_name}
               </Badge>
             )}

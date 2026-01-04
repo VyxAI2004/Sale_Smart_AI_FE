@@ -19,10 +19,10 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { ProjectMemberInvite } from '@/features/projects/components/project-member-invite'
 import { TaskApi } from '../api/task-api'
 import type { Task } from '../types/task.types'
 import { TasksKanbanBoard } from './tasks-kanban-board'
-import { ProjectMemberInvite } from '@/features/projects/components/project-member-invite'
 
 export function TasksPage() {
   const { activeProject } = useProjectContext()
@@ -129,9 +129,7 @@ export function TasksPage() {
         .filter((t) => t.product_id && t.product_name)
         .map((t) => ({ id: t.product_id, name: t.product_name }))
     )
-  ).filter(
-    (v, i, a) => a.findIndex((t) => t.id === v.id) === i
-  )
+  ).filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i)
 
   return (
     <>

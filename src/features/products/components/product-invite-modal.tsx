@@ -1,9 +1,7 @@
-/**
- * Product Invite Modal Component
- */
 'use client'
 
 import { useState } from 'react'
+import type { UUID } from 'crypto'
 import { Mail, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,7 +21,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useInviteToProduct } from '../hooks/use-product-members'
-import type { UUID } from 'crypto'
 
 interface ProductInviteModalProps {
   productId: string
@@ -76,7 +73,7 @@ export function ProductInviteModal({
           <div className='space-y-2'>
             <Label htmlFor='email'>Email Address</Label>
             <div className='relative'>
-              <Mail className='absolute left-3 top-2.5 h-4 w-4 text-gray-400' />
+              <Mail className='absolute top-2.5 left-3 h-4 w-4 text-gray-400' />
               <Input
                 id='email'
                 type='email'

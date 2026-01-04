@@ -1,22 +1,25 @@
-/**
- * Product Members List Component
- */
 'use client'
 
 import { Trash2, UserCog, Users } from 'lucide-react'
+import { getAvatarProps } from '@/utils/avatar-utils'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { getAvatarProps } from '@/utils/avatar-utils'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { useProductMembers, useRemoveProductMember } from '../hooks/use-product-members'
+import {
+  useProductMembers,
+  useRemoveProductMember,
+} from '../hooks/use-product-members'
 
 interface ProductMembersListProps {
   productId: string
   onInviteClick?: () => void
 }
 
-export function ProductMembersList({ productId, onInviteClick }: ProductMembersListProps) {
+export function ProductMembersList({
+  productId,
+  onInviteClick,
+}: ProductMembersListProps) {
   const { data: members, isLoading, error } = useProductMembers(productId)
   const removeMutation = useRemoveProductMember()
 
@@ -42,7 +45,7 @@ export function ProductMembersList({ productId, onInviteClick }: ProductMembersL
         <CardContent>
           <div className='space-y-3'>
             {[1, 2, 3].map((i) => (
-              <div key={i} className='h-12 bg-gray-200 rounded animate-pulse' />
+              <div key={i} className='h-12 animate-pulse rounded bg-gray-200' />
             ))}
           </div>
         </CardContent>
@@ -81,10 +84,15 @@ export function ProductMembersList({ productId, onInviteClick }: ProductMembersL
       </CardHeader>
       <CardContent>
         {!members || members.length === 0 ? (
-          <div className='text-center py-8 text-gray-500'>
-            <UserCog className='h-12 w-12 mx-auto mb-2 opacity-50' />
+          <div className='py-8 text-center text-gray-500'>
+            <UserCog className='mx-auto mb-2 h-12 w-12 opacity-50' />
             <p>No team members yet</p>
-            <Button variant='outline' size='sm' className='mt-4' onClick={onInviteClick}>
+            <Button
+              variant='outline'
+              size='sm'
+              className='mt-4'
+              onClick={onInviteClick}
+            >
               Invite someone
             </Button>
           </div>
@@ -95,17 +103,21 @@ export function ProductMembersList({ productId, onInviteClick }: ProductMembersL
               return (
                 <div
                   key={member.id}
-                  className='flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition'
+                  className='flex items-center justify-between rounded-lg bg-gray-50 p-3 transition hover:bg-gray-100'
                 >
-                  <div className='flex items-center gap-3 flex-1 min-w-0'>
+                  <div className='flex min-w-0 flex-1 items-center gap-3'>
                     <Avatar className='h-8 w-8'>
                       <AvatarFallback className={avatarProps.colorClass}>
                         {avatarProps.initials}
                       </AvatarFallback>
                     </Avatar>
-                    <div className='flex-1 min-w-0'>
-                      <p className='text-sm font-medium truncate'>{member.user_name}</p>
-                      <p className='text-xs text-gray-500 truncate'>{member.user_email}</p>
+                    <div className='min-w-0 flex-1'>
+                      <p className='truncate text-sm font-medium'>
+                        {member.user_name}
+                      </p>
+                      <p className='truncate text-xs text-gray-500'>
+                        {member.user_email}
+                      </p>
                     </div>
                   </div>
 
@@ -118,7 +130,9 @@ export function ProductMembersList({ productId, onInviteClick }: ProductMembersL
                     <Button
                       size='sm'
                       variant='ghost'
-                      onClick={() => handleRemoveMember(member.user_id as string)}
+                      onClick={() =>
+                        handleRemoveMember(member.user_id as string)
+                      }
                       disabled={removeMutation.isPending}
                     >
                       <Trash2 className='h-4 w-4 text-red-500 hover:text-red-700' />

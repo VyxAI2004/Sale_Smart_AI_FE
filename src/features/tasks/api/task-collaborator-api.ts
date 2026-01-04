@@ -1,8 +1,8 @@
 /**
  * Task Collaborator API Client - handles direct API calls for task collaborator management
  */
-import http from '@/utils/http'
 import type { UUID } from 'crypto'
+import http from '@/utils/http'
 
 export interface TaskCollaboratorResponse {
   id: UUID
@@ -11,7 +11,7 @@ export interface TaskCollaboratorResponse {
   user_name?: string
   user_email?: string
   user_avatar?: string
-  role: string  // read_only, editor, collaborator
+  role: string // read_only, editor, collaborator
   is_active: boolean
   invited_at?: string
   invited_by_name?: string
@@ -22,7 +22,7 @@ export interface TaskCollaboratorResponse {
 
 export interface TaskInvitePayload {
   user_email: string
-  role?: string  // read_only, editor, collaborator
+  role?: string // read_only, editor, collaborator
   message?: string
 }
 
@@ -88,8 +88,6 @@ export class TaskCollaboratorApi {
     taskId: string,
     userId: string
   ): Promise<void> {
-    await http.delete(
-      `${this.BASE_PATH}/${taskId}/collaborators/${userId}`
-    )
+    await http.delete(`${this.BASE_PATH}/${taskId}/collaborators/${userId}`)
   }
 }

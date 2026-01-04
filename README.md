@@ -34,24 +34,26 @@ src/
 
 ## Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm run dev` | Start development server |
-| `pnpm run build` | Build for production |
-| `pnpm run preview` | Preview production build |
-| `pnpm run lint` | Run ESLint |
-| `pnpm run type-check` | Check TypeScript types |
+| Command               | Description              |
+| --------------------- | ------------------------ |
+| `pnpm run dev`        | Start development server |
+| `pnpm run build`      | Build for production     |
+| `pnpm run preview`    | Preview production build |
+| `pnpm run lint`       | Run ESLint               |
+| `pnpm run type-check` | Check TypeScript types   |
 
 ## Component Customization Notes
 
 Some Shadcn UI components have been customized for better RTL support and additional improvements:
 
 **Modified Components:**
+
 - scroll-area
 - sonner
 - separator
 
 **RTL Updated Components:**
+
 - alert-dialog, calendar, command, dialog, dropdown-menu, select, table, sheet, sidebar, switch
 
 When updating components via Shadcn CLI, ensure you preserve these customizations. Standard components can be safely updated.
@@ -75,32 +77,38 @@ When updating components via Shadcn CLI, ensure you preserve these customization
 ## Quick Start
 
 ### Prerequisites
+
 - Node.js 18+
 - pnpm (recommended) or npm
 
 ### Installation
 
 1. **Install dependencies:**
+
 ```bash
 pnpm install
 ```
 
 2. **Start development server:**
+
 ```bash
 pnpm run dev
 ```
 
 3. **Open browser:**
+
 ```
 http://localhost:5173
 ```
 
 ### Build for Production
+
 ```bash
 pnpm run build
 ```
 
 ### Preview Production Build
+
 ```bash
 pnpm run preview
 ```

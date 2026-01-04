@@ -2,14 +2,21 @@
  * Custom hooks for Task Collaborator management
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { TaskCollaboratorApi, type TaskCollaboratorResponse, type TaskInvitePayload } from '../api/task-collaborator-api'
+import {
+  TaskCollaboratorApi,
+  type TaskCollaboratorResponse,
+  type TaskInvitePayload,
+} from '../api/task-collaborator-api'
 
 const TASK_COLLABORATORS_QUERY_KEY = 'task-collaborators'
 
 /**
  * Hook to fetch task collaborators
  */
-export const useTaskCollaborators = (taskId: string | undefined, options?: { skip?: number; limit?: number }) => {
+export const useTaskCollaborators = (
+  taskId: string | undefined,
+  options?: { skip?: number; limit?: number }
+) => {
   return useQuery({
     queryKey: [TASK_COLLABORATORS_QUERY_KEY, taskId, options],
     queryFn: async () => {
@@ -27,7 +34,11 @@ export const useTaskCollaborators = (taskId: string | undefined, options?: { ski
 export const useInviteTaskCollaborator = () => {
   const queryClient = useQueryClient()
 
-  return useMutation<TaskCollaboratorResponse, Error, { taskId: string; payload: TaskInvitePayload }>({
+  return useMutation<
+    TaskCollaboratorResponse,
+    Error,
+    { taskId: string; payload: TaskInvitePayload }
+  >({
     mutationFn: async ({
       taskId,
       payload,
@@ -52,7 +63,16 @@ export const useInviteTaskCollaborator = () => {
 export const useUpdateTaskCollaborator = () => {
   const queryClient = useQueryClient()
 
-  return useMutation<TaskCollaboratorResponse, Error, { taskId: string; userId: string; role?: string; permissions?: Record<string, any> }>({
+  return useMutation<
+    TaskCollaboratorResponse,
+    Error,
+    {
+      taskId: string
+      userId: string
+      role?: string
+      permissions?: Record<string, any>
+    }
+  >({
     mutationFn: async ({
       taskId,
       userId,
@@ -84,7 +104,13 @@ export const useRemoveTaskCollaborator = () => {
   const queryClient = useQueryClient()
 
   return useMutation<void, Error, { taskId: string; userId: string }>({
-    mutationFn: async ({ taskId, userId }: { taskId: string; userId: string }) => {
+    mutationFn: async ({
+      taskId,
+      userId,
+    }: {
+      taskId: string
+      userId: string
+    }) => {
       await TaskCollaboratorApi.removeCollaborator(taskId, userId)
     },
     onSuccess: (_data, variables) => {

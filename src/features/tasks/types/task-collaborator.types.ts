@@ -10,7 +10,7 @@ export interface TaskCollaborator {
   user_name?: string
   user_email?: string
   user_avatar?: string
-  role: string  // read_only, editor, collaborator
+  role: string // read_only, editor, collaborator
   is_active: boolean
   invited_at?: string
   invited_by_name?: string
@@ -21,26 +21,29 @@ export interface TaskCollaborator {
 
 export interface TaskInvite {
   user_email: string
-  role?: string  // read_only, editor, collaborator
+  role?: string // read_only, editor, collaborator
   message?: string
 }
 
 export type TaskCollaboratorRole = 'read_only' | 'editor' | 'collaborator'
 
-export const TASK_COLLABORATOR_ROLES: Record<TaskCollaboratorRole, { label: string; icon: string; description: string }> = {
+export const TASK_COLLABORATOR_ROLES: Record<
+  TaskCollaboratorRole,
+  { label: string; icon: string; description: string }
+> = {
   read_only: {
     label: 'View Only',
     icon: 'Eye',
-    description: 'Can view task and comments'
+    description: 'Can view task and comments',
   },
   editor: {
     label: 'Editor',
     icon: 'Edit',
-    description: 'Can view and edit task details'
+    description: 'Can view and edit task details',
   },
   collaborator: {
     label: 'Collaborator',
     icon: 'Users',
-    description: 'Can edit, comment, and manage'
-  }
+    description: 'Can edit, comment, and manage',
+  },
 }

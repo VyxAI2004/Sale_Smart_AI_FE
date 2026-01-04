@@ -1,8 +1,8 @@
 /**
  * Product Member API Client - handles direct API calls for product member management
  */
-import http from '@/utils/http'
 import type { UUID } from 'crypto'
+import http from '@/utils/http'
 
 export interface ProductMemberResponse {
   id: UUID
@@ -82,12 +82,7 @@ export class ProductMemberApi {
   /**
    * Remove user from product
    */
-  static async removeMember(
-    productId: string,
-    userId: string
-  ): Promise<void> {
-    await http.delete(
-      `${this.BASE_PATH}/${productId}/members/${userId}`
-    )
+  static async removeMember(productId: string, userId: string): Promise<void> {
+    await http.delete(`${this.BASE_PATH}/${productId}/members/${userId}`)
   }
 }

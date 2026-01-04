@@ -11,9 +11,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useProducts } from '../hooks/use-products'
+import { ProductsCardGrid } from './products-card-grid'
 import { ProductsTable } from './products-table'
 import { ProductsTableSkeleton } from './products-table-skeleton'
-import { ProductsCardGrid } from './products-card-grid'
 
 interface ProductsListProps {
   projectId: string
@@ -145,7 +145,7 @@ export function ProductsList({ projectId }: ProductsListProps) {
             <Download className='mr-2 h-4 w-4' />
             Xuất
           </Button>
-          <div className='flex items-center gap-1 border rounded-md p-1 ml-2'>
+          <div className='ml-2 flex items-center gap-1 rounded-md border p-1'>
             <Button
               variant={viewMode === 'table' ? 'default' : 'ghost'}
               size='sm'

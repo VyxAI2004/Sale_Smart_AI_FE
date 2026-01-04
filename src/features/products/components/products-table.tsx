@@ -132,10 +132,10 @@ export function ProductsTable({ products, onEdit }: ProductsTableProps) {
 
                 <TableCell>
                   {(() => {
-                    const avg = (product.specifications as any)?.detailed_rating?.avg
+                    const avg = (product.specifications as any)?.detailed_rating
+                      ?.avg
                     return avg ? (
                       <div className='flex items-center gap-1'>
-
                         <span>{Number(avg).toFixed(1)}</span>
                       </div>
                     ) : (
@@ -146,7 +146,9 @@ export function ProductsTable({ products, onEdit }: ProductsTableProps) {
 
                 <TableCell>
                   {(() => {
-                    const count = (product.specifications as any)?.detailed_rating?.count || product.review_count
+                    const count =
+                      (product.specifications as any)?.detailed_rating?.count ||
+                      product.review_count
                     return count || 0
                   })()}
                 </TableCell>

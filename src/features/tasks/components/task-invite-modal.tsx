@@ -1,6 +1,3 @@
-/**
- * Task Collaborators Invite Modal Component
- */
 'use client'
 
 import { useState } from 'react'
@@ -32,7 +29,11 @@ interface TaskInviteModalProps {
   onClose: () => void
 }
 
-export function TaskInviteModal({ taskId, isOpen, onClose }: TaskInviteModalProps) {
+export function TaskInviteModal({
+  taskId,
+  isOpen,
+  onClose,
+}: TaskInviteModalProps) {
   const [email, setEmail] = useState('')
   const [role, setRole] = useState<string>('collaborator')
   const [message, setMessage] = useState('')
@@ -74,7 +75,7 @@ export function TaskInviteModal({ taskId, isOpen, onClose }: TaskInviteModalProp
           <div className='space-y-2'>
             <Label htmlFor='email'>Email Address</Label>
             <div className='relative'>
-              <Mail className='absolute left-3 top-2.5 h-4 w-4 text-gray-400' />
+              <Mail className='absolute top-2.5 left-3 h-4 w-4 text-gray-400' />
               <Input
                 id='email'
                 type='email'
@@ -97,7 +98,9 @@ export function TaskInviteModal({ taskId, isOpen, onClose }: TaskInviteModalProp
                   <SelectItem key={key} value={key}>
                     <div className='flex items-center gap-2'>
                       <span>{value.label}</span>
-                      <span className='text-xs text-gray-500'>({value.description})</span>
+                      <span className='text-xs text-gray-500'>
+                        ({value.description})
+                      </span>
                     </div>
                   </SelectItem>
                 ))}
