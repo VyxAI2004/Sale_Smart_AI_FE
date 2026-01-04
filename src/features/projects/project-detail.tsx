@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { Maximize2, Minimize2, Loader2 } from 'lucide-react'
+import { Maximize2, Minimize2, Loader2, Users } from 'lucide-react'
 import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
 import {
@@ -21,6 +21,7 @@ import { ProjectDetailApi } from './api/project-detail-api'
 import { ProjectDetailTabs } from './components/dashboard/project-detail-tabs'
 // Dashboard Components
 import { ProjectHeader } from './components/dashboard/project-header'
+import { ProjectMemberInvite } from './components/project-member-invite'
 import type { ProjectDetailData } from './types/project-detail.types'
 
 export function ProjectDetail() {
@@ -33,6 +34,7 @@ export function ProjectDetail() {
   const [isFullWidth, setIsFullWidth] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<string>('overview')
+  const [showInviteModal, setShowInviteModal] = useState(false)
 
   useEffect(() => {
     if (!projectId) {
@@ -209,6 +211,7 @@ export function ProjectDetail() {
         <ProjectHeader
           project={project}
           onTriggerCrawl={() => setActiveTab('find-product')}
+          onInviteMembers={() => setShowInviteModal(true)}
         />
 
         <ProjectDetailTabs
@@ -218,6 +221,15 @@ export function ProjectDetail() {
           onTabChange={setActiveTab}
           onProjectUpdate={handleProjectUpdate}
         />
+
+        {/* Invite Modal */}
+        {project && (
+          <ProjectMemberInvite
+            projectId={project.id}
+            open={showInviteModal}
+            onOpenChange={setShowInviteModal}
+          />
+        )}
       </Main>
     </div>
   )

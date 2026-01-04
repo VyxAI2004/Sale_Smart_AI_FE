@@ -2,7 +2,6 @@ import { useNavigate, Link } from '@tanstack/react-router'
 import {
   MoreHorizontal,
   ExternalLink,
-  Star,
   TrendingUp,
   Download,
   Eye,

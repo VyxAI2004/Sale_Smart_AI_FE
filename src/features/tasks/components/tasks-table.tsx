@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { getRouteApi } from '@tanstack/react-router'
 import {
   type SortingState,
@@ -61,6 +61,7 @@ export function TasksTable({ data }: DataTableProps) {
     columnFilters: [
       { columnId: 'status', searchKey: 'status', type: 'array' },
       { columnId: 'priority', searchKey: 'priority', type: 'array' },
+      { columnId: 'product_name', searchKey: 'product', type: 'array' },
     ],
   })
 
@@ -102,6 +103,22 @@ export function TasksTable({ data }: DataTableProps) {
     ensurePageInRange(pageCount)
   }, [pageCount, ensurePageInRange])
 
+  // Compute unique products from data
+  const uniqueProducts = useMemo(() => {
+    const seen = new Set<string>()
+    return data
+      .filter((task) => task.product_name && task.product_id)
+      .map((task) => ({
+        label: task.product_name || 'Unknown',
+        value: task.product_id || '',
+      }))
+      .filter((product) => {
+        if (seen.has(product.value)) return false
+        seen.add(product.value)
+        return true
+      })
+  }, [data])
+
   return (
     <div className='space-y-4 max-sm:has-[div[role="toolbar"]]:mb-16'>
       <DataTableToolbar
@@ -117,6 +134,11 @@ export function TasksTable({ data }: DataTableProps) {
             columnId: 'priority',
             title: 'Priority',
             options: priorities,
+          },
+          {
+            columnId: 'product_name',
+            title: 'Product',
+            options: uniqueProducts,
           },
         ]}
       />

@@ -11,6 +11,7 @@ import {
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import type { Task } from '../types/task.types'
 import { TaskDetailDialog } from './task-detail-dialog'
+import { TaskAssigneeMenu } from './task-assignee-menu'
 
 interface TasksKanbanCardProps {
   task: Task
@@ -128,6 +129,11 @@ export function TasksKanbanCard({
                 {task.product_name}
               </Badge>
             )}
+          </div>
+
+          {/* Assignment */}
+          <div>
+            <TaskAssigneeMenu task={task} currentAssignee={task.assigned_to} />
           </div>
 
           {/* Metadata: Time and Date */}

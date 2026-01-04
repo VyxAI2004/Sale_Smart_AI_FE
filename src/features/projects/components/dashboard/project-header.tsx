@@ -26,6 +26,7 @@ interface ProjectHeaderProps {
   onDelete?: () => void
   onShare?: () => void
   onTriggerCrawl?: () => void
+  onInviteMembers?: () => void
 }
 
 export function ProjectHeader({
@@ -35,6 +36,7 @@ export function ProjectHeader({
   onDelete,
   onShare,
   onTriggerCrawl,
+  onInviteMembers,
 }: ProjectHeaderProps) {
   const { t } = useTranslation()
   const getStatusBadge = (status: string) => {
@@ -227,6 +229,18 @@ export function ProjectHeader({
 
         {/* Actions - Same as ProjectsPrimaryButtons style */}
         <div className='flex items-center gap-2'>
+          {onInviteMembers && (
+            <Button
+              size='sm'
+              variant='outline'
+              onClick={onInviteMembers}
+              className='flex items-center gap-2'
+            >
+              <Users className='h-4 w-4' />
+              {t('projects.inviteMembers')}
+            </Button>
+          )}
+
           {onTriggerCrawl && (
             <Button
               size='sm'

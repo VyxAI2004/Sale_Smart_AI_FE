@@ -5,6 +5,7 @@ import { DataTableColumnHeader } from '@/components/data-table'
 import { labels, priorities, statuses } from '../data/data'
 import { type Task } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
+import { TaskAssigneeMenu } from './task-assignee-menu'
 
 export const tasksColumns: ColumnDef<Task>[] = [
   {
@@ -59,6 +60,29 @@ export const tasksColumns: ColumnDef<Task>[] = [
     },
   },
   {
+    accessorKey: 'product_name',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Product' />
+    ),
+    cell: ({ row }) => {
+      const productName = row.getValue('product_name')
+      
+      if (!productName) {
+        return <span className='text-muted-foreground'>-</span>
+      }
+
+      return (
+        <Badge variant='secondary' className='truncate max-w-[150px]'>
+          {productName}
+        </Badge>
+      )
+    },
+    filterFn: (row, id, value) => {
+      const productName = String(row.getValue(id)).toLowerCase()
+      return value.some((v: string) => productName.includes(v.toLowerCase()))
+    },
+  },
+  {
     accessorKey: 'status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Status' />
@@ -84,6 +108,22 @@ export const tasksColumns: ColumnDef<Task>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
+  },
+  {
+    accessorKey: 'assigned_to',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Assigned To' />
+    ),
+    cell: ({ row }) => {
+      const assignedTo = row.getValue('assigned_to') as string | null
+      
+      return (
+        <div className='w-[120px]'>
+          <TaskAssigneeMenu task={row.original} currentAssignee={assignedTo} />
+        </div>
+      )
+    },
+    enableSorting: false,
   },
   {
     accessorKey: 'priority',

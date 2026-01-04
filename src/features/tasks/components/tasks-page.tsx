@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useProjectContext } from '@/contexts/project-context'
-import { Loader2, Filter } from 'lucide-react'
+import { Loader2, Filter, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -22,6 +22,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { TaskApi } from '../api/task-api'
 import type { Task } from '../types/task.types'
 import { TasksKanbanBoard } from './tasks-kanban-board'
+import { ProjectMemberInvite } from '@/features/projects/components/project-member-invite'
 
 export function TasksPage() {
   const { activeProject } = useProjectContext()
@@ -31,6 +32,7 @@ export function TasksPage() {
   const [priorityFilter, setPriorityFilter] = useState<string>('all')
   const [taskTypeFilter, setTaskTypeFilter] = useState<string>('all')
   const [productFilter, setProductFilter] = useState<string>('all')
+  const [showInviteModal, setShowInviteModal] = useState(false)
 
   const loadTasks = async () => {
     try {
@@ -153,6 +155,15 @@ export function TasksPage() {
                 : 'Quản lý tất cả nhiệm vụ'}
             </p>
           </div>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => setShowInviteModal(true)}
+            className='gap-2'
+          >
+            <Users className='h-4 w-4' />
+            Mời thành viên
+          </Button>
         </div>
 
         {/* View Mode Toggle and Filters */}
@@ -266,6 +277,15 @@ export function TasksPage() {
             canCheckTask={canCheckTask}
             getNextTaskOrder={getNextTaskOrder}
             onDeleteTask={handleDeleteTask}
+          />
+        )}
+
+        {/* Invite Modal */}
+        {activeProject && (
+          <ProjectMemberInvite
+            projectId={activeProject.id}
+            open={showInviteModal}
+            onOpenChange={setShowInviteModal}
           />
         )}
       </Main>
