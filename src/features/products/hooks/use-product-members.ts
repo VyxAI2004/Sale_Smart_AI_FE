@@ -2,7 +2,7 @@
  * Custom hooks for Product Member management
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ProductMemberApi, type ProductInvitePayload } from '../api/product-member-api'
+import { ProductMemberApi, type ProductMemberResponse, type ProductInvitePayload } from '../api/product-member-api'
 import type { UUID } from 'crypto'
 
 const PRODUCT_MEMBERS_QUERY_KEY = 'product-members'
@@ -28,7 +28,7 @@ export const useProductMembers = (productId: string | undefined, options?: { ski
 export const useInviteToProduct = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useMutation<ProductMemberResponse, Error, { productId: string; payload: ProductInvitePayload }>({
     mutationFn: async ({
       productId,
       payload,
@@ -53,7 +53,7 @@ export const useInviteToProduct = () => {
 export const useUpdateProductMemberRole = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useMutation<ProductMemberResponse, Error, { productId: string; userId: string; role_id?: UUID; permissions?: Record<string, any> }>({
     mutationFn: async ({
       productId,
       userId,
@@ -84,9 +84,9 @@ export const useUpdateProductMemberRole = () => {
 export const useRemoveProductMember = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useMutation<void, Error, { productId: string; userId: string }>({
     mutationFn: async ({ productId, userId }: { productId: string; userId: string }) => {
-      return ProductMemberApi.removeMember(productId, userId)
+      await ProductMemberApi.removeMember(productId, userId)
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
