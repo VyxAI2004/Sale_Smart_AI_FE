@@ -73,7 +73,7 @@ export const tasksColumns: ColumnDef<Task>[] = [
 
       return (
         <Badge variant='secondary' className='truncate max-w-[150px]'>
-          {productName}
+          {String(productName)}
         </Badge>
       )
     },

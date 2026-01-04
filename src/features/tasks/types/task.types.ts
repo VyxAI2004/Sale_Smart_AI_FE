@@ -4,14 +4,14 @@ export interface Task {
   product_id?: string | null
   product_name?: string | null
   crawl_session_id?: string | null
-  name: string
+  name?: string
   description?: string | null
-  pipeline_stage: string
-  stage_order: number
+  pipeline_stage?: string
+  stage_order?: number
   task_order?: number | null
   task_type?: string | null
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled'
-  priority: 'low' | 'medium' | 'high'
+  status?: string
+  priority?: string
   assigned_to?: string | null
   assigned_model_id?: string | null
   due_date?: string | null
@@ -19,8 +19,8 @@ export interface Task {
   estimated_hours?: number | null
   actual_hours?: number | null
   stage_metadata?: Record<string, any> | null
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface TaskCreate {

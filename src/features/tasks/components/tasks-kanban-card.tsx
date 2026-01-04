@@ -112,7 +112,7 @@ export function TasksKanbanCard({
           {/* Tags: Priority and Task Type */}
           <div className='flex flex-wrap items-center gap-1.5'>
             <Badge
-              variant={getPriorityColor(task.priority) as any}
+              variant={task.priority ? (getPriorityColor(task.priority) as any) : 'default'}
               className='text-xs'
             >
               {task.priority === 'high'

@@ -345,7 +345,7 @@ export function TaskDetailDialog({
           {/* Tags */}
           <div className='flex flex-wrap items-center gap-2'>
             <Badge
-              variant={getPriorityColor(task.priority) as any}
+              variant={task.priority ? (getPriorityColor(task.priority) as any) : 'default'}
               className='text-xs'
             >
               {task.priority === 'high'
@@ -358,7 +358,7 @@ export function TaskDetailDialog({
               {getTaskTypeLabel(task.task_type)}
             </Badge>
             <Badge variant='secondary' className='text-xs'>
-              {getStatusLabel(task.status)}
+              {task.status ? getStatusLabel(task.status) : '-'}
             </Badge>
           </div>
 
@@ -422,25 +422,25 @@ export function TaskDetailDialog({
               <div>
                 <p className='text-muted-foreground'>Ngày tạo</p>
                 <p className='mt-1'>
-                  {new Date(task.created_at).toLocaleDateString('vi-VN', {
+                  {task.created_at ? new Date(task.created_at).toLocaleDateString('vi-VN', {
                     day: '2-digit',
                     month: '2-digit',
                     year: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit',
-                  })}
+                  }) : '-'}
                 </p>
               </div>
               <div>
                 <p className='text-muted-foreground'>Cập nhật lần cuối</p>
                 <p className='mt-1'>
-                  {new Date(task.updated_at).toLocaleDateString('vi-VN', {
+                  {task.updated_at ? new Date(task.updated_at).toLocaleDateString('vi-VN', {
                     day: '2-digit',
                     month: '2-digit',
                     year: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit',
-                  })}
+                  }) : '-'}
                 </p>
               </div>
             </div>
