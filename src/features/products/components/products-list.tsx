@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, Filter, Download } from 'lucide-react'
+import { Search, Filter, Download, Grid, List } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -13,6 +13,7 @@ import {
 import { useProducts } from '../hooks/use-products'
 import { ProductsTable } from './products-table'
 import { ProductsTableSkeleton } from './products-table-skeleton'
+import { ProductsCardGrid } from './products-card-grid'
 
 interface ProductsListProps {
   projectId: string
@@ -24,6 +25,7 @@ export function ProductsList({ projectId }: ProductsListProps) {
   const [platform, setPlatform] = useState<string>('')
   const [category, setCategory] = useState<string>('')
   const [skip, setSkip] = useState(0)
+  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table')
   const limit = 20
 
   const { data, isLoading, error, refetch } = useProducts(projectId, {
@@ -143,6 +145,26 @@ export function ProductsList({ projectId }: ProductsListProps) {
             <Download className='mr-2 h-4 w-4' />
             Xuất
           </Button>
+          <div className='flex items-center gap-1 border rounded-md p-1 ml-2'>
+            <Button
+              variant={viewMode === 'table' ? 'default' : 'ghost'}
+              size='sm'
+              className='h-8 w-8 p-0'
+              onClick={() => setViewMode('table')}
+              title='Xem dạng bảng'
+            >
+              <List className='h-4 w-4' />
+            </Button>
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'ghost'}
+              size='sm'
+              className='h-8 w-8 p-0'
+              onClick={() => setViewMode('grid')}
+              title='Xem dạng card'
+            >
+              <Grid className='h-4 w-4' />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -150,7 +172,21 @@ export function ProductsList({ projectId }: ProductsListProps) {
         <ProductsTableSkeleton />
       ) : (
         <>
-          <ProductsTable products={data?.items || []} projectId={projectId} />
+          {viewMode === 'table' ? (
+            <ProductsTable products={data?.items || []} projectId={projectId} />
+          ) : (
+            <ProductsCardGrid
+              products={data?.items || []}
+              onViewProduct={(productId) => {
+                // Navigate to product detail page
+                window.location.href = `/products/${productId}`
+              }}
+              onCrawlReviews={(productId) => {
+                // Navigate to crawl page
+                window.location.href = `/products/${productId}/crawl`
+              }}
+            />
+          )}
           {data && data.total > limit && (
             <div className='flex items-center justify-between'>
               <div className='text-muted-foreground text-sm'>

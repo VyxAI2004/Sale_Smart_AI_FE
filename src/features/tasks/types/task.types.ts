@@ -1,6 +1,8 @@
 export interface Task {
   id: string
   project_id: string
+  product_id?: string | null
+  product_name?: string | null
   crawl_session_id?: string | null
   name: string
   description?: string | null
@@ -23,6 +25,7 @@ export interface Task {
 
 export interface TaskCreate {
   project_id: string
+  product_id?: string
   crawl_session_id?: string
   name: string
   description?: string
@@ -50,6 +53,7 @@ export interface TaskUpdate {
   priority?: string
   assigned_to?: string
   assigned_model_id?: string
+  product_id?: string
   due_date?: string
   estimated_hours?: number
   actual_hours?: number
@@ -79,6 +83,7 @@ export interface TaskGenerationResponse {
 
 export interface TaskFilters {
   project_id?: string
+  product_id?: string
   assigned_to?: string
   status?: string
   task_type?: string

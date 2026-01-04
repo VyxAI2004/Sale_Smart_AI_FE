@@ -18,6 +18,7 @@ export class TaskApi {
   static async getAll(filters?: TaskFilters): Promise<Task[]> {
     const params = new URLSearchParams()
     if (filters?.project_id) params.append('project_id', filters.project_id)
+    if (filters?.product_id) params.append('product_id', filters.product_id)
     if (filters?.assigned_to) params.append('assigned_to', filters.assigned_to)
     if (filters?.status) params.append('status', filters.status)
 

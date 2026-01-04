@@ -132,17 +132,25 @@ export function ProductsTable({ products, onEdit }: ProductsTableProps) {
                 </TableCell>
 
                 <TableCell>
-                  {product.average_rating ? (
-                    <div className='flex items-center gap-1'>
-                      <Star className='h-4 w-4 fill-yellow-400 text-yellow-400' />
-                      <span>{product.average_rating.toFixed(1)}</span>
-                    </div>
-                  ) : (
-                    <span className='text-muted-foreground'>-</span>
-                  )}
+                  {(() => {
+                    const avg = (product.specifications as any)?.detailed_rating?.avg
+                    return avg ? (
+                      <div className='flex items-center gap-1'>
+
+                        <span>{Number(avg).toFixed(1)}</span>
+                      </div>
+                    ) : (
+                      <span className='text-muted-foreground'>-</span>
+                    )
+                  })()}
                 </TableCell>
 
-                <TableCell>{product.review_count || 0}</TableCell>
+                <TableCell>
+                  {(() => {
+                    const count = (product.specifications as any)?.detailed_rating?.count || product.review_count
+                    return count || 0
+                  })()}
+                </TableCell>
 
                 <TableCell>
                   {typeof product.trust_score === 'number' ? (

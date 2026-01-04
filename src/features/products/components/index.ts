@@ -1,4 +1,5 @@
 export { ProductsTable } from './products-table'
+export { ProductsCardGrid } from './products-card-grid'
 export { ProductsList } from './products-list'
 export { ProductDetail } from './product-detail'
 export { ProductsTableSkeleton } from './products-table-skeleton'

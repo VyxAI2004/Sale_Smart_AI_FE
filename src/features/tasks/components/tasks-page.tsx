@@ -30,6 +30,7 @@ export function TasksPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [priorityFilter, setPriorityFilter] = useState<string>('all')
   const [taskTypeFilter, setTaskTypeFilter] = useState<string>('all')
+  const [productFilter, setProductFilter] = useState<string>('all')
 
   const loadTasks = async () => {
     try {
@@ -105,6 +106,8 @@ export function TasksPage() {
       return false
     if (taskTypeFilter !== 'all' && task.task_type !== taskTypeFilter)
       return false
+    if (productFilter !== 'all' && task.product_id !== productFilter)
+      return false
     return true
   })
 
@@ -116,6 +119,16 @@ export function TasksPage() {
 
   const uniqueTaskTypes = Array.from(
     new Set(tasks.map((t) => t.task_type).filter(Boolean))
+  )
+
+  const uniqueProducts = Array.from(
+    new Set(
+      tasks
+        .filter((t) => t.product_id && t.product_name)
+        .map((t) => ({ id: t.product_id, name: t.product_name }))
+    )
+  ).filter(
+    (v, i, a) => a.findIndex((t) => t.id === v.id) === i
   )
 
   return (
@@ -184,6 +197,22 @@ export function TasksPage() {
                   {uniqueTaskTypes.map((type) => (
                     <SelectItem key={type || ''} value={type || ''}>
                       {getTaskTypeLabel(type)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+
+            {uniqueProducts.length > 0 && (
+              <Select value={productFilter} onValueChange={setProductFilter}>
+                <SelectTrigger className='w-[200px]'>
+                  <SelectValue placeholder='Sản phẩm' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='all'>Tất cả sản phẩm</SelectItem>
+                  {uniqueProducts.map((product) => (
+                    <SelectItem key={product.id || ''} value={product.id || ''}>
+                      {product.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

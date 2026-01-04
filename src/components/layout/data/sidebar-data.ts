@@ -29,7 +29,7 @@ export const getSidebarData = (): SidebarData => {
     projects: [] as Project[],
     teams: [
       {
-        name: 'Shadcn Admin',
+        name: 'Sale Smart AI',
         logo: Command,
         plan: 'Vite + ShadcnUI',
       },

@@ -123,6 +123,11 @@ export function TasksKanbanCard({
             <Badge variant='outline' className='text-xs'>
               {getTaskTypeLabel(task.task_type)}
             </Badge>
+            {task.product_name && (
+              <Badge variant='secondary' className='text-xs truncate max-w-40'>
+                {task.product_name}
+              </Badge>
+            )}
           </div>
 
           {/* Metadata: Time and Date */}

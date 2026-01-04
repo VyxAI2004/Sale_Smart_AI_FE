@@ -229,18 +229,23 @@ export function ProductCrawl() {
             <CardContent className='space-y-4'>
               <div className='space-y-2'>
                 <Label htmlFor='review-limit'>Review Limit</Label>
-                <Input
+                <select
                   id='review-limit'
-                  type='number'
-                  min={0}
-                  max={100}
                   value={reviewLimit}
                   onChange={(e) =>
-                    setReviewLimit(parseInt(e.target.value) || 30)
+                    setReviewLimit(e.target.value === 'max' ? 999999 : parseInt(e.target.value) || 30)
                   }
-                />
+                  className='w-full px-3 py-2 border rounded-md bg-background'
+                >
+                  <option value="30">30 reviews</option>
+                  <option value="50">50 reviews</option>
+                  <option value="100">100 reviews</option>
+                  <option value="200">200 reviews</option>
+                  <option value="500">500 reviews</option>
+                  <option value="999999">Max ({product?.review_count || 0} reviews available)</option>
+                </select>
                 <p className='text-muted-foreground text-xs'>
-                  Maximum number of reviews to crawl (0-100)
+                  Select the maximum number of reviews to crawl
                 </p>
               </div>
               <Button
