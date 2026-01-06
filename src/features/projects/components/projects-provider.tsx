@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
+import { useDerivedState } from '@/hooks/use-derived-state'
 import { type ProjectApiResponse } from '../api/project-api'
 
 type ProjectsDialogType = 'add' | 'edit' | 'delete' | 'archive'
@@ -7,19 +8,38 @@ type ProjectsDialogType = 'add' | 'edit' | 'delete' | 'archive'
 type ProjectsContextType = {
   open: ProjectsDialogType | null
   setOpen: (str: ProjectsDialogType | null) => void
+  currentRowId: string | null
+  setCurrentRowId: (id: string | null) => void
+  setCurrentRow: (row: ProjectApiResponse | null) => void
   currentRow: ProjectApiResponse | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<ProjectApiResponse | null>>
+  onRefresh?: () => Promise<void>
 }
 
 const ProjectsContext = React.createContext<ProjectsContextType | null>(null)
 
-export function ProjectsProvider({ children }: { children: React.ReactNode }) {
+/**
+ * ProjectsProvider - Context provider for projects feature
+ * 
+ * Uses derived state pattern for currentRow to avoid out-of-sync bugs.
+ * Only stores currentRowId, derives currentRow from projects array.
+ */
+export function ProjectsProvider({
+  children,
+  projects = [],
+  onRefresh,
+}: {
+  children: React.ReactNode
+  projects?: ProjectApiResponse[]
+  onRefresh?: () => Promise<void>
+}) {
   const [open, setOpen] = useDialogState<ProjectsDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<ProjectApiResponse | null>(null)
+
+  const { selected: currentRow, setSelectedId: setCurrentRowId } = useDerivedState(projects, 'id')
+  const setCurrentRow = (row: ProjectApiResponse | null) => setCurrentRowId(row?.id ?? null)
 
   return (
     <ProjectsContext.Provider
-      value={{ open, setOpen, currentRow, setCurrentRow }}
+      value={{ open, setOpen, currentRowId: currentRow?.id ?? null, setCurrentRowId, setCurrentRow, currentRow, onRefresh }}
     >
       {children}
     </ProjectsContext.Provider>

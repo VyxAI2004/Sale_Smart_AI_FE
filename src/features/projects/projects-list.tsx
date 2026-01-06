@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { getRouteApi } from '@tanstack/react-router'
 import { Loader2, Maximize2, Minimize2 } from 'lucide-react'
 import { useTranslation } from '@/hooks/use-translation'
@@ -32,25 +32,25 @@ export function Projects() {
   const [loading, setLoading] = useState(true)
   const [isFullWidth, setIsFullWidth] = useState(false)
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await ProjectApi.getMyProjects({ limit: 10 })
-        setProjects(response.items || [])
-      } catch (_error) {
-        // Failed to fetch projects, use empty array
-        setProjects([])
-      } finally {
-        setLoading(false)
-      }
+  const fetchProjects = useCallback(async () => {
+    try {
+      const response = await ProjectApi.getMyProjects({ limit: 10 })
+      setProjects(response.items || [])
+    } catch (_error) {
+      // Failed to fetch projects, use empty array
+      setProjects([])
+    } finally {
+      setLoading(false)
     }
-
-    fetchProjects()
   }, [])
+
+  useEffect(() => {
+    fetchProjects()
+  }, [fetchProjects])
 
   if (loading) {
     return (
-      <ProjectsProvider>
+      <ProjectsProvider onRefresh={fetchProjects}>
         <Header fixed>
           <Search />
           <div className='ms-auto flex items-center space-x-4'>
@@ -95,7 +95,7 @@ export function Projects() {
   }
 
   return (
-    <ProjectsProvider>
+    <ProjectsProvider onRefresh={fetchProjects}>
       <Header fixed>
         <Search />
         <div className='ms-auto flex items-center space-x-4'>

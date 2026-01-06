@@ -9,7 +9,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { FindProductWorkflow } from '../components/find-product-workflow'
+import { ProductSearchInterface } from '../components/product-search-interface'
 
 export function FindProductsPage() {
   const { t } = useTranslation()
@@ -48,15 +48,9 @@ export function FindProductsPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className='space-y-6'>
-            <FindProductWorkflow
-              projectId={activeProject.id}
-              onComplete={() => {
-                // Optionally refresh or navigate
-                console.log('Find product workflow completed')
-              }}
-            />
-          </div>
+          <ProductSearchInterface
+            projectId={activeProject.id}
+          />
         )}
       </Main>
     </>

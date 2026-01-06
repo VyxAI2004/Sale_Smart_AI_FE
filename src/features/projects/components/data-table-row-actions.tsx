@@ -21,7 +21,7 @@ type DataTableRowActionsProps = {
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { t } = useTranslation()
-  const { setOpen, setCurrentRow } = useProjects()
+  const { setOpen, setCurrentRowId } = useProjects()
   const project = row.original
 
   return (
@@ -50,7 +50,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
 
           <DropdownMenuItem
             onClick={() => {
-              setCurrentRow(project)
+              setCurrentRowId(project.id)
               setOpen('edit')
             }}
           >
@@ -63,7 +63,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           {project.status === 'ready' ? (
             <DropdownMenuItem
               onClick={() => {
-                setCurrentRow(project)
+                setCurrentRowId(project.id)
                 // TODO: Implement pause functionality
               }}
             >
@@ -75,7 +75,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           ) : project.status === 'paused' ? (
             <DropdownMenuItem
               onClick={() => {
-                setCurrentRow(project)
+                setCurrentRowId(project.id)
                 // TODO: Implement resume functionality
               }}
             >
@@ -88,7 +88,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
 
           <DropdownMenuItem
             onClick={() => {
-              setCurrentRow(project)
+              setCurrentRowId(project.id)
               setOpen('archive')
             }}
           >
@@ -101,7 +101,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {
-              setCurrentRow(project)
+              setCurrentRowId(project.id)
               setOpen('delete')
             }}
             className='text-destructive focus:text-destructive'

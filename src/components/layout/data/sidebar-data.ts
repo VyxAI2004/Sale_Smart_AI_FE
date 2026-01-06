@@ -13,6 +13,7 @@ import {
   ShoppingCart,
   Search,
   BarChart3,
+  Users,
 } from 'lucide-react'
 import i18n from '@/lib/i18n'
 import { type SidebarData, type Project } from '../types'
@@ -52,6 +53,11 @@ export const getSidebarData = (): SidebarData => {
             title: t('sidebar.dashboard'),
             url: '/',
             icon: LayoutDashboard,
+          },
+          {
+            title: 'Teams',
+            url: '/teams',
+            icon: Users,
           },
           {
             title: t('sidebar.tasks'),

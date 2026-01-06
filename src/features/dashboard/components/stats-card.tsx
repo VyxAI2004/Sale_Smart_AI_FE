@@ -1,7 +1,7 @@
 /**
  * Stats Card Component - Hiển thị một metric với icon và trend
  */
-import { LucideIcon } from 'lucide-react'
+import { type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 

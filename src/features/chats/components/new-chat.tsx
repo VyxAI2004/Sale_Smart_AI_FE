@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Check, X } from 'lucide-react'
 import { showSubmittedData } from '@/lib/show-submitted-data'
+import { useMultiDerivedState } from '@/hooks/use-derived-state'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -26,26 +27,16 @@ type NewChatProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
+
 export function NewChat({ users, onOpenChange, open }: NewChatProps) {
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([])
-
-  const handleSelectUser = (user: User) => {
-    if (!selectedUsers.find((u) => u.id === user.id)) {
-      setSelectedUsers([...selectedUsers, user])
-    } else {
-      handleRemoveUser(user.id)
-    }
-  }
-
-  const handleRemoveUser = (userId: string) => {
-    setSelectedUsers(selectedUsers.filter((user) => user.id !== userId))
-  }
+  // ✅ Multi-select derived state pattern - store IDs, derive selected users from array
+  const { selectedIds, toggleSelect, selected: selectedUsers, clearAll } = useMultiDerivedState(users, 'id')
 
   useEffect(() => {
     if (!open) {
-      setSelectedUsers([])
+      clearAll()
     }
-  }, [open])
+  }, [open, clearAll])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -63,10 +54,10 @@ export function NewChat({ users, onOpenChange, open }: NewChatProps) {
                   className='ring-offset-background focus:ring-ring ms-1 rounded-full outline-hidden focus:ring-2 focus:ring-offset-2'
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                      handleRemoveUser(user.id)
+                      toggleSelect(user.id)
                     }
                   }}
-                  onClick={() => handleRemoveUser(user.id)}
+                  onClick={() => toggleSelect(user.id)}
                 >
                   <X className='text-muted-foreground hover:text-foreground h-3 w-3' />
                 </button>
@@ -84,7 +75,7 @@ export function NewChat({ users, onOpenChange, open }: NewChatProps) {
                 {users.map((user) => (
                   <CommandItem
                     key={user.id}
-                    onSelect={() => handleSelectUser(user)}
+                    onSelect={() => toggleSelect(user.id)}
                     className='hover:bg-accent hover:text-accent-foreground flex items-center justify-between gap-2'
                   >
                     <div className='flex items-center gap-2'>
@@ -103,7 +94,7 @@ export function NewChat({ users, onOpenChange, open }: NewChatProps) {
                       </div>
                     </div>
 
-                    {selectedUsers.find((u) => u.id === user.id) && (
+                    {selectedIds.includes(user.id) && (
                       <Check className='h-4 w-4' />
                     )}
                   </CommandItem>

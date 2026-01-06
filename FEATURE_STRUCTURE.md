@@ -1,4 +1,4 @@
-# Cấu trúc Feature chuẩn cho dự án FE Production
+﻿# Cấu trúc Feature chuẩn cho dự án FE Production
 
 ## Tổng quan
 
@@ -172,3 +172,116 @@ features/products/
 5. **Documentation**: Thêm JSDoc cho public APIs
 6. **Type safety**: Sử dụng TypeScript đầy đủ, tránh `any`
 
+## Data Sync Pattern (Derived State)
+
+### Problem: Out-of-sync State
+Khi dùng snapshot state cho selected items, data có thể out-of-sync sau khi refetch:
+```typescript
+// ❌ Anti-pattern - snapshot state
+const [selectedTeam, setSelectedTeam] = useState<ITeam | null>(null)
+// selectedTeam không update khi teams array refetch
+```
+
+### Solution: Derived State
+Dùng ID state thay vì snapshot, compute selected object từ array:
+```typescript
+// ✅ Best practice - derived state
+const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null)
+const selectedTeam = selectedTeamId 
+  ? teams.find(t => t.id === selectedTeamId) ?? null 
+  : null
+```
+
+### Lợi ích
+- **Auto-sync**: Khi `teams` array refetch → `selectedTeam` tự động update
+- **Single source of truth**: Chỉ có 1 array, không duplicate data
+- **No callbacks**: Không cần manual refetch callbacks
+- **Less bugs**: Loại bỏ out-of-sync issues
+
+### Data Flow Example
+
+```typescript
+// 1. Page component
+const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null)
+const { data: teams = [] } = useTeams(0, 100)
+
+// Derived state - luôn sync với teams array
+const selectedTeam = selectedTeamId 
+  ? teams.find(t => t.id === selectedTeamId) ?? null 
+  : null
+
+// 2. Click detail → chỉ set ID
+const handleShowDetail = (team: ITeam) => {
+  setSelectedTeamId(team.id)  // ← Chỉ lưu ID
+  setShowDetailDialog(true)
+}
+
+// 3. Edit member success
+// - Hook invalidates query
+// - Teams array refetch
+// - selectedTeam auto-update (derived state recalculate)
+// - Detail dialog auto-render với data mới
+```
+
+### Code Structure
+```typescript
+// ✅ Good
+const [selectedId, setSelectedId] = useState<string | null>(null)
+const selected = items.find(i => i.id === selectedId) ?? null
+// Use `selected` in render - always fresh data
+
+// ❌ Bad
+const [selected, setSelected] = useState<Item | null>(null)
+// selected is stale after refetch
+```
+
+### Khi nào dùng
+- Khi component hiển thị thông tin từ list
+- Khi có thể có refresh/refetch data
+- Khi muốn auto-sync mà không cần callbacks
+- Khi component open/close và data có thể thay đổi
+
+## Query Management Pattern
+
+**Xem chi tiết:** [QUERY_MANAGEMENT_PATTERN.md](QUERY_MANAGEMENT_PATTERN.md)
+
+Đây là base practice chuẩn cho việc fetch, cache, và sync data. Pattern này đảm bảo:
+- ✅ Chỉ refetch những query cần thiết (không full page reload)
+- ✅ Data luôn sync qua derived state pattern
+- ✅ Scoped invalidation (tránh invalidate toàn bộ)
+- ✅ Component-level queries (component nào query data nó cần)
+
+### Quick Summary
+
+**Query Key Structure (Hierarchical):**
+```typescript
+QUERY_KEYS = {
+  teams: {
+    all: ['teams'],
+    lists: () => ['teams', 'list'],
+    list: (skip, limit) => ['teams', 'list', skip, limit],
+    details: () => ['teams', 'detail'],
+    detail: (id) => ['teams', 'detail', id],
+  },
+}
+```
+
+**Scoped Invalidation:**
+```typescript
+onSuccess: (data, variables) => {
+  // ✅ Invalidate chỉ affected queries
+  queryClient.invalidateQueries({
+    queryKey: QUERY_KEYS.teams.members(variables.teamId),
+  })
+}
+```
+
+**CRUD Operation & State Type:**
+| CRUD | State | Why |
+|------|-------|-----|
+| **Create** | ❌ Derived, ✅ Snapshot | Form input tạm |
+| **Read** | ✅ Derived | Luôn fresh |
+| **Update** | ✅ Derived + ✅ Snapshot | Display + form |
+| **Delete** | ✅ Derived | Auto cleanup |
+
+Tham khảo [QUERY_MANAGEMENT_PATTERN.md](QUERY_MANAGEMENT_PATTERN.md) để xem đầy đủ: query key setup, invalidation mapping, component pattern, cache strategy, real-world examples, migration guide.
