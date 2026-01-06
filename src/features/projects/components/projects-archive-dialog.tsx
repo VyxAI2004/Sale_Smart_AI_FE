@@ -47,17 +47,14 @@ export function ProjectArchiveDialog({
       disabled={isArchiving}
       title={
         <span>
-          <AlertTriangle
-            className='me-1 inline-block'
-            size={18}
-          />{' '}
+          <AlertTriangle className='me-1 inline-block' size={18} />{' '}
           {t('projects.archive')}
         </span>
       }
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            {t('common.areYouSure')} {' '}
+            {t('common.areYouSure')}{' '}
             <span className='font-bold'>{currentRow.name}</span>
             ?
             <br />

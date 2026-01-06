@@ -1,8 +1,14 @@
 'use client'
 
 import { Star, ShoppingCart, TrendingUp } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import type { Product } from '../types/product.types'
 
 interface FilterResultsDisplayProps {
@@ -18,7 +24,7 @@ export function FilterResultsDisplay({
     return (
       <Card>
         <CardContent className='pt-6'>
-          <div className='text-center py-8 text-muted-foreground'>
+          <div className='text-muted-foreground py-8 text-center'>
             Không tìm thấy sản phẩm nào phù hợp với tiêu chí tìm kiếm.
           </div>
         </CardContent>
@@ -37,13 +43,13 @@ export function FilterResultsDisplay({
       </Card>
 
       {/* Products List */}
-      <div className='space-y-3 max-h-[600px] overflow-y-auto'>
+      <div className='max-h-[600px] space-y-3 overflow-y-auto'>
         {items.map((product) => (
-          <Card key={product.id} className='hover:shadow-md transition-shadow'>
+          <Card key={product.id} className='transition-shadow hover:shadow-md'>
             <CardContent className='pt-4'>
               <div className='space-y-2'>
                 {/* Product Name */}
-                <h3 className='font-medium text-sm line-clamp-2 text-foreground'>
+                <h3 className='text-foreground line-clamp-2 text-sm font-medium'>
                   {product.name}
                 </h3>
 
@@ -68,11 +74,11 @@ export function FilterResultsDisplay({
                 </div>
 
                 {/* Price & Stats */}
-                <div className='grid grid-cols-2 gap-3 mt-3'>
+                <div className='mt-3 grid grid-cols-2 gap-3'>
                   {/* Price */}
                   <div className='bg-muted/50 rounded p-2'>
-                    <div className='text-xs text-muted-foreground'>Giá</div>
-                    <div className='font-semibold text-sm text-foreground'>
+                    <div className='text-muted-foreground text-xs'>Giá</div>
+                    <div className='text-foreground text-sm font-semibold'>
                       ₫{product.current_price?.toLocaleString('vi-VN')}
                     </div>
                     {product.discount_rate && (
@@ -98,10 +104,13 @@ export function FilterResultsDisplay({
                       </div>
                     )}
                     {product.sold_count && (
-                      <div className='flex items-center gap-1 text-muted-foreground'>
+                      <div className='text-muted-foreground flex items-center gap-1'>
                         <ShoppingCart className='h-3 w-3' />
                         <span>
-                          {(product.sold_count as number).toLocaleString('vi-VN')} bán
+                          {(product.sold_count as number).toLocaleString(
+                            'vi-VN'
+                          )}{' '}
+                          bán
                         </span>
                       </div>
                     )}
@@ -122,7 +131,7 @@ export function FilterResultsDisplay({
                     href={product.url}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='text-xs text-blue-600 hover:underline block truncate mt-2'
+                    className='mt-2 block truncate text-xs text-blue-600 hover:underline'
                   >
                     Xem trên sàn →
                   </a>

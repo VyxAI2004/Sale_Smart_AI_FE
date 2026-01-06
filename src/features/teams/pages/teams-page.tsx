@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import type { UUID } from 'crypto'
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
-import { useTranslation } from '@/hooks/use-translation'
 import { useDerivedState } from '@/hooks/use-derived-state'
+import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { ConfigDrawer } from '@/components/config-drawer'
@@ -20,7 +21,6 @@ import {
 } from '../components'
 import { useTeams, useDeleteTeam } from '../index'
 import type { ITeam } from '../types'
-import type { UUID } from 'crypto'
 
 export function TeamsPage() {
   const { t } = useTranslation()
@@ -28,11 +28,16 @@ export function TeamsPage() {
   const [showAddMemberDialog, setShowAddMemberDialog] = useState(false)
   const [showDetailDialog, setShowDetailDialog] = useState(false)
 
-  const { data: teams = [], isLoading: isLoadingTeams, refetch } = useTeams(0, 100)
+  const {
+    data: teams = [],
+    isLoading: isLoadingTeams,
+    refetch,
+  } = useTeams(0, 100)
   const { mutate: deleteTeam } = useDeleteTeam()
 
   // ✅ Derived state - always in sync with teams array
-  const { setSelectedId: setSelectedTeamId, selected: selectedTeam } = useDerivedState(teams, 'id')
+  const { setSelectedId: setSelectedTeamId, selected: selectedTeam } =
+    useDerivedState(teams, 'id')
 
   const handleDeleteTeam = (teamId: string) => {
     return new Promise<void>((resolve, reject) => {
@@ -78,9 +83,7 @@ export function TeamsPage() {
             <h2 className='text-2xl font-bold tracking-tight'>
               {t('teams.title')}
             </h2>
-            <p className='text-muted-foreground'>
-              {t('teams.description')}
-            </p>
+            <p className='text-muted-foreground'>{t('teams.description')}</p>
           </div>
           <Button onClick={() => setShowCreateTeamDialog(true)}>
             <Plus className='mr-2 h-4 w-4' />
@@ -97,7 +100,9 @@ export function TeamsPage() {
             </div>
           ) : teams.length === 0 ? (
             <div className='rounded-lg border border-dashed p-12 text-center'>
-              <p className='text-muted-foreground'>{t('teams.content.noTeamsYet')}</p>
+              <p className='text-muted-foreground'>
+                {t('teams.content.noTeamsYet')}
+              </p>
               <Button
                 onClick={() => setShowCreateTeamDialog(true)}
                 className='mt-4'
@@ -159,4 +164,3 @@ export function TeamsPage() {
     </>
   )
 }
-

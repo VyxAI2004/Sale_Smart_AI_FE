@@ -6,7 +6,11 @@ type ContentSectionProps = {
   children: React.JSX.Element
 }
 
-export function TeamContentSection({ title, desc, children }: ContentSectionProps) {
+export function TeamContentSection({
+  title,
+  desc,
+  children,
+}: ContentSectionProps) {
   return (
     <div className='flex flex-1 flex-col'>
       <div className='flex-none'>

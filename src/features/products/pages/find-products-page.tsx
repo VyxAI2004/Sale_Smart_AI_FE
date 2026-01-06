@@ -48,9 +48,7 @@ export function FindProductsPage() {
             </CardContent>
           </Card>
         ) : (
-          <ProductSearchInterface
-            projectId={activeProject.id}
-          />
+          <ProductSearchInterface projectId={activeProject.id} />
         )}
       </Main>
     </>

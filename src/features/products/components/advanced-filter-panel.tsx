@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -46,10 +46,16 @@ export function AdvancedFilterPanel({
       if (result.data) {
         // Filter results based on rating and review count
         const filtered = result.data.items.filter((product) => {
-          if (minRating && (product.average_rating ?? 0) < parseFloat(minRating)) {
+          if (
+            minRating &&
+            (product.average_rating ?? 0) < parseFloat(minRating)
+          ) {
             return false
           }
-          if (minReviews && (product.review_count ?? 0) < parseInt(minReviews)) {
+          if (
+            minReviews &&
+            (product.review_count ?? 0) < parseInt(minReviews)
+          ) {
             return false
           }
           if (minSold && (product.sold_count ?? 0) < parseInt(minSold)) {
@@ -75,7 +81,10 @@ export function AdvancedFilterPanel({
         <Label className='text-sm font-semibold'>Khoảng giá</Label>
         <div className='grid grid-cols-2 gap-3'>
           <div>
-            <Label htmlFor='min-price' className='text-xs text-muted-foreground'>
+            <Label
+              htmlFor='min-price'
+              className='text-muted-foreground text-xs'
+            >
               Giá tối thiểu
             </Label>
             <Input
@@ -88,7 +97,10 @@ export function AdvancedFilterPanel({
             />
           </div>
           <div>
-            <Label htmlFor='max-price' className='text-xs text-muted-foreground'>
+            <Label
+              htmlFor='max-price'
+              className='text-muted-foreground text-xs'
+            >
               Giá tối đa
             </Label>
             <Input
@@ -131,7 +143,6 @@ export function AdvancedFilterPanel({
             <SelectValue placeholder='Bất kỳ' />
           </SelectTrigger>
           <SelectContent>
-
             <SelectItem value='100'>100+</SelectItem>
             <SelectItem value='500'>500+</SelectItem>
             <SelectItem value='1000'>1000+</SelectItem>
@@ -150,7 +161,6 @@ export function AdvancedFilterPanel({
             <SelectValue placeholder='Bất kỳ' />
           </SelectTrigger>
           <SelectContent>
-
             <SelectItem value='100'>100+</SelectItem>
             <SelectItem value='500'>500+</SelectItem>
             <SelectItem value='1000'>1000+</SelectItem>
@@ -169,7 +179,6 @@ export function AdvancedFilterPanel({
             <SelectValue placeholder='Chọn sàn' />
           </SelectTrigger>
           <SelectContent>
-
             <SelectItem value='shopee'>Shopee</SelectItem>
             <SelectItem value='lazada'>Lazada</SelectItem>
             <SelectItem value='tiki'>Tiki</SelectItem>

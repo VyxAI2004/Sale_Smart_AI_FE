@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -13,7 +13,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useProductAISearchMutation } from '../hooks/use-product-ai'
-import type { PlatformEnum, ProductSearchResponse } from '../types/product-ai.types'
+import type {
+  PlatformEnum,
+  ProductSearchResponse,
+} from '../types/product-ai.types'
 
 interface FreeQueryPanelProps {
   projectId: string
@@ -95,7 +98,10 @@ export function FreeQueryPanel({
         <Label htmlFor='platform' className='text-sm font-semibold'>
           Sàn thương mại
         </Label>
-        <Select value={platform} onValueChange={(val) => setPlatform(val as PlatformEnum)}>
+        <Select
+          value={platform}
+          onValueChange={(val) => setPlatform(val as PlatformEnum)}
+        >
           <SelectTrigger id='platform'>
             <SelectValue />
           </SelectTrigger>
@@ -115,7 +121,9 @@ export function FreeQueryPanel({
         className='w-full'
         size='lg'
       >
-        {aiSearch.isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+        {aiSearch.isPending && (
+          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+        )}
         Tìm kiếm
       </Button>
 

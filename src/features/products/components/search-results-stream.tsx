@@ -2,8 +2,14 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { AlertCircle, CheckCircle2, Package } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import type { ProductSearchResponse } from '../types/product-ai.types'
 
 interface SearchResultsStreamProps {
@@ -51,7 +57,7 @@ export function SearchResultsStream({
           <CardDescription>{searchResults.project_info.name}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className='text-sm leading-relaxed whitespace-pre-wrap text-foreground'>
+          <div className='text-foreground text-sm leading-relaxed whitespace-pre-wrap'>
             {displayedAnalysis}
           </div>
         </CardContent>
@@ -61,13 +67,14 @@ export function SearchResultsStream({
       {searchResults.recommended_products.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className='text-base flex items-center gap-2'>
+            <CardTitle className='flex items-center gap-2 text-base'>
               <CheckCircle2 className='h-5 w-5 text-green-600' />
-              Sản phẩm được đề xuất ({searchResults.recommended_products.length})
+              Sản phẩm được đề xuất ({searchResults.recommended_products.length}
+              )
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='space-y-3 max-h-96 overflow-y-auto'>
+            <div className='max-h-96 space-y-3 overflow-y-auto'>
               {searchResults.recommended_products.map((product, idx) => (
                 <div
                   key={idx}
@@ -75,19 +82,20 @@ export function SearchResultsStream({
                 >
                   <div className='flex items-start justify-between gap-2'>
                     <div className='flex-1'>
-                      <h4 className='font-medium text-sm text-foreground line-clamp-2'>
+                      <h4 className='text-foreground line-clamp-2 text-sm font-medium'>
                         {product.name}
                       </h4>
-                      <div className='mt-2 text-xs text-muted-foreground space-y-1'>
+                      <div className='text-muted-foreground mt-2 space-y-1 text-xs'>
                         <div>
-                          💰 Giá: {product.estimated_price?.toLocaleString('vi-VN')} VND
+                          💰 Giá:{' '}
+                          {product.estimated_price?.toLocaleString('vi-VN')} VND
                         </div>
                         {'url' in product && product.url && (
                           <a
                             href={product.url}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='text-blue-600 hover:underline block truncate'
+                            className='block truncate text-blue-600 hover:underline'
                           >
                             Xem trên sàn →
                           </a>
@@ -99,7 +107,7 @@ export function SearchResultsStream({
                                 href={product.urls.shopee}
                                 target='_blank'
                                 rel='noopener noreferrer'
-                                className='text-blue-600 hover:underline block truncate'
+                                className='block truncate text-blue-600 hover:underline'
                               >
                                 🛒 Shopee
                               </a>
@@ -109,7 +117,7 @@ export function SearchResultsStream({
                                 href={product.urls.lazada}
                                 target='_blank'
                                 rel='noopener noreferrer'
-                                className='text-blue-600 hover:underline block truncate'
+                                className='block truncate text-blue-600 hover:underline'
                               >
                                 🛒 Lazada
                               </a>
@@ -119,7 +127,7 @@ export function SearchResultsStream({
                                 href={product.urls.tiki}
                                 target='_blank'
                                 rel='noopener noreferrer'
-                                className='text-blue-600 hover:underline block truncate'
+                                className='block truncate text-blue-600 hover:underline'
                               >
                                 🛒 Tiki
                               </a>
@@ -128,7 +136,7 @@ export function SearchResultsStream({
                         )}
                       </div>
                     </div>
-                    <Package className='h-5 w-5 text-green-600 flex-shrink-0 mt-1' />
+                    <Package className='mt-1 h-5 w-5 flex-shrink-0 text-green-600' />
                   </div>
                 </div>
               ))}
@@ -146,13 +154,13 @@ export function SearchResultsStream({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='space-y-2 max-h-72 overflow-y-auto'>
+            <div className='max-h-72 space-y-2 overflow-y-auto'>
               {searchResults.all_products.map((product, idx) => (
                 <div
                   key={idx}
-                  className='rounded p-2 border border-border bg-muted/30 text-xs'
+                  className='border-border bg-muted/30 rounded border p-2 text-xs'
                 >
-                  <div className='font-medium text-foreground line-clamp-1'>
+                  <div className='text-foreground line-clamp-1 font-medium'>
                     {product.name}
                   </div>
                   <div className='text-muted-foreground mt-1'>
@@ -170,17 +178,23 @@ export function SearchResultsStream({
         <Alert>
           <AlertCircle className='h-4 w-4' />
           <AlertDescription>
-            <div className='text-xs space-y-1'>
+            <div className='space-y-1 text-xs'>
               {searchResults.grounding_metadata.step1_analysis && (
                 <div>
                   📊 Analysis grounding supports:{' '}
-                  {searchResults.grounding_metadata.step1_analysis.grounding_supports}
+                  {
+                    searchResults.grounding_metadata.step1_analysis
+                      .grounding_supports
+                  }
                 </div>
               )}
               {searchResults.grounding_metadata.step2_links && (
                 <div>
                   🔗 Links grounding supports:{' '}
-                  {searchResults.grounding_metadata.step2_links.grounding_supports}
+                  {
+                    searchResults.grounding_metadata.step2_links
+                      .grounding_supports
+                  }
                 </div>
               )}
             </div>
@@ -191,7 +205,9 @@ export function SearchResultsStream({
       {searchResults.note && (
         <Alert>
           <AlertCircle className='h-4 w-4' />
-          <AlertDescription className='text-xs'>{searchResults.note}</AlertDescription>
+          <AlertDescription className='text-xs'>
+            {searchResults.note}
+          </AlertDescription>
         </Alert>
       )}
 

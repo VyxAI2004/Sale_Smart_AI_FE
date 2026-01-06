@@ -1,4 +1,12 @@
 import { useNavigate } from '@tanstack/react-router'
+import { MoreHorizontal } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Table,
   TableBody,
@@ -7,14 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { MoreHorizontal } from 'lucide-react'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import type { ITeam } from '../types'
 
 interface TeamsTableProps {
@@ -25,7 +25,7 @@ export function TeamsTable({ teams }: TeamsTableProps) {
   const navigate = useNavigate()
 
   return (
-    <div className='rounded-lg border overflow-hidden'>
+    <div className='overflow-hidden rounded-lg border'>
       <Table>
         <TableHeader>
           <TableRow>
@@ -46,7 +46,7 @@ export function TeamsTable({ teams }: TeamsTableProps) {
                   {team.name}
                 </button>
               </TableCell>
-              <TableCell className='text-sm text-muted-foreground'>
+              <TableCell className='text-muted-foreground text-sm'>
                 {team.description || '-'}
               </TableCell>
               <TableCell className='text-sm'>

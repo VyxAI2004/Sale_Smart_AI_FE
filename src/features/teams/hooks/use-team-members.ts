@@ -1,7 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { createTeamUser, getTeamMembers, inviteUserToTeam, removeTeamMember, updateMemberRole } from '../api'
-import type { ITeamInviteRequest } from '../types'
 import type { UUID } from 'crypto'
+import {
+  createTeamUser,
+  getTeamMembers,
+  inviteUserToTeam,
+  removeTeamMember,
+  updateMemberRole,
+} from '../api'
+import type { ITeamInviteRequest } from '../types'
 
 /**
  * Hook to create new user and add to team
@@ -35,8 +41,13 @@ export const useInviteUserToTeam = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ teamId, request }: { teamId: UUID; request: ITeamInviteRequest }) =>
-      inviteUserToTeam(teamId, request),
+    mutationFn: ({
+      teamId,
+      request,
+    }: {
+      teamId: UUID
+      request: ITeamInviteRequest
+    }) => inviteUserToTeam(teamId, request),
     onSuccess: (_, { teamId }) => {
       // Invalidate team members list
       queryClient.invalidateQueries({ queryKey: ['team-members', teamId] })

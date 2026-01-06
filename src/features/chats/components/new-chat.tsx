@@ -30,7 +30,12 @@ type NewChatProps = {
 
 export function NewChat({ users, onOpenChange, open }: NewChatProps) {
   // ✅ Multi-select derived state pattern - store IDs, derive selected users from array
-  const { selectedIds, toggleSelect, selected: selectedUsers, clearAll } = useMultiDerivedState(users, 'id')
+  const {
+    selectedIds,
+    toggleSelect,
+    selected: selectedUsers,
+    clearAll,
+  } = useMultiDerivedState(users, 'id')
 
   useEffect(() => {
     if (!open) {

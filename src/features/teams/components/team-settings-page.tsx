@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useUpdateTeam } from '../hooks'
-import { TeamMembersList } from './team-members-list'
-import { TeamInviteDialog } from './team-invite-dialog'
 import type { ITeam } from '../types'
+import { TeamInviteDialog } from './team-invite-dialog'
+import { TeamMembersList } from './team-members-list'
 
 interface TeamSettingsPageProps {
   team: ITeam | null
@@ -50,7 +50,7 @@ export const TeamSettingsPage = ({
 
   if (!team) {
     return (
-      <div className='flex justify-center items-center py-12'>
+      <div className='flex items-center justify-center py-12'>
         <div className='text-gray-500'>No team selected</div>
       </div>
     )
@@ -59,13 +59,13 @@ export const TeamSettingsPage = ({
   return (
     <div className='space-y-6'>
       {/* Team Info Section */}
-      <div className='bg-white rounded-lg border p-6'>
-        <div className='flex justify-between items-start mb-4'>
+      <div className='rounded-lg border bg-white p-6'>
+        <div className='mb-4 flex items-start justify-between'>
           <h2 className='text-2xl font-bold'>{team.name}</h2>
           {isUserOwner && (
             <button
               onClick={handleEditClick}
-              className='px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg'
+              className='rounded-lg bg-gray-200 px-3 py-1 text-sm hover:bg-gray-300'
             >
               Edit
             </button>
@@ -75,34 +75,42 @@ export const TeamSettingsPage = ({
         {isEditingInfo ? (
           <div className='space-y-4'>
             <div>
-              <label className='block text-sm font-medium mb-1'>Team Name *</label>
+              <label className='mb-1 block text-sm font-medium'>
+                Team Name *
+              </label>
               <input
                 type='text'
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className='w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none'
               />
             </div>
             <div>
-              <label className='block text-sm font-medium mb-1'>Description</label>
+              <label className='mb-1 block text-sm font-medium'>
+                Description
+              </label>
               <textarea
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 rows={3}
-                className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                className='w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none'
               />
             </div>
             <div className='flex gap-2'>
               <button
                 onClick={handleSaveTeamInfo}
                 disabled={isUpdating}
-                className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50'
+                className='rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50'
               >
                 {isUpdating ? 'Saving...' : 'Save'}
               </button>
               <button
                 onClick={() => setIsEditingInfo(false)}
-                className='px-4 py-2 border rounded-lg hover:bg-gray-50'
+                className='rounded-lg border px-4 py-2 hover:bg-gray-50'
               >
                 Cancel
               </button>
@@ -111,18 +119,21 @@ export const TeamSettingsPage = ({
         ) : (
           <>
             {team.description && (
-              <p className='text-gray-600 mb-2'>{team.description}</p>
+              <p className='mb-2 text-gray-600'>{team.description}</p>
             )}
             <div className='text-sm text-gray-500'>
               <p>Created by: {team.created_by}</p>
-              <p>Created at: {new Date(team.created_at || '').toLocaleDateString()}</p>
+              <p>
+                Created at:{' '}
+                {new Date(team.created_at || '').toLocaleDateString()}
+              </p>
             </div>
           </>
         )}
       </div>
 
       {/* Members Section */}
-      <div className='bg-white rounded-lg border p-6'>
+      <div className='rounded-lg border bg-white p-6'>
         <TeamMembersList
           team={team}
           currentUserId={currentUserId}
@@ -132,10 +143,13 @@ export const TeamSettingsPage = ({
 
       {/* Danger Zone */}
       {isUserOwner && (
-        <div className='bg-red-50 border border-red-200 rounded-lg p-6'>
-          <h3 className='text-lg font-semibold text-red-600 mb-2'>Danger Zone</h3>
-          <p className='text-sm text-gray-600 mb-4'>
-            Deleting this team is permanent and cannot be undone. All team data will be lost.
+        <div className='rounded-lg border border-red-200 bg-red-50 p-6'>
+          <h3 className='mb-2 text-lg font-semibold text-red-600'>
+            Danger Zone
+          </h3>
+          <p className='mb-4 text-sm text-gray-600'>
+            Deleting this team is permanent and cannot be undone. All team data
+            will be lost.
           </p>
           {/* TODO: Implement delete team functionality with DeleteConfirmDialog */}
         </div>

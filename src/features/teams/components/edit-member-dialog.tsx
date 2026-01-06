@@ -1,8 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import type { UUID } from 'crypto'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useTranslation } from '@/hooks/use-translation'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -17,11 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { useTranslation } from '@/hooks/use-translation'
 import { useUpdateTeamMember } from '../hooks'
 import type { ITeamUser } from '../types'
-import type { UUID } from 'crypto'
 
 interface EditMemberDialogProps {
   member: ITeamUser | null

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useCreateTeam } from '../hooks'
+import { AlertCircle, Loader2 } from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -10,10 +11,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { AlertCircle, Loader2 } from 'lucide-react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Textarea } from '@/components/ui/textarea'
+import { useCreateTeam } from '../hooks'
 import type { ITeamCreate } from '../types'
 
 interface TeamCreateDialogProps {
@@ -27,7 +27,11 @@ interface TeamCreateDialogProps {
  * Dialog to create a new team using shadcn components
  * Same pattern as ProjectService
  */
-export const TeamCreateDialog = ({ isOpen, onClose, onSuccess }: TeamCreateDialogProps) => {
+export const TeamCreateDialog = ({
+  isOpen,
+  onClose,
+  onSuccess,
+}: TeamCreateDialogProps) => {
   const [formData, setFormData] = useState<ITeamCreate>({
     name: '',
     description: '',
@@ -58,7 +62,9 @@ export const TeamCreateDialog = ({ isOpen, onClose, onSuccess }: TeamCreateDialo
         onSuccess?.()
       },
       onError: (err: any) => {
-        setError(err.response?.data?.detail || err.message || 'Failed to create team')
+        setError(
+          err.response?.data?.detail || err.message || 'Failed to create team'
+        )
       },
     })
   }
@@ -95,7 +101,9 @@ export const TeamCreateDialog = ({ isOpen, onClose, onSuccess }: TeamCreateDialo
               id='team-name'
               placeholder='My Awesome Team'
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               disabled={isPending}
               autoFocus
             />
@@ -107,7 +115,9 @@ export const TeamCreateDialog = ({ isOpen, onClose, onSuccess }: TeamCreateDialo
               id='team-description'
               placeholder='Enter team description (optional)'
               value={formData.description || ''}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               disabled={isPending}
               className='resize-none'
               rows={4}
@@ -123,7 +133,11 @@ export const TeamCreateDialog = ({ isOpen, onClose, onSuccess }: TeamCreateDialo
             >
               Cancel
             </Button>
-            <Button type='submit' disabled={isPending || !formData.name.trim()} className='gap-2'>
+            <Button
+              type='submit'
+              disabled={isPending || !formData.name.trim()}
+              className='gap-2'
+            >
               {isPending && <Loader2 className='h-4 w-4 animate-spin' />}
               {isPending ? 'Creating...' : 'Create Team'}
             </Button>

@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { useTeamMembers, useUpdateMemberRole, useRemoveTeamMember } from '../hooks'
+import type { UUID } from 'crypto'
+import { AlertCircle, Trash2, UserPlus, Loader2 } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -8,10 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { AlertCircle, Trash2, UserPlus, Loader2 } from 'lucide-react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useTranslation } from '@/hooks/use-translation'
-import type { UUID } from 'crypto'
+import {
+  useTeamMembers,
+  useUpdateMemberRole,
+  useRemoveTeamMember,
+} from '../hooks'
 import type { ITeamUser } from '../types'
 
 interface TeamMembersDisplayProps {
@@ -31,7 +35,8 @@ export const TeamMembersDisplay = ({
   const [updatingRoleId, setUpdatingRoleId] = useState<UUID | null>(null)
   const [removingId, setRemovingId] = useState<UUID | null>(null)
 
-  const { data: rawMembers = [], isLoading: isLoadingMembers } = useTeamMembers(teamId)
+  const { data: rawMembers = [], isLoading: isLoadingMembers } =
+    useTeamMembers(teamId)
   const { mutate: updateRole } = useUpdateMemberRole()
   const { mutate: removeMember } = useRemoveTeamMember()
 
@@ -90,9 +95,7 @@ export const TeamMembersDisplay = ({
     return (
       <Alert variant='destructive'>
         <AlertCircle className='h-4 w-4' />
-        <AlertDescription>
-          {t('teams.errors.noTeamSelected')}
-        </AlertDescription>
+        <AlertDescription>{t('teams.errors.noTeamSelected')}</AlertDescription>
       </Alert>
     )
   }
@@ -118,25 +121,36 @@ export const TeamMembersDisplay = ({
               className='flex items-center justify-between rounded-lg border p-4'
             >
               <div className='flex-1'>
-                <p className='font-medium'>{member.full_name || member.username}</p>
-                <p className='text-sm text-muted-foreground'>
-                  {member.email}
+                <p className='font-medium'>
+                  {member.full_name || member.username}
                 </p>
+                <p className='text-muted-foreground text-sm'>{member.email}</p>
               </div>
 
               <div className='flex items-center gap-2'>
                 <Select
                   value={member.role}
-                  onValueChange={(newRole) => handleRoleChange(member, newRole as RoleType)}
+                  onValueChange={(newRole) =>
+                    handleRoleChange(member, newRole as RoleType)
+                  }
                   disabled={updatingRoleId === member.id}
                 >
-                  <SelectTrigger className='w-[120px]' disabled={updatingRoleId === member.id}>
+                  <SelectTrigger
+                    className='w-[120px]'
+                    disabled={updatingRoleId === member.id}
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='member'>{t('teams.roles.member')}</SelectItem>
-                    <SelectItem value='lead'>{t('teams.roles.lead')}</SelectItem>
-                    <SelectItem value='owner'>{t('teams.roles.owner')}</SelectItem>
+                    <SelectItem value='member'>
+                      {t('teams.roles.member')}
+                    </SelectItem>
+                    <SelectItem value='lead'>
+                      {t('teams.roles.lead')}
+                    </SelectItem>
+                    <SelectItem value='owner'>
+                      {t('teams.roles.owner')}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
 

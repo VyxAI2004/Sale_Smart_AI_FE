@@ -31,8 +31,7 @@ export function DeleteConfirmDialog({
 
   const displayName = itemDisplayName || itemName
 
-  const isConfirmDisabled =
-    requireNameConfirmation && value.trim() !== itemName
+  const isConfirmDisabled = requireNameConfirmation && value.trim() !== itemName
 
   const handleDelete = async () => {
     try {
@@ -66,7 +65,7 @@ export function DeleteConfirmDialog({
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            {t('common.areYouSure')} {' '}
+            {t('common.areYouSure')}{' '}
             <span className='font-bold'>{displayName}</span>
             ?
             <br />

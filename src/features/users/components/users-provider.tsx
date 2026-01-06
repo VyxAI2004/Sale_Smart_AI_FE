@@ -1,6 +1,6 @@
 import React from 'react'
-import useDialogState from '@/hooks/use-dialog-state'
 import { useDerivedState } from '@/hooks/use-derived-state'
+import useDialogState from '@/hooks/use-dialog-state'
 import { type User } from '../data/schema'
 
 type UsersDialogType = 'invite' | 'add' | 'edit' | 'delete'
@@ -17,24 +17,33 @@ const UsersContext = React.createContext<UsersContextType | null>(null)
 
 /**
  * UsersProvider - Context provider for users page
- * 
+ *
  * Uses derived state pattern for currentRow to avoid out-of-sync bugs
  * when data refetches. Only stores currentRowId, derives currentRow from users array.
  */
-export function UsersProvider({ 
-  children, 
-  users = [] 
-}: { 
+export function UsersProvider({
+  children,
+  users = [],
+}: {
   children: React.ReactNode
   users?: User[]
 }) {
   const [open, setOpen] = useDialogState<UsersDialogType>(null)
-  
+
   // ✅ Derived state pattern - store ID only, compute currentRow from users array
-  const { selected: currentRow, setSelectedId: setCurrentRowId } = useDerivedState(users, 'id')
+  const { selected: currentRow, setSelectedId: setCurrentRowId } =
+    useDerivedState(users, 'id')
 
   return (
-    <UsersContext value={{ open, setOpen, currentRowId: currentRow?.id ?? null, setCurrentRowId, currentRow }}>
+    <UsersContext
+      value={{
+        open,
+        setOpen,
+        currentRowId: currentRow?.id ?? null,
+        setCurrentRowId,
+        currentRow,
+      }}
+    >
       {children}
     </UsersContext>
   )

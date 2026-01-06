@@ -1,14 +1,14 @@
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { MoreVertical, Users, Trash2, UserPlus, Info } from 'lucide-react'
+import { toast } from 'sonner'
+import { useTranslation } from '@/hooks/use-translation'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { useTranslation } from '@/hooks/use-translation'
 import type { ITeam, ITeamUser } from '../types'
 import { DeleteConfirmDialog } from './delete-confirm-dialog'
 
@@ -70,13 +70,13 @@ export const TeamCard = ({
   }
 
   return (
-    <div className='rounded-lg border border-border bg-card p-4 shadow-sm hover:shadow-md transition-shadow'>
+    <div className='border-border bg-card rounded-lg border p-4 shadow-sm transition-shadow hover:shadow-md'>
       {/* Header with title and menu */}
       <div className='flex items-start justify-between'>
-        <div className='flex-1 min-w-0'>
-          <h3 className='font-semibold text-base truncate'>{team.name}</h3>
+        <div className='min-w-0 flex-1'>
+          <h3 className='truncate text-base font-semibold'>{team.name}</h3>
           {team.description && (
-            <p className='text-xs text-muted-foreground line-clamp-2'>
+            <p className='text-muted-foreground line-clamp-2 text-xs'>
               {team.description}
             </p>
           )}
@@ -125,8 +125,8 @@ export const TeamCard = ({
 
       {/* Members section */}
       <div className='mt-4 flex items-center gap-2'>
-        <Users className='h-4 w-4 text-muted-foreground' />
-        <span className='text-xs text-muted-foreground'>
+        <Users className='text-muted-foreground h-4 w-4' />
+        <span className='text-muted-foreground text-xs'>
           {members.length}{' '}
           {members.length !== 1
             ? t('teams.content.membersPlural')
@@ -155,7 +155,7 @@ export const TeamCard = ({
       </div>
 
       {/* Footer */}
-      <div className='mt-4 text-xs text-muted-foreground'>
+      <div className='text-muted-foreground mt-4 text-xs'>
         {t('teams.created')}: {new Date(team.created_at).toLocaleDateString()}
       </div>
     </div>

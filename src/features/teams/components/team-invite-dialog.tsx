@@ -13,7 +13,12 @@ interface TeamInviteDialogProps {
  * TeamInviteDialog Component
  * Dialog to invite user to team
  */
-export const TeamInviteDialog = ({ isOpen, onClose, team, onSuccess }: TeamInviteDialogProps) => {
+export const TeamInviteDialog = ({
+  isOpen,
+  onClose,
+  team,
+  onSuccess,
+}: TeamInviteDialogProps) => {
   const [formData, setFormData] = useState<ITeamInviteRequest>({
     email: '',
     role: 'member',
@@ -39,26 +44,30 @@ export const TeamInviteDialog = ({ isOpen, onClose, team, onSuccess }: TeamInvit
   if (!isOpen || !team) return null
 
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-      <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
-        <h2 className='text-xl font-bold mb-2'>Invite to Team</h2>
-        <p className='text-gray-600 text-sm mb-4'>{team.name}</p>
+    <div className='bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black'>
+      <div className='w-full max-w-md rounded-lg bg-white p-6 shadow-lg'>
+        <h2 className='mb-2 text-xl font-bold'>Invite to Team</h2>
+        <p className='mb-4 text-sm text-gray-600'>{team.name}</p>
 
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div>
-            <label className='block text-sm font-medium mb-1'>Email Address *</label>
+            <label className='mb-1 block text-sm font-medium'>
+              Email Address *
+            </label>
             <input
               type='email'
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               placeholder='user@example.com'
-              className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none'
               required
             />
           </div>
 
           <div>
-            <label className='block text-sm font-medium mb-1'>Role</label>
+            <label className='mb-1 block text-sm font-medium'>Role</label>
             <select
               value={formData.role || 'member'}
               onChange={(e) =>
@@ -67,7 +76,7 @@ export const TeamInviteDialog = ({ isOpen, onClose, team, onSuccess }: TeamInvit
                   role: e.target.value as 'owner' | 'lead' | 'member',
                 })
               }
-              className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none'
             >
               <option value='member'>Member</option>
               <option value='lead'>Lead</option>
@@ -75,18 +84,18 @@ export const TeamInviteDialog = ({ isOpen, onClose, team, onSuccess }: TeamInvit
             </select>
           </div>
 
-          <div className='flex gap-2 justify-end pt-4'>
+          <div className='flex justify-end gap-2 pt-4'>
             <button
               type='button'
               onClick={onClose}
-              className='px-4 py-2 border rounded-lg hover:bg-gray-50'
+              className='rounded-lg border px-4 py-2 hover:bg-gray-50'
               disabled={isPending}
             >
               Cancel
             </button>
             <button
               type='submit'
-              className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50'
+              className='rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50'
               disabled={isPending}
             >
               {isPending ? 'Inviting...' : 'Send Invite'}

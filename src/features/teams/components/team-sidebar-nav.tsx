@@ -41,8 +41,7 @@ export function TeamSidebarNav({
           <SelectTrigger className='h-12 sm:w-48'>
             <SelectValue
               placeholder={
-                items.find((item) => item.id === val)?.title ||
-                items[0]?.title
+                items.find((item) => item.id === val)?.title || items[0]?.title
               }
             />
           </SelectTrigger>

@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { useCreateTeamUser, useInviteUserToTeam } from '../hooks'
+import type { UUID } from 'crypto'
+import { AlertCircle, Loader2 } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -9,12 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -24,10 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { AlertCircle, Loader2 } from 'lucide-react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useTranslation } from '@/hooks/use-translation'
-import type { UUID } from 'crypto'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useCreateTeamUser, useInviteUserToTeam } from '../hooks'
 
 interface AddTeamMemberDialogProps {
   isOpen: boolean
@@ -238,11 +233,13 @@ export const AddTeamMemberDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'create' | 'invite')} className='w-full'>
+        <Tabs
+          value={activeTab}
+          onValueChange={(v) => setActiveTab(v as 'create' | 'invite')}
+          className='w-full'
+        >
           <TabsList className='grid w-full grid-cols-2'>
-            <TabsTrigger value='create'>
-              {t('teams.createNewUser')}
-            </TabsTrigger>
+            <TabsTrigger value='create'>{t('teams.createNewUser')}</TabsTrigger>
             <TabsTrigger value='invite'>
               {t('teams.inviteExisting')}
             </TabsTrigger>
@@ -263,7 +260,9 @@ export const AddTeamMemberDialog = ({
                   id='username'
                   placeholder='john_doe'
                   value={createForm.username}
-                  onChange={(e) => setCreateForm({ ...createForm, username: e.target.value })}
+                  onChange={(e) =>
+                    setCreateForm({ ...createForm, username: e.target.value })
+                  }
                   disabled={isCreating}
                   autoFocus
                 />
@@ -276,7 +275,9 @@ export const AddTeamMemberDialog = ({
                   type='email'
                   placeholder='john@example.com'
                   value={createForm.email}
-                  onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
+                  onChange={(e) =>
+                    setCreateForm({ ...createForm, email: e.target.value })
+                  }
                   disabled={isCreating}
                 />
               </div>
@@ -287,7 +288,9 @@ export const AddTeamMemberDialog = ({
                   id='fullName'
                   placeholder='John Doe'
                   value={createForm.fullName}
-                  onChange={(e) => setCreateForm({ ...createForm, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setCreateForm({ ...createForm, fullName: e.target.value })
+                  }
                   disabled={isCreating}
                 />
               </div>
@@ -300,19 +303,28 @@ export const AddTeamMemberDialog = ({
                     type='password'
                     placeholder='••••••••'
                     value={createForm.password}
-                    onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
+                    onChange={(e) =>
+                      setCreateForm({ ...createForm, password: e.target.value })
+                    }
                     disabled={isCreating}
                   />
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='passwordConfirm'>{t('teams.confirmPassword')} *</Label>
+                  <Label htmlFor='passwordConfirm'>
+                    {t('teams.confirmPassword')} *
+                  </Label>
                   <Input
                     id='passwordConfirm'
                     type='password'
                     placeholder='••••••••'
                     value={createForm.passwordConfirm}
-                    onChange={(e) => setCreateForm({ ...createForm, passwordConfirm: e.target.value })}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        passwordConfirm: e.target.value,
+                      })
+                    }
                     disabled={isCreating}
                   />
                 </div>
@@ -320,20 +332,36 @@ export const AddTeamMemberDialog = ({
 
               <div className='space-y-2'>
                 <Label htmlFor='create-role'>{t('teams.role')} *</Label>
-                <Select value={createForm.role} onValueChange={(v) => setCreateForm({ ...createForm, role: v as RoleType })}>
+                <Select
+                  value={createForm.role}
+                  onValueChange={(v) =>
+                    setCreateForm({ ...createForm, role: v as RoleType })
+                  }
+                >
                   <SelectTrigger id='create-role' disabled={isCreating}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='member'>{t('teams.roles.member')}</SelectItem>
-                    <SelectItem value='lead'>{t('teams.roles.lead')}</SelectItem>
-                    <SelectItem value='owner'>{t('teams.roles.owner')}</SelectItem>
+                    <SelectItem value='member'>
+                      {t('teams.roles.member')}
+                    </SelectItem>
+                    <SelectItem value='lead'>
+                      {t('teams.roles.lead')}
+                    </SelectItem>
+                    <SelectItem value='owner'>
+                      {t('teams.roles.owner')}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <DialogFooter className='mt-6'>
-                <Button type='button' variant='outline' onClick={handleClose} disabled={isCreating}>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={handleClose}
+                  disabled={isCreating}
+                >
                   {t('common.cancel')}
                 </Button>
                 <Button type='submit' disabled={isCreating}>
@@ -366,7 +394,9 @@ export const AddTeamMemberDialog = ({
                   type='email'
                   placeholder='john@example.com'
                   value={inviteForm.email}
-                  onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
+                  onChange={(e) =>
+                    setInviteForm({ ...inviteForm, email: e.target.value })
+                  }
                   disabled={isInviting}
                   autoFocus
                 />
@@ -374,20 +404,36 @@ export const AddTeamMemberDialog = ({
 
               <div className='space-y-2'>
                 <Label htmlFor='invite-role'>{t('teams.role')} *</Label>
-                <Select value={inviteForm.role} onValueChange={(v) => setInviteForm({ ...inviteForm, role: v as RoleType })}>
+                <Select
+                  value={inviteForm.role}
+                  onValueChange={(v) =>
+                    setInviteForm({ ...inviteForm, role: v as RoleType })
+                  }
+                >
                   <SelectTrigger id='invite-role' disabled={isInviting}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='member'>{t('teams.roles.member')}</SelectItem>
-                    <SelectItem value='lead'>{t('teams.roles.lead')}</SelectItem>
-                    <SelectItem value='owner'>{t('teams.roles.owner')}</SelectItem>
+                    <SelectItem value='member'>
+                      {t('teams.roles.member')}
+                    </SelectItem>
+                    <SelectItem value='lead'>
+                      {t('teams.roles.lead')}
+                    </SelectItem>
+                    <SelectItem value='owner'>
+                      {t('teams.roles.owner')}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <DialogFooter className='mt-6'>
-                <Button type='button' variant='outline' onClick={handleClose} disabled={isInviting}>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={handleClose}
+                  disabled={isInviting}
+                >
                   {t('common.cancel')}
                 </Button>
                 <Button type='submit' disabled={isInviting}>

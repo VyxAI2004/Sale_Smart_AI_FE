@@ -1,3 +1,4 @@
+import type { UUID } from 'crypto'
 import http from '@/utils/http'
 import type {
   ITeam,
@@ -7,7 +8,6 @@ import type {
   ITeamUser,
   IListTeamsResponse,
 } from '../types'
-import type { UUID } from 'crypto'
 
 /**
  * Team API calls
@@ -62,22 +62,45 @@ export const getTeamMembers = async (teamId: UUID) => {
   return response.data
 }
 
-export const inviteUserToTeam = async (teamId: UUID, request: ITeamInviteRequest) => {
-  const response = await http.post<ITeamUser>(`/teams/${teamId}/invite`, request)
+export const inviteUserToTeam = async (
+  teamId: UUID,
+  request: ITeamInviteRequest
+) => {
+  const response = await http.post<ITeamUser>(
+    `/teams/${teamId}/invite`,
+    request
+  )
   return response.data
 }
 
-export const updateMemberRole = async (teamId: UUID, userId: UUID, newRole: string) => {
-  const response = await http.put<ITeamUser>(`/teams/${teamId}/members/${userId}`, undefined, {
-    params: { new_role: newRole },
-  })
+export const updateMemberRole = async (
+  teamId: UUID,
+  userId: UUID,
+  newRole: string
+) => {
+  const response = await http.put<ITeamUser>(
+    `/teams/${teamId}/members/${userId}`,
+    undefined,
+    {
+      params: { new_role: newRole },
+    }
+  )
   return response.data
 }
 
-export const updateTeamMember = async (teamId: UUID, userId: UUID, role: string, status: string) => {
-  const response = await http.put<ITeamUser>(`/teams/${teamId}/members/${userId}`, undefined, {
-    params: { new_role: role, new_status: status },
-  })
+export const updateTeamMember = async (
+  teamId: UUID,
+  userId: UUID,
+  role: string,
+  status: string
+) => {
+  const response = await http.put<ITeamUser>(
+    `/teams/${teamId}/members/${userId}`,
+    undefined,
+    {
+      params: { new_role: role, new_status: status },
+    }
+  )
   return response.data
 }
 

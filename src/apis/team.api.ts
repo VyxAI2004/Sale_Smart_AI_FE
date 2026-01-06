@@ -1,4 +1,3 @@
-import http from '@/utils/http'
 import type {
   ITeam,
   ITeamCreate,
@@ -8,6 +7,7 @@ import type {
   IListTeamsResponse,
 } from '@/types/team.types'
 import type { UUID } from 'crypto'
+import http from '@/utils/http'
 
 // Create a new team
 export const createTeam = (data: ITeamCreate) =>
@@ -28,8 +28,7 @@ export const updateTeam = (teamId: UUID, data: ITeamUpdate) =>
   http.put<ITeam>(`/teams/${teamId}`, data)
 
 // Delete team
-export const deleteTeam = (teamId: UUID) =>
-  http.delete(`/teams/${teamId}`)
+export const deleteTeam = (teamId: UUID) => http.delete(`/teams/${teamId}`)
 
 // Get team members
 export const getTeamMembers = (teamId: UUID) =>

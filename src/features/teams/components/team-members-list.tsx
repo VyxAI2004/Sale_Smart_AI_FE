@@ -1,6 +1,10 @@
-import { useTeamMembers, useRemoveTeamMember, useUpdateMemberRole } from '../hooks'
-import type { ITeam, ITeamUser } from '../types'
 import type { UUID } from 'crypto'
+import {
+  useTeamMembers,
+  useRemoveTeamMember,
+  useUpdateMemberRole,
+} from '../hooks'
+import type { ITeam, ITeamUser } from '../types'
 
 interface TeamMembersListProps {
   team: ITeam | null
@@ -12,7 +16,11 @@ interface TeamMembersListProps {
  * TeamMembersList Component
  * Displays list of team members with their roles and actions
  */
-export const TeamMembersList = ({ team, currentUserId, onInviteClick }: TeamMembersListProps) => {
+export const TeamMembersList = ({
+  team,
+  currentUserId,
+  onInviteClick,
+}: TeamMembersListProps) => {
   const { data: members = [], isLoading } = useTeamMembers(team?.id)
   const { mutate: removeMember } = useRemoveTeamMember()
   const { mutate: updateRole } = useUpdateMemberRole()
@@ -35,22 +43,29 @@ export const TeamMembersList = ({ team, currentUserId, onInviteClick }: TeamMemb
     }
   }
 
-  const handleUpdateRole = (userId: string | undefined, newRole: 'owner' | 'lead' | 'member') => {
+  const handleUpdateRole = (
+    userId: string | undefined,
+    newRole: 'owner' | 'lead' | 'member'
+  ) => {
     if (!userId) return
     if (!team?.id) return
     updateRole({ teamId: team.id as UUID, userId: userId as UUID, newRole })
   }
 
-  const isUserOwner = members.some((m: ITeamUser) => m.user_id === currentUserId && m.role === 'owner')
+  const isUserOwner = members.some(
+    (m: ITeamUser) => m.user_id === currentUserId && m.role === 'owner'
+  )
 
   return (
     <div className='space-y-4'>
-      <div className='flex justify-between items-center'>
-        <h3 className='text-lg font-semibold'>Team Members ({members?.length || 0})</h3>
+      <div className='flex items-center justify-between'>
+        <h3 className='text-lg font-semibold'>
+          Team Members ({members?.length || 0})
+        </h3>
         {isUserOwner && (
           <button
             onClick={onInviteClick}
-            className='px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700'
+            className='rounded-lg bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700'
           >
             + Invite Member
           </button>
@@ -58,17 +73,27 @@ export const TeamMembersList = ({ team, currentUserId, onInviteClick }: TeamMemb
       </div>
 
       {!members || members.length === 0 ? (
-        <div className='text-center py-8 text-gray-500'>No members yet</div>
+        <div className='py-8 text-center text-gray-500'>No members yet</div>
       ) : (
-        <div className='overflow-x-auto border rounded-lg'>
+        <div className='overflow-x-auto rounded-lg border'>
           <table className='w-full'>
-            <thead className='bg-gray-50 border-b'>
+            <thead className='border-b bg-gray-50'>
               <tr>
-                <th className='px-6 py-3 text-left text-sm font-semibold'>Name</th>
-                <th className='px-6 py-3 text-left text-sm font-semibold'>Email</th>
-                <th className='px-6 py-3 text-left text-sm font-semibold'>Role</th>
-                <th className='px-6 py-3 text-left text-sm font-semibold'>Status</th>
-                <th className='px-6 py-3 text-left text-sm font-semibold'>Actions</th>
+                <th className='px-6 py-3 text-left text-sm font-semibold'>
+                  Name
+                </th>
+                <th className='px-6 py-3 text-left text-sm font-semibold'>
+                  Email
+                </th>
+                <th className='px-6 py-3 text-left text-sm font-semibold'>
+                  Role
+                </th>
+                <th className='px-6 py-3 text-left text-sm font-semibold'>
+                  Status
+                </th>
+                <th className='px-6 py-3 text-left text-sm font-semibold'>
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -83,24 +108,29 @@ export const TeamMembersList = ({ team, currentUserId, onInviteClick }: TeamMemb
                       <select
                         value={member.role || 'member'}
                         onChange={(e) =>
-                          handleUpdateRole(member.user_id, e.target.value as 'owner' | 'lead' | 'member')
+                          handleUpdateRole(
+                            member.user_id,
+                            e.target.value as 'owner' | 'lead' | 'member'
+                          )
                         }
-                        className='px-2 py-1 border rounded text-sm'
+                        className='rounded border px-2 py-1 text-sm'
                       >
                         <option value='member'>Member</option>
                         <option value='lead'>Lead</option>
                         <option value='owner'>Owner</option>
                       </select>
                     ) : (
-                      <span className='px-2 py-1 bg-gray-100 rounded text-sm capitalize'>
+                      <span className='rounded bg-gray-100 px-2 py-1 text-sm capitalize'>
                         {member.role || 'member'}
                       </span>
                     )}
                   </td>
                   <td className='px-6 py-4 text-sm'>
                     <span
-                      className={`px-2 py-1 rounded text-xs font-medium ${
-                        member.accepted_at ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      className={`rounded px-2 py-1 text-xs font-medium ${
+                        member.accepted_at
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
                       }`}
                     >
                       {member.accepted_at ? 'Active' : 'Pending'}
@@ -110,7 +140,7 @@ export const TeamMembersList = ({ team, currentUserId, onInviteClick }: TeamMemb
                     {isUserOwner && member.user_id !== currentUserId && (
                       <button
                         onClick={() => handleRemoveMember(member.user_id)}
-                        className='text-red-600 hover:text-red-800 text-sm font-medium'
+                        className='text-sm font-medium text-red-600 hover:text-red-800'
                       >
                         Remove
                       </button>

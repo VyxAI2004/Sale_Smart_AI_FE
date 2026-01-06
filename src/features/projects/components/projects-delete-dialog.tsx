@@ -63,7 +63,7 @@ export function ProjectDeleteDialog({
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            {t('common.areYouSure')} {' '}
+            {t('common.areYouSure')}{' '}
             <span className='font-bold'>{currentRow.name}</span>
             ?
             <br />

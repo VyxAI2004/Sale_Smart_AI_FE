@@ -1,5 +1,5 @@
-import { ProjectDeleteDialog } from './projects-delete-dialog'
 import { ProjectArchiveDialog } from './projects-archive-dialog'
+import { ProjectDeleteDialog } from './projects-delete-dialog'
 import { useProjects } from './projects-provider'
 
 export function ProjectsDialogs() {
