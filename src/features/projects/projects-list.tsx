@@ -18,11 +18,11 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { ProjectApi, type ProjectApiResponse } from './api/project-api'
+import { ProjectsCardGrid } from './components/projects-card-grid'
 import { ProjectsDialogs } from './components/projects-dialogs'
 import { ProjectsPrimaryButtons } from './components/projects-primary-buttons'
 import { ProjectsProvider } from './components/projects-provider'
 import { ProjectsTable } from './components/projects-table'
-import { ProjectsCardGrid } from './components/projects-card-grid'
 
 const route = getRouteApi('/_authenticated/projects/')
 
@@ -167,7 +167,11 @@ export function Projects() {
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12'>
           {viewMode === 'table' ? (
-            <ProjectsTable data={projects} search={search} navigate={navigate} />
+            <ProjectsTable
+              data={projects}
+              search={search}
+              navigate={navigate}
+            />
           ) : (
             <ProjectsCardGrid
               projects={projects}

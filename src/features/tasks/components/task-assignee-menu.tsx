@@ -24,7 +24,13 @@ export function TaskAssigneeMenu({
 }: TaskAssigneeMenuProps) {
   const [open, setOpen] = useState(false)
   // Use assigned_to_ids from task response (from API), fallback to currentAssignee prop
-  const assigneeIds = task.assigned_to_ids || (Array.isArray(currentAssignee) ? currentAssignee : (currentAssignee ? [currentAssignee] : []))
+  const assigneeIds =
+    task.assigned_to_ids ||
+    (Array.isArray(currentAssignee)
+      ? currentAssignee
+      : currentAssignee
+        ? [currentAssignee]
+        : [])
   const [selectedAssignees, setSelectedAssignees] = useState<Set<string>>(
     new Set(assigneeIds)
   )
@@ -34,7 +40,13 @@ export function TaskAssigneeMenu({
 
   // Sync selected assignees when task.assigned_to_ids changes
   useEffect(() => {
-    const newAssigneeIds = task.assigned_to_ids || (Array.isArray(currentAssignee) ? currentAssignee : (currentAssignee ? [currentAssignee] : []))
+    const newAssigneeIds =
+      task.assigned_to_ids ||
+      (Array.isArray(currentAssignee)
+        ? currentAssignee
+        : currentAssignee
+          ? [currentAssignee]
+          : [])
     setSelectedAssignees(new Set(newAssigneeIds))
   }, [task.assigned_to_ids, currentAssignee])
 
@@ -64,7 +76,15 @@ export function TaskAssigneeMenu({
     } catch (_error) {
       // Error handled by mutation
       // Revert selection
-      setSelectedAssignees(new Set(Array.isArray(currentAssignee) ? currentAssignee : (currentAssignee ? [currentAssignee] : [])))
+      setSelectedAssignees(
+        new Set(
+          Array.isArray(currentAssignee)
+            ? currentAssignee
+            : currentAssignee
+              ? [currentAssignee]
+              : []
+        )
+      )
     }
   }
 
@@ -83,7 +103,15 @@ export function TaskAssigneeMenu({
       }
     } catch (_error) {
       // Error handled by mutation
-      setSelectedAssignees(new Set(Array.isArray(currentAssignee) ? currentAssignee : (currentAssignee ? [currentAssignee] : [])))
+      setSelectedAssignees(
+        new Set(
+          Array.isArray(currentAssignee)
+            ? currentAssignee
+            : currentAssignee
+              ? [currentAssignee]
+              : []
+        )
+      )
     }
   }
 
@@ -115,15 +143,22 @@ export function TaskAssigneeMenu({
                         .toUpperCase()
                     : '?'
                   return (
-                    <Avatar key={member.id} className='h-5 w-5 border border-background'>
+                    <Avatar
+                      key={member.id}
+                      className='border-background h-5 w-5 border'
+                    >
                       <AvatarImage src={member.email} />
-                      <AvatarFallback className='text-xs'>{initials}</AvatarFallback>
+                      <AvatarFallback className='text-xs'>
+                        {initials}
+                      </AvatarFallback>
                     </Avatar>
                   )
                 })}
                 {selectedMembers.length > 2 && (
-                  <Avatar className='h-5 w-5 border border-background flex items-center justify-center bg-muted'>
-                    <span className='text-xs font-semibold'>+{selectedMembers.length - 2}</span>
+                  <Avatar className='border-background bg-muted flex h-5 w-5 items-center justify-center border'>
+                    <span className='text-xs font-semibold'>
+                      +{selectedMembers.length - 2}
+                    </span>
                   </Avatar>
                 )}
               </div>
@@ -144,13 +179,13 @@ export function TaskAssigneeMenu({
       <PopoverContent align='start' className='w-[280px] p-0'>
         <div className='space-y-2 p-4'>
           <div className='text-sm font-semibold'>Assign members</div>
-          
+
           {isLoadingMembers ? (
             <div className='flex items-center justify-center p-4'>
               <Loader2 className='h-4 w-4 animate-spin' />
             </div>
           ) : projectUsers.length === 0 ? (
-            <div className='text-muted-foreground p-2 text-xs text-center py-4'>
+            <div className='text-muted-foreground p-2 py-4 text-center text-xs'>
               No team members. Invite members to the project.
             </div>
           ) : (
@@ -159,7 +194,7 @@ export function TaskAssigneeMenu({
                 {projectUsers.map((member) => (
                   <div
                     key={member.id}
-                    className='flex items-center gap-2 cursor-pointer hover:bg-muted p-2 rounded transition-colors'
+                    className='hover:bg-muted flex cursor-pointer items-center gap-2 rounded p-2 transition-colors'
                     onClick={() => handleToggleAssignee(member.id)}
                   >
                     <Checkbox
@@ -178,9 +213,11 @@ export function TaskAssigneeMenu({
                           .slice(0, 2)}
                       </AvatarFallback>
                     </Avatar>
-                    <div className='flex-1 min-w-0'>
-                      <p className='text-sm truncate'>{member.name || 'User'}</p>
-                      <p className='text-xs text-muted-foreground truncate'>
+                    <div className='min-w-0 flex-1'>
+                      <p className='truncate text-sm'>
+                        {member.name || 'User'}
+                      </p>
+                      <p className='text-muted-foreground truncate text-xs'>
                         {member.email}
                       </p>
                     </div>
@@ -197,7 +234,7 @@ export function TaskAssigneeMenu({
             <Button
               variant='ghost'
               size='sm'
-              className='w-full text-xs text-muted-foreground'
+              className='text-muted-foreground w-full text-xs'
               onClick={handleUnassign}
               disabled={updateTask.isPending}
             >

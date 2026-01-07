@@ -54,7 +54,7 @@ export class ProjectUserApi {
    */
   static async removeUser(projectId: string, userId: string): Promise<void> {
     await http.delete(`${this.BASE_PATH}/${projectId}/members`, {
-      data: { user_ids: [userId] }
+      data: { user_ids: [userId] },
     })
   }
 

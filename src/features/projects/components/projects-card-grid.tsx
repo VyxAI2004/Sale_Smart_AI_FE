@@ -30,7 +30,8 @@ const STATUS_COLORS: Record<string, string> = {
   draft: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
   ready: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100',
   running: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
-  paused: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100',
+  paused:
+    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100',
   completed:
     'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
   archived: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100',
@@ -63,7 +64,7 @@ export function ProjectsCardGrid({
             onClick={() => onViewProject?.(project.id)}
           >
             {/* Header with Icon and Actions */}
-            <div className='bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 flex h-32 items-center justify-between px-6 py-4'>
+            <div className='flex h-32 items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 dark:from-blue-950/30 dark:to-indigo-950/30'>
               <div className='flex items-center gap-3'>
                 <div className='flex h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900'>
                   <FolderOpen className='h-8 w-8 text-blue-600 dark:text-blue-300' />
@@ -79,7 +80,10 @@ export function ProjectsCardGrid({
               </div>
 
               <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                <DropdownMenuTrigger
+                  asChild
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
                     <MoreHorizontal className='h-4 w-4' />
                   </Button>
@@ -145,24 +149,24 @@ export function ProjectsCardGrid({
               )}
 
               {/* Stats */}
-              <div className='grid grid-cols-3 gap-2 pt-2 border-t'>
+              <div className='grid grid-cols-3 gap-2 border-t pt-2'>
                 <div className='text-center'>
                   <div className='flex items-center justify-center gap-1'>
                     <Users className='h-3 w-3 text-gray-500' />
-                    <span className='font-semibold text-xs'>0</span>
+                    <span className='text-xs font-semibold'>0</span>
                   </div>
                   <p className='text-muted-foreground text-xs'>Members</p>
                 </div>
                 <div className='text-center'>
                   <div className='flex items-center justify-center gap-1'>
                     <ListTodo className='h-3 w-3 text-gray-500' />
-                    <span className='font-semibold text-xs'>0</span>
+                    <span className='text-xs font-semibold'>0</span>
                   </div>
                   <p className='text-muted-foreground text-xs'>Tasks</p>
                 </div>
                 <div className='text-center'>
                   <div className='flex items-center justify-center gap-1'>
-                    <span className='font-semibold text-xs'>0</span>
+                    <span className='text-xs font-semibold'>0</span>
                   </div>
                   <p className='text-muted-foreground text-xs'>Products</p>
                 </div>

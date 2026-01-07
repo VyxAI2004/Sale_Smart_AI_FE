@@ -84,17 +84,14 @@ export function TeamsPage() {
 
       <Main fixed>
         {/* Header */}
-        <div className='flex items-center justify-between space-y-3 '>
+        <div className='flex items-center justify-between space-y-3'>
           <div>
             <h2 className='text-2xl font-bold tracking-tight'>
               {t('teams.title')}
             </h2>
             <p className='text-muted-foreground'>{t('teams.description')}</p>
           </div>
-          <Button
-            onClick={() => setShowCreateTeamDialog(true)}
-            size='sm'
-          >
+          <Button onClick={() => setShowCreateTeamDialog(true)} size='sm'>
             <Plus className='mr-2 h-4 w-4' />
             {t('teams.createTeam')}
           </Button>
@@ -111,7 +108,7 @@ export function TeamsPage() {
         </div>
 
         {/* Teams Grid */}
-          <div className='w-full overflow-y-auto p-1'>
+        <div className='w-full overflow-y-auto p-1'>
           {isLoadingTeams ? (
             <div className='flex items-center justify-center py-12'>
               <p className='text-muted-foreground'>{t('common.loading')}</p>

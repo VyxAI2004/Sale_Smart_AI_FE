@@ -6,8 +6,8 @@ interface UseLocalStorageOptions<T> {
   syncData?: boolean // Sync across browser tabs
 }
 
-const defaultSerialize = <T,>(value: T): string => JSON.stringify(value)
-const defaultDeserialize = <T,>(value: string): T => JSON.parse(value)
+const defaultSerialize = <T>(value: T): string => JSON.stringify(value)
+const defaultDeserialize = <T>(value: string): T => JSON.parse(value)
 
 /**
  * Custom hook for managing state persisted to localStorage

@@ -2,13 +2,15 @@
  * Phase 3: Review Count Input Component
  * Number input with recommendations and time estimate
  */
-
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { AlertCircle } from 'lucide-react'
 import { useState, useMemo } from 'react'
-import type { ImportedProduct, ReviewCountInput } from '../types/auto-discovery-flow.types'
+import { AlertCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import type {
+  ImportedProduct,
+  ReviewCountInput,
+} from '../types/auto-discovery-flow.types'
 
 interface ReviewCountFormProps {
   products: ImportedProduct[]
@@ -33,7 +35,10 @@ export function ReviewCountForm({
     Object.fromEntries(
       products.map((p) => [
         p.id,
-        Math.min(p.review_count ? Math.floor(p.review_count * 0.8) : 50, MAX_REVIEWS),
+        Math.min(
+          p.review_count ? Math.floor(p.review_count * 0.8) : 50,
+          MAX_REVIEWS
+        ),
       ])
     )
   )
@@ -89,11 +94,12 @@ export function ReviewCountForm({
             <CardHeader className='pb-3'>
               <div className='flex items-start justify-between gap-2'>
                 <div className='flex-1'>
-                  <CardTitle className='text-base'>
-                    📱 {product.name}
-                  </CardTitle>
+                  <CardTitle className='text-base'>📱 {product.name}</CardTitle>
                   <p className='text-muted-foreground mt-1 text-xs'>
-                    Reviews hiện tại: <span className='font-semibold'>{product.review_count}</span>
+                    Reviews hiện tại:{' '}
+                    <span className='font-semibold'>
+                      {product.review_count}
+                    </span>
                   </p>
                 </div>
               </div>
@@ -108,7 +114,12 @@ export function ReviewCountForm({
                   type='number'
                   value={reviewCounts[product.id] || 50}
                   onChange={(e) =>
-                    handleSliderChange(product.id, [Math.min(Math.max(parseInt(e.target.value) || 50, MIN_REVIEWS), MAX_REVIEWS)])
+                    handleSliderChange(product.id, [
+                      Math.min(
+                        Math.max(parseInt(e.target.value) || 50, MIN_REVIEWS),
+                        MAX_REVIEWS
+                      ),
+                    ])
                   }
                   min={MIN_REVIEWS}
                   max={MAX_REVIEWS}
@@ -117,7 +128,7 @@ export function ReviewCountForm({
               </div>
 
               {/* Value Display */}
-              <div className='flex items-center justify-between rounded-lg bg-muted p-2'>
+              <div className='bg-muted flex items-center justify-between rounded-lg p-2'>
                 <span className='text-sm font-semibold'>
                   {reviewCounts[product.id] || 50}
                 </span>
@@ -132,7 +143,8 @@ export function ReviewCountForm({
 
               {/* Info */}
               <p className='text-muted-foreground text-xs italic'>
-                💡 Càng nhiều reviews, phân tích càng chính xác (nhưng mất thời gian lâu hơn)
+                💡 Càng nhiều reviews, phân tích càng chính xác (nhưng mất thời
+                gian lâu hơn)
               </p>
             </CardContent>
           </Card>
@@ -145,7 +157,8 @@ export function ReviewCountForm({
           <div className='text-sm'>
             <p className='font-medium'>⏱️ Thời gian ước tính:</p>
             <p className='text-muted-foreground text-xs'>
-              {estimatedTimeMin} phút ({products.length} sản phẩm × {Object.values(reviewCounts).reduce((a, b) => a + b, 0)} reviews)
+              {estimatedTimeMin} phút ({products.length} sản phẩm ×{' '}
+              {Object.values(reviewCounts).reduce((a, b) => a + b, 0)} reviews)
             </p>
           </div>
         </CardContent>

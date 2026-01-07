@@ -1,10 +1,9 @@
 /**
  * Phase 4: Processing & Live Results Component
  */
-
+import { CheckCircle2, Loader2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { CheckCircle2, Loader2 } from 'lucide-react'
 import type {
   ImportedProduct,
   ProductProcessingResult,
@@ -25,13 +24,16 @@ function StepProgressBar({
   percentage?: number
 }) {
   const isComplete = percentage === 100
-  const isRunning = percentage !== undefined && percentage > 0 && percentage < 100
+  const isRunning =
+    percentage !== undefined && percentage > 0 && percentage < 100
 
   return (
     <div className='space-y-1'>
       <div className='flex items-center gap-2'>
         {isComplete && <CheckCircle2 className='h-4 w-4 text-green-600' />}
-        {isRunning && <Loader2 className='h-4 w-4 animate-spin text-blue-600' />}
+        {isRunning && (
+          <Loader2 className='h-4 w-4 animate-spin text-blue-600' />
+        )}
         {!isComplete && !isRunning && (
           <div className='h-4 w-4 rounded-full border-2 border-gray-300' />
         )}
@@ -51,7 +53,8 @@ function SentimentChart({
 }) {
   if (!distribution) return null
 
-  const total = distribution.positive + distribution.neutral + distribution.negative
+  const total =
+    distribution.positive + distribution.neutral + distribution.negative
   if (total === 0) return null
 
   const positive = (distribution.positive / total) * 100
@@ -61,7 +64,7 @@ function SentimentChart({
   return (
     <div className='space-y-2'>
       <p className='text-xs font-semibold'>Phân tích cảm xúc:</p>
-      <div className='flex h-2 gap-1 overflow-hidden rounded-full bg-muted'>
+      <div className='bg-muted flex h-2 gap-1 overflow-hidden rounded-full'>
         {positive > 0 && (
           <div
             className='bg-green-500'
@@ -84,7 +87,7 @@ function SentimentChart({
           />
         )}
       </div>
-      <div className='flex justify-between text-xs text-muted-foreground'>
+      <div className='text-muted-foreground flex justify-between text-xs'>
         <span>👍 {distribution.positive} tích cực</span>
         <span>😐 {distribution.neutral} trung tính</span>
         <span>👎 {distribution.negative} tiêu cực</span>
@@ -131,9 +134,9 @@ export function Phase2Processing({
           <CardTitle className='text-base'>Phân Tích Thực Thời</CardTitle>
         </CardHeader>
         <CardContent className='flex-1 overflow-hidden'>
-          <div className='grid grid-cols-2 gap-6 h-96 overflow-y-auto pr-2'>
+          <div className='grid h-96 grid-cols-2 gap-6 overflow-y-auto pr-2'>
             <div className='space-y-3'>
-              <h4 className='font-semibold text-sm sticky top-0 bg-background py-1'>
+              <h4 className='bg-background sticky top-0 py-1 text-sm font-semibold'>
                 📝 Tiến Độ
               </h4>
               <div className='space-y-4'>
@@ -150,19 +153,25 @@ export function Phase2Processing({
                         <StepProgressBar
                           label='Trust'
                           percentage={
-                            productResults[product.id]?.trust_score ? 100 : undefined
+                            productResults[product.id]?.trust_score
+                              ? 100
+                              : undefined
                           }
                         />
                         <StepProgressBar
                           label='Analysis'
                           percentage={
-                            productResults[product.id]?.key_insights.length ? 100 : undefined
+                            productResults[product.id]?.key_insights.length
+                              ? 100
+                              : undefined
                           }
                         />
                         <StepProgressBar
                           label='Tasks'
                           percentage={
-                            productResults[product.id]?.tasks.length ? 100 : undefined
+                            productResults[product.id]?.tasks.length
+                              ? 100
+                              : undefined
                           }
                         />
                       </div>
@@ -173,7 +182,7 @@ export function Phase2Processing({
             </div>
 
             <div className='space-y-3'>
-              <h4 className='font-semibold text-sm sticky top-0 bg-background py-1'>
+              <h4 className='bg-background sticky top-0 py-1 text-sm font-semibold'>
                 📊 Kết Quả
               </h4>
               <div className='space-y-3'>
@@ -184,21 +193,21 @@ export function Phase2Processing({
                   return (
                     <div
                       key={product.id}
-                      className='border rounded-lg p-3 space-y-2'
+                      className='space-y-2 rounded-lg border p-3'
                     >
                       <div className='flex items-start justify-between gap-2'>
-                        <p className='text-xs font-medium truncate'>
+                        <p className='truncate text-xs font-medium'>
                           {product.name}
                         </p>
                         {hasData && (
-                          <CheckCircle2 className='h-4 w-4 text-green-600 flex-shrink-0' />
+                          <CheckCircle2 className='h-4 w-4 flex-shrink-0 text-green-600' />
                         )}
                       </div>
 
                       {hasData ? (
                         <div className='space-y-2'>
                           <div>
-                            <p className='text-xs font-semibold text-muted-foreground mb-1'>
+                            <p className='text-muted-foreground mb-1 text-xs font-semibold'>
                               Trust Score
                             </p>
                             <TrustScoreDisplay score={result.trust_score} />
@@ -212,14 +221,14 @@ export function Phase2Processing({
 
                           {result.key_insights.length > 0 && (
                             <div>
-                              <p className='text-xs font-semibold mb-1'>
+                              <p className='mb-1 text-xs font-semibold'>
                                 Insights
                               </p>
                               <ul className='space-y-0.5'>
                                 {result.key_insights.map((insight, idx) => (
                                   <li
                                     key={idx}
-                                    className='text-xs text-muted-foreground'
+                                    className='text-muted-foreground text-xs'
                                   >
                                     • {insight}
                                   </li>
@@ -230,14 +239,14 @@ export function Phase2Processing({
 
                           {result.tasks.length > 0 && (
                             <div>
-                              <p className='text-xs font-semibold mb-1'>
+                              <p className='mb-1 text-xs font-semibold'>
                                 Tasks ({result.tasks.length})
                               </p>
                               <div className='space-y-1'>
                                 {result.tasks.slice(0, 2).map((task, idx) => (
                                   <div
                                     key={idx}
-                                    className={`rounded px-2 py-1 text-xs truncate ${
+                                    className={`truncate rounded px-2 py-1 text-xs ${
                                       task.priority === 'high'
                                         ? 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-300'
                                         : task.priority === 'medium'
@@ -249,7 +258,7 @@ export function Phase2Processing({
                                   </div>
                                 ))}
                                 {result.tasks.length > 2 && (
-                                  <p className='text-xs text-muted-foreground'>
+                                  <p className='text-muted-foreground text-xs'>
                                     +{result.tasks.length - 2} tasks
                                   </p>
                                 )}
@@ -262,12 +271,12 @@ export function Phase2Processing({
                           {isProcessing ? (
                             <>
                               <Loader2 className='h-3 w-3 animate-spin text-blue-500' />
-                              <span className='text-xs text-muted-foreground'>
+                              <span className='text-muted-foreground text-xs'>
                                 Đang xử lý...
                               </span>
                             </>
                           ) : (
-                            <span className='text-xs text-muted-foreground'>
+                            <span className='text-muted-foreground text-xs'>
                               Chờ dữ liệu...
                             </span>
                           )}
@@ -283,11 +292,11 @@ export function Phase2Processing({
       </Card>
 
       {!isProcessing && (
-        <div className='rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-950/30 flex items-center gap-2'>
-          <CheckCircle2 className='h-5 w-5 text-green-600 flex-shrink-0' />
+        <div className='flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-950/30'>
+          <CheckCircle2 className='h-5 w-5 flex-shrink-0 text-green-600' />
           <div>
             <p className='text-sm font-semibold'>Phân Tích Hoàn Thành</p>
-            <p className='text-xs text-muted-foreground'>
+            <p className='text-muted-foreground text-xs'>
               Tất cả sản phẩm đã được xử lý thành công
             </p>
           </div>

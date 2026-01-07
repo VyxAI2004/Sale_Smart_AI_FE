@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Filter, Download, Grid, List } from 'lucide-react'
+import { useViewModePreference } from '@/hooks/use-view-mode-preference'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -10,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useViewModePreference } from '@/hooks/use-view-mode-preference'
 import { useProducts } from '../hooks/use-products'
 import { ProductsCardGrid } from './products-card-grid'
 import { ProductsTable } from './products-table'

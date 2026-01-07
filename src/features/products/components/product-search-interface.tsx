@@ -4,15 +4,15 @@ import { useState, useCallback } from 'react'
 import { Search, Filter, Loader2 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useDiscoveryFlow } from '../hooks/use-discovery-flow'
 import type { ProductSearchResponse } from '../types/product-ai.types'
 import { AdvancedFilterPanel } from './advanced-filter-panel.tsx'
 import { FilterResultsDisplay } from './filter-results-display.tsx'
 import { FreeQueryPanel } from './free-query-panel.tsx'
-import { SearchResultsStream } from './search-results-stream.tsx'
+import { Phase2Processing } from './phase2-processing'
 import { ReviewConfirmation } from './review-confirmation'
 import { ReviewCountForm } from './review-count-form'
-import { Phase2Processing } from './phase2-processing'
-import { useDiscoveryFlow } from '../hooks/use-discovery-flow'
+import { SearchResultsStream } from './search-results-stream.tsx'
 
 interface ProductSearchInterfaceProps {
   projectId: string
@@ -50,29 +50,34 @@ export function ProductSearchInterface({
   const handlePhase1Complete = useCallback(() => {
     if (!searchResults) return
 
-    const passed = searchResults.recommended_products?.map((p: any) => ({
-      id: p.id || p.product_id || '',
-      name: p.name || '',
-      price: p.estimated_price || p.price || 0,
-      rating: p.rating || null,
-      review_count: p.review_count || null,
-      platform: p.platform || 'unknown',
-      url: p.url || p.urls?.lazada || p.urls?.shopee || p.urls?.tiki,
-      reason: 'Đạt tiêu chí tìm kiếm',
-    })) || []
-
-    const rejected = searchResults.all_products
-      ?.filter((p: any) => !searchResults.recommended_products?.some((r: any) => r.id === p.id))
-      .map((p: any) => ({
+    const passed =
+      searchResults.recommended_products?.map((p: any) => ({
         id: p.id || p.product_id || '',
         name: p.name || '',
-        price: p.price || 0,
+        price: p.estimated_price || p.price || 0,
         rating: p.rating || null,
         review_count: p.review_count || null,
         platform: p.platform || 'unknown',
         url: p.url || p.urls?.lazada || p.urls?.shopee || p.urls?.tiki,
-        reason: 'Không đạt tiêu chí tìm kiếm',
+        reason: 'Đạt tiêu chí tìm kiếm',
       })) || []
+
+    const rejected =
+      searchResults.all_products
+        ?.filter(
+          (p: any) =>
+            !searchResults.recommended_products?.some((r: any) => r.id === p.id)
+        )
+        .map((p: any) => ({
+          id: p.id || p.product_id || '',
+          name: p.name || '',
+          price: p.price || 0,
+          rating: p.rating || null,
+          review_count: p.review_count || null,
+          platform: p.platform || 'unknown',
+          url: p.url || p.urls?.lazada || p.urls?.shopee || p.urls?.tiki,
+          reason: 'Không đạt tiêu chí tìm kiếm',
+        })) || []
 
     setPassedProducts(passed)
     setRejectedProducts(rejected)
@@ -95,8 +100,10 @@ export function ProductSearchInterface({
             {/* Search Query Display */}
             {lastSearchQuery && (
               <div className='rounded-lg bg-blue-50 p-4 dark:bg-blue-950/30'>
-                <p className='text-xs font-medium text-muted-foreground'>Đang tìm kiếm:</p>
-                <p className='mt-1 text-sm font-medium text-foreground line-clamp-2'>
+                <p className='text-muted-foreground text-xs font-medium'>
+                  Đang tìm kiếm:
+                </p>
+                <p className='text-foreground mt-1 line-clamp-2 text-sm font-medium'>
                   "{lastSearchQuery}"
                 </p>
               </div>
@@ -104,17 +111,17 @@ export function ProductSearchInterface({
 
             {/* Progress Text */}
             <div className='space-y-2 text-center'>
-              <p className='text-sm font-medium text-foreground'>
+              <p className='text-foreground text-sm font-medium'>
                 Đang phân tích sản phẩm...
               </p>
-              <p className='text-xs text-muted-foreground'>
+              <p className='text-muted-foreground text-xs'>
                 Vui lòng chờ, quá trình này có thể mất vài giây
               </p>
             </div>
 
             {/* Progress Bar Animation */}
-            <div className='h-1 w-full overflow-hidden rounded-full bg-muted'>
-              <div className='bg-gradient-to-r from-blue-500 to-blue-600 h-full w-1/3 animate-pulse'></div>
+            <div className='bg-muted h-1 w-full overflow-hidden rounded-full'>
+              <div className='h-full w-1/3 animate-pulse bg-gradient-to-r from-blue-500 to-blue-600'></div>
             </div>
           </div>
         </CardContent>
@@ -150,7 +157,7 @@ export function ProductSearchInterface({
         if (isSearching) {
           return renderPhase1Loading()
         }
-        
+
         // Show results if available
         if (renderPhase1Results()) {
           return renderPhase1Results()
@@ -216,9 +223,9 @@ export function ProductSearchInterface({
   }
 
   return (
-    <div className='w-full h-full flex flex-col'>
+    <div className='flex h-full w-full flex-col'>
       {/* Header */}
-      <div className='px-6 pt-6 pb-4 border-b'>
+      <div className='border-b px-6 pt-6 pb-4'>
         <h2 className='text-2xl font-bold tracking-tight'>Tìm kiếm sản phẩm</h2>
         <p className='text-muted-foreground text-sm'>
           Tìm kiếm sản phẩm với AI hoặc sử dụng các bộ lọc nâng cao
@@ -226,10 +233,10 @@ export function ProductSearchInterface({
       </div>
 
       {/* Main Grid - 3:7 Layout */}
-      <div className='flex-1 flex overflow-hidden'>
+      <div className='flex flex-1 overflow-hidden'>
         {/* Left Column - Input Panel (3/10) */}
         <div className='w-3/10 overflow-y-auto border-r px-6 py-4'>
-          <Card className='sticky top-0 border-0 shadow-none bg-transparent'>
+          <Card className='sticky top-0 border-0 bg-transparent shadow-none'>
             <CardContent className='p-0'>
               {/* Mode Switcher */}
               <Tabs
@@ -273,13 +280,13 @@ export function ProductSearchInterface({
         </div>
 
         {/* Right Column - Results Panel (7/10) */}
-        <div className='w-7/10 overflow-y-auto px-6 py-4 flex flex-col'>
+        <div className='flex w-7/10 flex-col overflow-y-auto px-6 py-4'>
           {phase === 'search' && renderPhase1Results() && (
             <>
-              <div className='flex-1 overflow-y-auto mb-4'>
+              <div className='mb-4 flex-1 overflow-y-auto'>
                 {renderPhaseContent()}
               </div>
-              <div className='sticky bottom-0 pt-4 bg-background border-t'>
+              <div className='bg-background sticky bottom-0 border-t pt-4'>
                 <button
                   onClick={handlePhase1Complete}
                   className='w-full rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-900 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-950/30 dark:text-blue-100 dark:hover:bg-blue-950/50'
@@ -289,11 +296,9 @@ export function ProductSearchInterface({
               </div>
             </>
           )}
-          
+
           {(phase !== 'search' || isSearching || !renderPhase1Results()) && (
-            <div className='flex-1 overflow-y-auto'>
-              {renderPhaseContent()}
-            </div>
+            <div className='flex-1 overflow-y-auto'>{renderPhaseContent()}</div>
           )}
         </div>
       </div>

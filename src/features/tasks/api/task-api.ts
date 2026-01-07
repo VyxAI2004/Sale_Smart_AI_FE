@@ -16,7 +16,11 @@ export class TaskApi {
   /**
    * Get all tasks with filters
    */
-  static async getAll(filters?: TaskFilters, skip: number = 0, limit: number = 1000): Promise<TaskListResponse> {
+  static async getAll(
+    filters?: TaskFilters,
+    skip: number = 0,
+    limit: number = 1000
+  ): Promise<TaskListResponse> {
     const params = new URLSearchParams()
     if (filters?.project_id) params.append('project_id', filters.project_id)
     if (filters?.product_id) params.append('product_id', filters.product_id)
@@ -28,7 +32,7 @@ export class TaskApi {
       }
     }
     if (filters?.status) params.append('status', filters.status)
-    
+
     // Add pagination
     params.append('skip', skip.toString())
     params.append('limit', limit.toString())

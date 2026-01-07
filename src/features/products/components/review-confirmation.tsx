@@ -2,11 +2,10 @@
  * Phase 2: Review Confirmation Component
  * Show passed/rejected products with decision prompt
  */
-
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { AlertCircle, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react'
 import { useState } from 'react'
+import { AlertCircle, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { ImportedProduct } from '../types/auto-discovery-flow.types'
 
 interface ReviewConfirmationProps {
@@ -43,14 +42,12 @@ function ProductCard({ product, isRejected = false }: ProductCardProps) {
             ) : (
               <CheckCircle2 className='h-4 w-4 flex-shrink-0 text-green-600 dark:text-green-400' />
             )}
-            <h4 className='line-clamp-2 text-sm font-medium'>
-              {product.name}
-            </h4>
+            <h4 className='line-clamp-2 text-sm font-medium'>{product.name}</h4>
           </div>
           <div className='text-muted-foreground mt-1 text-xs'>
             Giá: {product.price?.toLocaleString('vi-VN')} VND | Rating:{' '}
-            {product.rating ?? 'N/A'} | Reviews: {product.review_count ?? 'N/A'} |
-            Platform: {product.platform}
+            {product.rating ?? 'N/A'} | Reviews: {product.review_count ?? 'N/A'}{' '}
+            | Platform: {product.platform}
           </div>
         </div>
         {expanded ? (
@@ -65,7 +62,13 @@ function ProductCard({ product, isRejected = false }: ProductCardProps) {
           <div className='mt-2 space-y-2 text-xs'>
             <div>
               <span className='font-medium'>Lý do:</span>{' '}
-              <span className={isRejected ? 'text-red-700 dark:text-red-300' : 'text-green-700 dark:text-green-300'}>
+              <span
+                className={
+                  isRejected
+                    ? 'text-red-700 dark:text-red-300'
+                    : 'text-green-700 dark:text-green-300'
+                }
+              >
                 {product.reason}
               </span>
             </div>
@@ -103,7 +106,7 @@ export function ReviewConfirmation({
   }
 
   return (
-    <div className='space-y-4 flex flex-col h-full'>
+    <div className='flex h-full flex-col space-y-4'>
       {/* Summary Stats */}
       <Card>
         <CardHeader className='pb-3'>
@@ -134,7 +137,7 @@ export function ReviewConfirmation({
       </Card>
 
       {/* Content - scrollable */}
-      <div className='flex-1 overflow-y-auto space-y-4 pr-2'>
+      <div className='flex-1 space-y-4 overflow-y-auto pr-2'>
         {/* Passed Products */}
         {passedProducts.length > 0 && (
           <Card>
@@ -175,11 +178,11 @@ export function ReviewConfirmation({
       </div>
 
       {/* Decision - sticky button */}
-      <Card className='mt-4 sticky bottom-0'>
+      <Card className='sticky bottom-0 mt-4'>
         <CardContent className='pt-4'>
           <div className='space-y-3'>
             <div className='space-y-2'>
-              <label className='flex cursor-pointer items-center gap-3 rounded-lg border p-3 hover:bg-accent'>
+              <label className='hover:bg-accent flex cursor-pointer items-center gap-3 rounded-lg border p-3'>
                 <input
                   type='radio'
                   name='decision'
@@ -191,7 +194,7 @@ export function ReviewConfirmation({
                 <span className='text-sm'>Không, dừng lại đây</span>
               </label>
 
-              <label className='flex cursor-pointer items-center gap-3 rounded-lg border p-3 hover:bg-accent'>
+              <label className='hover:bg-accent flex cursor-pointer items-center gap-3 rounded-lg border p-3'>
                 <input
                   type='radio'
                   name='decision'

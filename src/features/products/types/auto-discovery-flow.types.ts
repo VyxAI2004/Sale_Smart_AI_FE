@@ -8,7 +8,12 @@
 
 // ========== Phase Management ==========
 
-export type DiscoveryPhase = 'search' | 'confirm' | 'review_form' | 'processing' | 'complete'
+export type DiscoveryPhase =
+  | 'search'
+  | 'confirm'
+  | 'review_form'
+  | 'processing'
+  | 'complete'
 
 // ========== Event Types ==========
 
@@ -107,23 +112,23 @@ export interface ProductProcessingResult {
 export interface DiscoveryFlowState {
   // Current phase
   phase: DiscoveryPhase
-  
+
   // Phase 1: Search results (from existing SearchResultsStream)
   searchResults: any // ProductSearchResponse
-  
+
   // Phase 2: Confirmation
   passedProducts: ImportedProduct[]
   rejectedProducts: ImportedProduct[]
   userConfirmContinue: boolean | null
-  
+
   // Phase 3: Review count inputs
   reviewCounts: { [productId: string]: number }
-  
+
   // Phase 4: Processing
   processingStatus: 'idle' | 'running' | 'complete' | 'error'
   productProgress: { [productId: string]: number } // percentage per product
   productResults: { [productId: string]: ProductProcessingResult }
-  
+
   // General state
   isStreaming: boolean
   error?: string

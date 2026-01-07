@@ -16,10 +16,10 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { ProductSearchDialog } from '@/features/products/components/product-search-dialog'
 // API & Types
 import { ProjectDetailApi } from './api/project-detail-api'
 import { ProjectDetailTabs } from './components/dashboard/project-detail-tabs'
-import { ProductSearchDialog } from '@/features/products/components/product-search-dialog'
 // Dashboard Components
 import { ProjectHeader } from './components/dashboard/project-header'
 import type { ProjectDetailData } from './types/project-detail.types'

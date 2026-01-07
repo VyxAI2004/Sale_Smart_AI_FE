@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Users, UserCheck, X } from 'lucide-react'
-import { useTeams } from '@/features/teams/hooks/use-teams'
-import { useTeamMembers } from '@/features/teams/hooks/use-team-members'
 import { getAvatarProps } from '@/utils/avatar-utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,8 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { ProjectFormData } from '../types/project.types'
+import { useTeamMembers } from '@/features/teams/hooks/use-team-members'
+import { useTeams } from '@/features/teams/hooks/use-teams'
 import type { ITeamUser } from '@/features/teams/types'
+import type { ProjectFormData } from '../types/project.types'
 
 interface TeamAssignmentCardProps {
   formData: ProjectFormData
@@ -88,7 +88,10 @@ export function TeamAssignmentCard({
           <Label htmlFor='team_select' className='text-sm font-medium'>
             Select Team
           </Label>
-          <Select value={selectedTeamId || ''} onValueChange={setSelectedTeamId}>
+          <Select
+            value={selectedTeamId || ''}
+            onValueChange={setSelectedTeamId}
+          >
             <SelectTrigger id='team_select'>
               <SelectValue placeholder='Select a team...' />
             </SelectTrigger>

@@ -14,10 +14,10 @@ import { useTranslation } from '@/hooks/use-translation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 // Import new product components
 import { ProductsList } from '@/features/products'
-import { TasksKanbanBoard } from '@/features/tasks/components/tasks-kanban-board'
 import { TaskApi } from '@/features/tasks/api/task-api'
-import type { ProjectDetailData } from '../../types/project-detail.types'
+import { TasksKanbanBoard } from '@/features/tasks/components/tasks-kanban-board'
 import type { Task } from '@/features/tasks/types/task.types'
+import type { ProjectDetailData } from '../../types/project-detail.types'
 // Import tab components
 import { ProjectDetailsCard } from './project-details-card'
 import { TeamManagementCard } from './team-management-card'
@@ -41,14 +41,14 @@ export function ProjectDetailTabs({
   const [internalActiveTab, setInternalActiveTab] = useState('overview')
   const [tasks, setTasks] = useState<Task[]>([])
   const [tasksLoading, setTasksLoading] = useState(false)
-  
+
   const activeTab = externalActiveTab ?? internalActiveTab
   const setActiveTab = onTabChange ?? setInternalActiveTab
 
   // Load tasks when Tasks tab is accessed
   const handleTasksTabActive = async () => {
     if (!project?.id) return
-    
+
     try {
       setTasksLoading(true)
       const response = await TaskApi.getAll({ project_id: project.id }, 0, 1000)
@@ -69,7 +69,11 @@ export function ProjectDetailTabs({
 
   return (
     <div className='w-full space-y-6'>
-      <Tabs value={activeTab} onValueChange={handleTabChange} className='w-full'>
+      <Tabs
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className='w-full'
+      >
         <TabsList className='grid w-full grid-cols-4 flex-wrap lg:flex lg:w-fit lg:grid-cols-none'>
           <TabsTrigger value='overview' className='flex items-center gap-2'>
             <LayoutDashboard className='h-4 w-4' />

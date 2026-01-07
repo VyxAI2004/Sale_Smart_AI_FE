@@ -17,7 +17,7 @@ export const useUpdateTask = () => {
     onSuccess: (updatedTask) => {
       // Update the specific task in cache first
       queryClient.setQueryData([TASKS_QUERY_KEY, updatedTask.id], updatedTask)
-      
+
       // Invalidate and refetch all tasks list
       queryClient.invalidateQueries({
         queryKey: [TASKS_QUERY_KEY],
