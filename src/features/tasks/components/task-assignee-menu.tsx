@@ -66,7 +66,7 @@ export function TaskAssigneeMenu({
       const result = await updateTask.mutateAsync({
         id: task.id,
         data: {
-          assigned_to_ids: assigneeList,
+          assigned_to: assigneeList,
         },
       })
       // Sync selected assignees with response data
@@ -94,7 +94,7 @@ export function TaskAssigneeMenu({
       const result = await updateTask.mutateAsync({
         id: task.id,
         data: {
-          assigned_to_ids: [],
+          assigned_to: [],
         },
       })
       // Sync selected assignees with response data
