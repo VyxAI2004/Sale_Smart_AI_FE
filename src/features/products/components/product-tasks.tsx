@@ -32,9 +32,7 @@ export function ProductTasks({ productId, projectId }: ProductTasksProps) {
       setError(null)
       const response = await TaskApi.getAll({ project_id: projectId })
       // Handle both TaskListResponse and Task[] for backward compatibility
-      const allTasks = Array.isArray(response)
-        ? response
-        : response.data || []
+      const allTasks = Array.isArray(response) ? response : response.data || []
       // Filter tasks for this product (check stage_metadata)
       const productTasks = allTasks.filter(
         (task: Task) => task.stage_metadata?.product_id === productId

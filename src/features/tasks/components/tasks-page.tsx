@@ -43,9 +43,7 @@ export function TasksPage() {
       }
       const response = await TaskApi.getAll(filters)
       // Handle both TaskListResponse and Task[] for backward compatibility
-      const allTasks = Array.isArray(response)
-        ? response
-        : response.data || []
+      const allTasks = Array.isArray(response) ? response : response.data || []
       setTasks(allTasks)
     } catch (err: any) {
       toast.error('Lỗi tải nhiệm vụ', {
