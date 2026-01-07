@@ -5,12 +5,14 @@ import http from '@/utils/http'
 
 export interface ProjectUserResponse {
   id: string
-  project_id: string
-  user_id: string
+  project_id?: string
+  user_id?: string
+  name?: string
+  email?: string
   role: string
   status: 'pending' | 'accepted'
-  invited_at: string
-  invited_by: string
+  invited_at?: string
+  invited_by?: string
 }
 
 export interface InviteProjectUserPayload {
@@ -42,7 +44,7 @@ export class ProjectUserApi {
     projectId: string
   ): Promise<ProjectUserResponse[]> {
     const response = await http.get<ProjectUserResponse[]>(
-      `${this.BASE_PATH}/${projectId}/users`
+      `${this.BASE_PATH}/${projectId}/members`
     )
     return response.data
   }
@@ -51,7 +53,9 @@ export class ProjectUserApi {
    * Remove user from project
    */
   static async removeUser(projectId: string, userId: string): Promise<void> {
-    await http.delete(`${this.BASE_PATH}/${projectId}/users/${userId}`)
+    await http.delete(`${this.BASE_PATH}/${projectId}/members`, {
+      data: { user_ids: [userId] }
+    })
   }
 
   /**
@@ -62,8 +66,8 @@ export class ProjectUserApi {
     userId: string,
     role: string
   ): Promise<ProjectUserResponse> {
-    const response = await http.patch<ProjectUserResponse>(
-      `${this.BASE_PATH}/${projectId}/users/${userId}/role`,
+    const response = await http.put<ProjectUserResponse>(
+      `${this.BASE_PATH}/${projectId}/members/${userId}`,
       { role }
     )
     return response.data

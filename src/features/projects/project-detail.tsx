@@ -19,9 +19,9 @@ import { ThemeSwitch } from '@/components/theme-switch'
 // API & Types
 import { ProjectDetailApi } from './api/project-detail-api'
 import { ProjectDetailTabs } from './components/dashboard/project-detail-tabs'
+import { ProductSearchDialog } from '@/features/products/components/product-search-dialog'
 // Dashboard Components
 import { ProjectHeader } from './components/dashboard/project-header'
-import { ProjectMemberInvite } from './components/project-member-invite'
 import type { ProjectDetailData } from './types/project-detail.types'
 
 export function ProjectDetail() {
@@ -34,7 +34,7 @@ export function ProjectDetail() {
   const [isFullWidth, setIsFullWidth] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<string>('overview')
-  const [showInviteModal, setShowInviteModal] = useState(false)
+  const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false)
 
   useEffect(() => {
     if (!projectId) {
@@ -201,6 +201,7 @@ export function ProjectDetail() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+          <LanguageSwitcher />
           <ThemeSwitch />
           <ConfigDrawer />
           <ProfileDropdown />
@@ -210,8 +211,18 @@ export function ProjectDetail() {
       <Main fluid={isFullWidth}>
         <ProjectHeader
           project={project}
-          onTriggerCrawl={() => setActiveTab('find-product')}
-          onInviteMembers={() => setShowInviteModal(true)}
+          onTriggerCrawl={() => {
+            setIsSearchDialogOpen(true)
+          }}
+        />
+
+        <ProductSearchDialog
+          projectId={projectId}
+          open={isSearchDialogOpen}
+          onOpenChange={(newState) => {
+            console.log('Dialog state changed to:', newState)
+            setIsSearchDialogOpen(newState)
+          }}
         />
 
         <ProjectDetailTabs
@@ -221,15 +232,6 @@ export function ProjectDetail() {
           onTabChange={setActiveTab}
           onProjectUpdate={handleProjectUpdate}
         />
-
-        {/* Invite Modal */}
-        {project && (
-          <ProjectMemberInvite
-            projectId={project.id}
-            open={showInviteModal}
-            onOpenChange={setShowInviteModal}
-          />
-        )}
       </Main>
     </div>
   )

@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react'
 import { Users, UserCheck, X } from 'lucide-react'
+import { useTeams } from '@/features/teams/hooks/use-teams'
+import { useTeamMembers } from '@/features/teams/hooks/use-team-members'
 import { getAvatarProps } from '@/utils/avatar-utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,8 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { MOCK_USERS } from '../constants/project.constants'
 import type { ProjectFormData } from '../types/project.types'
+import type { ITeamUser } from '@/features/teams/types'
 
 interface TeamAssignmentCardProps {
   formData: ProjectFormData
@@ -23,16 +26,33 @@ export function TeamAssignmentCard({
   formData,
   onInputChange,
 }: TeamAssignmentCardProps) {
+  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null)
+  const { data: teams = [] } = useTeams(0, 100)
+  const { data: teamMembers = [] } = useTeamMembers(
+    selectedTeamId ? (selectedTeamId as any) : null
+  )
+
+  useEffect(() => {
+    // Set first team as default
+    if (teams.length > 0 && !selectedTeamId) {
+      setSelectedTeamId(teams[0].id as string)
+    }
+  }, [teams, selectedTeamId])
+
   // Get assigned users for display
   const getAssignedUsers = () => {
     const assignedIds = formData.assigned_to || []
-    return MOCK_USERS.filter((user) => assignedIds.includes(user.id))
+    return teamMembers.filter((user: ITeamUser) =>
+      assignedIds.includes(user.user_id as string)
+    )
   }
 
   // Get available users (not yet assigned)
   const getAvailableUsers = () => {
     const assignedIds = formData.assigned_to || []
-    return MOCK_USERS.filter((user) => !assignedIds.includes(user.id))
+    return teamMembers.filter(
+      (user: ITeamUser) => !assignedIds.includes(user.user_id as string)
+    )
   }
 
   // Handle adding team member
@@ -63,26 +83,46 @@ export function TeamAssignmentCard({
         </CardTitle>
       </CardHeader>
       <CardContent className='space-y-4'>
+        {/* Team Selector */}
+        <div className='space-y-2'>
+          <Label htmlFor='team_select' className='text-sm font-medium'>
+            Select Team
+          </Label>
+          <Select value={selectedTeamId || ''} onValueChange={setSelectedTeamId}>
+            <SelectTrigger id='team_select'>
+              <SelectValue placeholder='Select a team...' />
+            </SelectTrigger>
+            <SelectContent>
+              {teams.map((team) => (
+                <SelectItem key={team.id} value={team.id as string}>
+                  {team.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Member Assignment */}
         <div className='space-y-2'>
           <Label htmlFor='assigned_to' className='text-sm font-medium'>
-            Assigned To
+            Assign Members To
           </Label>
           <Select onValueChange={handleAddTeamMember} value=''>
             <SelectTrigger>
               <SelectValue placeholder='Add team member...' />
             </SelectTrigger>
             <SelectContent>
-              {getAvailableUsers().map((user) => {
-                const avatarProps = getAvatarProps(user.name)
+              {getAvailableUsers().map((user: ITeamUser) => {
+                const avatarProps = getAvatarProps(user.full_name)
                 return (
-                  <SelectItem key={user.id} value={user.id}>
+                  <SelectItem key={user.user_id} value={user.user_id as string}>
                     <div className='flex items-center gap-2'>
                       <div
                         className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${avatarProps.colorClass}`}
                       >
                         {avatarProps.initials}
                       </div>
-                      <span>{user.name}</span>
+                      <span>{user.full_name}</span>
                     </div>
                   </SelectItem>
                 )
@@ -101,11 +141,11 @@ export function TeamAssignmentCard({
             </div>
 
             <div className='space-y-2'>
-              {assignedUsers.map((user) => {
-                const avatarProps = getAvatarProps(user.name)
+              {assignedUsers.map((user: ITeamUser) => {
+                const avatarProps = getAvatarProps(user.full_name)
                 return (
                   <div
-                    key={user.id}
+                    key={user.user_id}
                     className='bg-background flex items-center justify-between rounded-md p-2'
                   >
                     <div className='flex items-center gap-3'>
@@ -115,7 +155,7 @@ export function TeamAssignmentCard({
                         {avatarProps.initials}
                       </div>
                       <div>
-                        <p className='text-sm font-medium'>{user.name}</p>
+                        <p className='text-sm font-medium'>{user.full_name}</p>
                         <p className='text-muted-foreground text-xs'>
                           {user.email}
                         </p>
@@ -125,7 +165,9 @@ export function TeamAssignmentCard({
                       variant='ghost'
                       size='sm'
                       className='hover:bg-destructive hover:text-destructive-foreground h-6 w-6 p-0'
-                      onClick={() => handleRemoveTeamMember(user.id)}
+                      onClick={() =>
+                        handleRemoveTeamMember(user.user_id as string)
+                      }
                     >
                       <X className='h-3 w-3' />
                     </Button>
@@ -142,7 +184,7 @@ export function TeamAssignmentCard({
             <div className='text-xs text-green-700'>
               <p className='font-medium'>Team Collaboration</p>
               <p className='mt-1'>
-                Assign this project to a team member who will be responsible for
+                Assign this project to team members who will be responsible for
                 monitoring progress and managing project tasks.
               </p>
             </div>

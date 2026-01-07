@@ -1,22 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Check, ChevronDown, Loader2, Users } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu'
-import { useProjectMembers } from '@/features/projects/hooks/use-project-members'
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useProjectUsers } from '@/features/projects/hooks/use-project-users'
 import { useUpdateTask } from '../hooks/use-update-task'
 import { type Task } from '../types/task.types'
 
 interface TaskAssigneeMenuProps {
   task: Task
-  currentAssignee?: string | null
+  currentAssignee?: string | string[] | null
 }
 
 export function TaskAssigneeMenu({
@@ -24,63 +23,112 @@ export function TaskAssigneeMenu({
   currentAssignee,
 }: TaskAssigneeMenuProps) {
   const [open, setOpen] = useState(false)
+  // Use assigned_to_ids from task response (from API), fallback to currentAssignee prop
+  const assigneeIds = task.assigned_to_ids || (Array.isArray(currentAssignee) ? currentAssignee : (currentAssignee ? [currentAssignee] : []))
+  const [selectedAssignees, setSelectedAssignees] = useState<Set<string>>(
+    new Set(assigneeIds)
+  )
   const updateTask = useUpdateTask()
-  const { data: projectMembers = [], isLoading: isLoadingMembers } =
-    useProjectMembers(task.project_id)
+  const { data: projectUsers = [], isLoading: isLoadingMembers } =
+    useProjectUsers(task.project_id)
 
-  const handleAssign = async (userId: string) => {
+  // Sync selected assignees when task.assigned_to_ids changes
+  useEffect(() => {
+    const newAssigneeIds = task.assigned_to_ids || (Array.isArray(currentAssignee) ? currentAssignee : (currentAssignee ? [currentAssignee] : []))
+    setSelectedAssignees(new Set(newAssigneeIds))
+  }, [task.assigned_to_ids, currentAssignee])
+
+  const handleToggleAssignee = async (userId: string) => {
+    const newSelected = new Set(selectedAssignees)
+    if (newSelected.has(userId)) {
+      newSelected.delete(userId)
+    } else {
+      newSelected.add(userId)
+    }
+    setSelectedAssignees(newSelected)
+
+    // Update immediately
     try {
-      await updateTask.mutateAsync({
+      // Convert set to array and send to backend
+      const assigneeList = Array.from(newSelected)
+      const result = await updateTask.mutateAsync({
         id: task.id,
         data: {
-          assigned_to: userId,
+          assigned_to_ids: assigneeList,
         },
       })
-      setOpen(false)
+      // Sync selected assignees with response data
+      if (result.assigned_to_ids) {
+        setSelectedAssignees(new Set(result.assigned_to_ids))
+      }
     } catch (_error) {
-      // Assignment failed - error handled by mutation
+      // Error handled by mutation
+      // Revert selection
+      setSelectedAssignees(new Set(Array.isArray(currentAssignee) ? currentAssignee : (currentAssignee ? [currentAssignee] : [])))
     }
   }
 
   const handleUnassign = async () => {
+    setSelectedAssignees(new Set())
     try {
-      await updateTask.mutateAsync({
+      const result = await updateTask.mutateAsync({
         id: task.id,
         data: {
-          assigned_to: '',
+          assigned_to_ids: [],
         },
       })
-      setOpen(false)
+      // Sync selected assignees with response data
+      if (result.assigned_to_ids) {
+        setSelectedAssignees(new Set(result.assigned_to_ids))
+      }
     } catch (_error) {
-      // Unassignment failed - error handled by mutation
+      // Error handled by mutation
+      setSelectedAssignees(new Set(Array.isArray(currentAssignee) ? currentAssignee : (currentAssignee ? [currentAssignee] : [])))
     }
   }
 
-  const currentMember = projectMembers.find((m) => m.id === currentAssignee)
-  const initials = currentMember
-    ? currentMember.name
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .toUpperCase()
-    : '?'
+  const getSelectedMembers = () => {
+    return Array.from(selectedAssignees)
+      .map((id) => projectUsers.find((m) => m.id === id))
+      .filter(Boolean) as typeof projectUsers
+  }
+
+  const selectedMembers = getSelectedMembers()
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger asChild>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
         <Button
           variant='ghost'
           size='sm'
           className='w-full justify-start gap-2'
         >
-          {currentAssignee && currentMember ? (
+          {selectedMembers.length > 0 ? (
             <>
-              <Avatar className='h-5 w-5'>
-                <AvatarImage src={currentMember.email} />
-                <AvatarFallback className='text-xs'>{initials}</AvatarFallback>
-              </Avatar>
+              <div className='flex -space-x-2'>
+                {selectedMembers.slice(0, 2).map((member) => {
+                  const initials = member.name
+                    ? member.name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .toUpperCase()
+                    : '?'
+                  return (
+                    <Avatar key={member.id} className='h-5 w-5 border border-background'>
+                      <AvatarImage src={member.email} />
+                      <AvatarFallback className='text-xs'>{initials}</AvatarFallback>
+                    </Avatar>
+                  )
+                })}
+                {selectedMembers.length > 2 && (
+                  <Avatar className='h-5 w-5 border border-background flex items-center justify-center bg-muted'>
+                    <span className='text-xs font-semibold'>+{selectedMembers.length - 2}</span>
+                  </Avatar>
+                )}
+              </div>
               <span className='truncate text-xs'>
-                {currentMember.name.split(' ')[0]}
+                {selectedMembers.length} assigned
               </span>
             </>
           ) : (
@@ -91,66 +139,79 @@ export function TaskAssigneeMenu({
           )}
           <ChevronDown className='ml-auto h-3 w-3 opacity-50' />
         </Button>
-      </DropdownMenuTrigger>
+      </PopoverTrigger>
 
-      <DropdownMenuContent align='start' className='w-[200px]'>
-        <DropdownMenuLabel className='text-xs'>Assign to</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+      <PopoverContent align='start' className='w-[280px] p-0'>
+        <div className='space-y-2 p-4'>
+          <div className='text-sm font-semibold'>Assign members</div>
+          
+          {isLoadingMembers ? (
+            <div className='flex items-center justify-center p-4'>
+              <Loader2 className='h-4 w-4 animate-spin' />
+            </div>
+          ) : projectUsers.length === 0 ? (
+            <div className='text-muted-foreground p-2 text-xs text-center py-4'>
+              No team members. Invite members to the project.
+            </div>
+          ) : (
+            <ScrollArea className='h-[300px] w-full rounded-md border p-2'>
+              <div className='space-y-2'>
+                {projectUsers.map((member) => (
+                  <div
+                    key={member.id}
+                    className='flex items-center gap-2 cursor-pointer hover:bg-muted p-2 rounded transition-colors'
+                    onClick={() => handleToggleAssignee(member.id)}
+                  >
+                    <Checkbox
+                      checked={selectedAssignees.has(member.id)}
+                      onCheckedChange={() => handleToggleAssignee(member.id)}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <Avatar className='h-6 w-6'>
+                      <AvatarImage src={member.email} />
+                      <AvatarFallback className='text-xs'>
+                        {(member.name || member.email || 'U')
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')
+                          .toUpperCase()
+                          .slice(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className='flex-1 min-w-0'>
+                      <p className='text-sm truncate'>{member.name || 'User'}</p>
+                      <p className='text-xs text-muted-foreground truncate'>
+                        {member.email}
+                      </p>
+                    </div>
+                    {selectedAssignees.has(member.id) && (
+                      <Check className='text-primary h-4 w-4 flex-shrink-0' />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
 
-        {isLoadingMembers ? (
-          <div className='flex items-center justify-center p-2'>
-            <Loader2 className='h-4 w-4 animate-spin' />
-          </div>
-        ) : projectMembers.length === 0 ? (
-          <div className='text-muted-foreground p-2 text-xs'>
-            No team members. Invite members to the project.
-          </div>
-        ) : (
-          <>
-            {projectMembers.map((member) => (
-              <DropdownMenuItem
-                key={member.id}
-                onClick={() => handleAssign(member.id)}
-                className='cursor-pointer'
-              >
-                <Avatar className='mr-2 h-5 w-5'>
-                  <AvatarImage src={member.email} />
-                  <AvatarFallback className='text-xs'>
-                    {(member.name || member.email || 'U')
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')
-                      .toUpperCase()
-                      .slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className='flex-1 text-sm'>{member.name || 'User'}</span>
-                {currentAssignee === member.id && (
-                  <Check className='text-primary h-4 w-4' />
-                )}
-              </DropdownMenuItem>
-            ))}
-          </>
-        )}
-
-        {currentAssignee && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
+          {selectedMembers.length > 0 && (
+            <Button
+              variant='ghost'
+              size='sm'
+              className='w-full text-xs text-muted-foreground'
               onClick={handleUnassign}
-              className='text-muted-foreground cursor-pointer text-xs'
+              disabled={updateTask.isPending}
             >
-              Unassign
-            </DropdownMenuItem>
-          </>
-        )}
+              Clear assignment
+            </Button>
+          )}
 
-        {updateTask.isPending && (
-          <div className='flex items-center justify-center p-2'>
-            <Loader2 className='h-4 w-4 animate-spin' />
-          </div>
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+          {updateTask.isPending && (
+            <div className='flex items-center justify-center p-2'>
+              <Loader2 className='h-4 w-4 animate-spin' />
+            </div>
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }

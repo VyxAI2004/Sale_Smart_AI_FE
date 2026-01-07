@@ -1,8 +1,15 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { DEFAULT_FORM_DATA } from '../constants/project.constants'
 import { ProjectService } from '../services/project-service'
 import type { ProjectFormData, ProjectFormErrors } from '../types/project.types'
+
+const DEFAULT_FORM_DATA: ProjectFormData = {
+  name: '',
+  description: '',
+  target_product_name: '',
+  status: 'draft',
+  isActive: true,
+}
 
 export const useProjectForm = () => {
   const [formData, setFormData] = useState<ProjectFormData>(DEFAULT_FORM_DATA)

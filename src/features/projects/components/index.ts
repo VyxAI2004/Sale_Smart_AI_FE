@@ -1,3 +1,4 @@
+// Existing exports
 export { ProjectDetailsCard } from './project-details-card'
 export { BudgetCard } from './budget-card'
 export { ConfigurationCard } from './configuration-card'
@@ -8,8 +9,9 @@ export { ProductImagesCard } from './product-images-card'
 export { AIModelCard } from './ai-model-card'
 export { TeamAssignmentCard } from './team-assignment-card'
 
-// Table components
+// Table and Grid components
 export { ProjectsTable } from './projects-table'
+export { ProjectsCardGrid } from './projects-card-grid'
 export { projectsColumns } from './projects-columns'
 export { DataTableRowActions } from './data-table-row-actions'
 

@@ -5,3 +5,5 @@ export * from './product-review.api'
 export * from './review-analysis.api'
 export * from './trust-score.api'
 export * from './auto-discovery.api'
+export * from './auto-discovery-flow.api'
+

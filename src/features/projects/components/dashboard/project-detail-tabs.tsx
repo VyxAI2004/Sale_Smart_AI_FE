@@ -2,28 +2,23 @@ import { useState } from 'react'
 import {
   LayoutDashboard,
   Users,
-  Database,
   ShoppingCart,
-  BarChart3,
   Target,
   Zap,
   Activity,
   TrendingUp,
   FolderCog2Icon,
-  Search,
-  MessageSquare,
-  Shield,
+  CheckSquare,
 } from 'lucide-react'
 import { useTranslation } from '@/hooks/use-translation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 // Import new product components
-import { ProductsList, FindProductWorkflow } from '@/features/products'
+import { ProductsList } from '@/features/products'
+import { TasksKanbanBoard } from '@/features/tasks/components/tasks-kanban-board'
+import { TaskApi } from '@/features/tasks/api/task-api'
 import type { ProjectDetailData } from '../../types/project-detail.types'
-import { AnalyticsCard } from './analytics-card'
-import { CompetitorProductsCard } from './competitor-products-card'
+import type { Task } from '@/features/tasks/types/task.types'
 // Import tab components
-import { PriceAnalysisCard } from './price-analysis-card'
-import { ProductSourcesCard } from './product-sources-card'
 import { ProjectDetailsCard } from './project-details-card'
 import { TeamManagementCard } from './team-management-card'
 
@@ -44,13 +39,38 @@ export function ProjectDetailTabs({
 }: ProjectDetailTabsProps) {
   const { t } = useTranslation()
   const [internalActiveTab, setInternalActiveTab] = useState('overview')
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [tasksLoading, setTasksLoading] = useState(false)
+  
   const activeTab = externalActiveTab ?? internalActiveTab
   const setActiveTab = onTabChange ?? setInternalActiveTab
 
+  // Load tasks when Tasks tab is accessed
+  const handleTasksTabActive = async () => {
+    if (!project?.id) return
+    
+    try {
+      setTasksLoading(true)
+      const response = await TaskApi.getAll({ project_id: project.id }, 0, 1000)
+      setTasks(response.data)
+    } catch (error) {
+      console.error('Failed to load tasks:', error)
+    } finally {
+      setTasksLoading(false)
+    }
+  }
+
+  const handleTabChange = (tab: string) => {
+    if (tab === 'tasks' || tab === 'team') {
+      handleTasksTabActive()
+    }
+    setActiveTab(tab)
+  }
+
   return (
     <div className='w-full space-y-6'>
-      <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
-        <TabsList className='grid w-full grid-cols-6 flex-wrap lg:flex lg:w-fit lg:grid-cols-none'>
+      <Tabs value={activeTab} onValueChange={handleTabChange} className='w-full'>
+        <TabsList className='grid w-full grid-cols-4 flex-wrap lg:flex lg:w-fit lg:grid-cols-none'>
           <TabsTrigger value='overview' className='flex items-center gap-2'>
             <LayoutDashboard className='h-4 w-4' />
             <span className='hidden sm:inline'>{t('projects.overview')}</span>
@@ -59,27 +79,9 @@ export function ProjectDetailTabs({
             <ShoppingCart className='h-4 w-4' />
             <span className='hidden sm:inline'>{t('projects.products')}</span>
           </TabsTrigger>
-          <TabsTrigger value='find-product' className='flex items-center gap-2'>
-            <Search className='h-4 w-4' />
-            <span className='hidden sm:inline'>
-              {t('projects.findProduct')}
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value='reviews' className='flex items-center gap-2'>
-            <MessageSquare className='h-4 w-4' />
-            <span className='hidden sm:inline'>{t('projects.reviews')}</span>
-          </TabsTrigger>
-          <TabsTrigger value='trust-score' className='flex items-center gap-2'>
-            <Shield className='h-4 w-4' />
-            <span className='hidden sm:inline'>{t('projects.trustScore')}</span>
-          </TabsTrigger>
-          <TabsTrigger value='analytics' className='flex items-center gap-2'>
-            <BarChart3 className='h-4 w-4' />
-            <span className='hidden sm:inline'>{t('projects.analytics')}</span>
-          </TabsTrigger>
-          <TabsTrigger value='sources' className='flex items-center gap-2'>
-            <Database className='h-4 w-4' />
-            <span className='hidden sm:inline'>{t('projects.sources')}</span>
+          <TabsTrigger value='tasks' className='flex items-center gap-2'>
+            <CheckSquare className='h-4 w-4' />
+            <span className='hidden sm:inline'>{t('projects.tasks')}</span>
           </TabsTrigger>
           <TabsTrigger value='team' className='flex items-center gap-2'>
             <Users className='h-4 w-4' />
@@ -158,36 +160,11 @@ export function ProjectDetailTabs({
             <div className='grid grid-cols-1 items-start gap-6 lg:grid-cols-3'>
               <div className='space-y-4'>
                 <h3 className='text-lg font-semibold'>
-                  {t('projects.priceAnalysis')}
+                  {t('projects.overview')}
                 </h3>
-                <div className='h-[400px]'>
-                  <PriceAnalysisCard
-                    analysis={project?.price_analysis || null}
-                    isLoading={isLoading}
-                  />
-                </div>
-              </div>
-
-              <div className='space-y-4'>
-                <h3 className='text-lg font-semibold'>
-                  {t('projects.productSources')}
-                </h3>
-                <div className='h-[400px]'>
-                  <ProductSourcesCard
-                    sources={project?.product_sources || []}
-                    isLoading={isLoading}
-                  />
-                </div>
-              </div>
-
-              <div className='space-y-4'>
-                <h3 className='text-lg font-semibold'>Competitor Products</h3>
-                <div className='h-[400px]'>
-                  <CompetitorProductsCard
-                    products={project?.competitor_products || []}
-                    isLoading={isLoading}
-                  />
-                </div>
+                <p className='text-muted-foreground text-sm'>
+                  Project summary and key metrics displayed above
+                </p>
               </div>
             </div>
           </div>
@@ -198,23 +175,8 @@ export function ProjectDetailTabs({
           <TeamManagementCard
             project={project}
             isLoading={isLoading}
-            onAddMember={(_email, _role) => {
-              // Handle add member logic
-            }}
-            onRemoveMember={(_memberId) => {
-              // Handle remove member logic
-            }}
-            onAssignTask={(_taskId, _memberId) => {
-              // Handle task assignment logic
-            }}
-          />
-        </TabsContent>
-
-        {/* Data Sources Tab */}
-        <TabsContent value='sources' className='mt-6'>
-          <ProductSourcesCard
-            sources={project?.product_sources || []}
-            isLoading={isLoading}
+            tasks={tasks}
+            tasksLoading={tasksLoading}
           />
         </TabsContent>
 
@@ -235,56 +197,24 @@ export function ProjectDetailTabs({
           )}
         </TabsContent>
 
-        {/* Find Product Tab */}
-        <TabsContent value='find-product' className='mt-6'>
-          {project?.id ? (
-            <FindProductWorkflow
-              projectId={project.id}
-              onComplete={() => {
-                // Refresh data after workflow completes
-                console.log('Workflow completed')
-              }}
+        {/* Tasks Tab */}
+        <TabsContent value='tasks' className='mt-6'>
+          {tasksLoading ? (
+            <div className='text-muted-foreground py-8 text-center'>
+              Loading tasks...
+            </div>
+          ) : tasks.length > 0 ? (
+            <TasksKanbanBoard
+              tasks={tasks}
+              onTasksChange={handleTasksTabActive}
+              canCheckTask={() => true}
+              getNextTaskOrder={() => 1}
             />
           ) : (
             <div className='text-muted-foreground py-8 text-center'>
-              {isLoading ? 'Loading project...' : 'Project ID not available'}
+              No tasks available
             </div>
           )}
-        </TabsContent>
-
-        {/* Reviews Tab - Note: This shows reviews for a selected product */}
-        <TabsContent value='reviews' className='mt-6'>
-          <div className='space-y-4'>
-            <p className='text-muted-foreground text-sm'>
-              Select a product from the Products tab to view its reviews and
-              analysis.
-            </p>
-            {/* TODO: Add product selector or integrate with product detail view */}
-          </div>
-        </TabsContent>
-
-        {/* Trust Score Tab - Note: This shows trust score for a selected product */}
-        <TabsContent value='trust-score' className='mt-6'>
-          <div className='space-y-4'>
-            <p className='text-muted-foreground text-sm'>
-              Select a product from the Products tab to view its trust score.
-            </p>
-            {/* TODO: Add product selector or integrate with product detail view */}
-          </div>
-        </TabsContent>
-
-        {/* Analytics Tab */}
-        <TabsContent value='analytics' className='mt-6'>
-          <AnalyticsCard
-            project={project}
-            isLoading={isLoading}
-            onRefreshAnalytics={() => {
-              // Handle refresh analytics logic
-            }}
-            onExportReport={() => {
-              // Handle export report logic
-            }}
-          />
         </TabsContent>
 
         {/* Settings Tab */}

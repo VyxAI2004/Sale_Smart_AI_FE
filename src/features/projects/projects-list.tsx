@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getRouteApi } from '@tanstack/react-router'
-import { Loader2, Maximize2, Minimize2 } from 'lucide-react'
+import { Loader2, Maximize2, Minimize2, Grid, List } from 'lucide-react'
 import { useTranslation } from '@/hooks/use-translation'
+import { useViewModePreference } from '@/hooks/use-view-mode-preference'
 import { Button } from '@/components/ui/button'
 import {
   Tooltip,
@@ -21,6 +22,7 @@ import { ProjectsDialogs } from './components/projects-dialogs'
 import { ProjectsPrimaryButtons } from './components/projects-primary-buttons'
 import { ProjectsProvider } from './components/projects-provider'
 import { ProjectsTable } from './components/projects-table'
+import { ProjectsCardGrid } from './components/projects-card-grid'
 
 const route = getRouteApi('/_authenticated/projects/')
 
@@ -31,6 +33,7 @@ export function Projects() {
   const [projects, setProjects] = useState<ProjectApiResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [isFullWidth, setIsFullWidth] = useState(false)
+  const [viewMode, setViewMode] = useViewModePreference('projects-view-mode')
 
   const fetchProjects = useCallback(async () => {
     try {
@@ -138,10 +141,49 @@ export function Projects() {
               )
             </p>
           </div>
-          <ProjectsPrimaryButtons />
+          <div className='flex items-center gap-2'>
+            <ProjectsPrimaryButtons />
+            <div className='ml-2 flex items-center gap-1 rounded-md border p-1'>
+              <Button
+                variant={viewMode === 'table' ? 'default' : 'ghost'}
+                size='sm'
+                className='h-8 w-8 p-0'
+                onClick={() => setViewMode('table')}
+                title='Table view'
+              >
+                <List className='h-4 w-4' />
+              </Button>
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                size='sm'
+                className='h-8 w-8 p-0'
+                onClick={() => setViewMode('grid')}
+                title='Grid view'
+              >
+                <Grid className='h-4 w-4' />
+              </Button>
+            </div>
+          </div>
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12'>
-          <ProjectsTable data={projects} search={search} navigate={navigate} />
+          {viewMode === 'table' ? (
+            <ProjectsTable data={projects} search={search} navigate={navigate} />
+          ) : (
+            <ProjectsCardGrid
+              projects={projects}
+              onViewProject={(projectId) => {
+                navigate({ to: '/projects/$projectId', params: { projectId } })
+              }}
+              onEditProject={(projectId) => {
+                // Open edit dialog
+                navigate({ to: '/projects/$projectId', params: { projectId } })
+              }}
+              onDeleteProject={(projectId) => {
+                // Open delete dialog
+                console.log('Delete:', projectId)
+              }}
+            />
+          )}
         </div>
       </Main>
 

@@ -1,3 +1,10 @@
+export interface TaskListResponse {
+  total: number
+  skip: number
+  limit: number
+  data: Task[]
+}
+
 export interface Task {
   id: string
   project_id: string
@@ -12,7 +19,8 @@ export interface Task {
   task_type?: string | null
   status?: string
   priority?: string
-  assigned_to?: string | null
+  assigned_to?: string[] | null
+  assigned_to_ids?: string[] | null
   assigned_model_id?: string | null
   due_date?: string | null
   completed_at?: string | null
@@ -34,7 +42,7 @@ export interface TaskCreate {
   task_type?: string
   status?: string
   priority?: string
-  assigned_to?: string
+  assigned_to?: string[]
   assigned_model_id?: string
   due_date?: string
   estimated_hours?: number
@@ -51,7 +59,7 @@ export interface TaskUpdate {
   task_type?: string
   status?: string
   priority?: string
-  assigned_to?: string
+  assigned_to?: string[]
   assigned_model_id?: string
   product_id?: string
   due_date?: string
@@ -84,7 +92,7 @@ export interface TaskGenerationResponse {
 export interface TaskFilters {
   project_id?: string
   product_id?: string
-  assigned_to?: string
+  assigned_to?: string | string[]
   status?: string
   task_type?: string
   priority?: string

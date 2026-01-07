@@ -14,8 +14,11 @@ export const useUpdateTask = () => {
     mutationFn: async ({ id, data }: { id: string; data: TaskUpdate }) => {
       return TaskApi.update(id, data)
     },
-    onSuccess: () => {
-      // Invalidate and refetch tasks
+    onSuccess: (updatedTask) => {
+      // Update the specific task in cache first
+      queryClient.setQueryData([TASKS_QUERY_KEY, updatedTask.id], updatedTask)
+      
+      // Invalidate and refetch all tasks list
       queryClient.invalidateQueries({
         queryKey: [TASKS_QUERY_KEY],
       })

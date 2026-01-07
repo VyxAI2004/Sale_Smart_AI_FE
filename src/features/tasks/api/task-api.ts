@@ -6,6 +6,7 @@ import type {
   TaskFilters,
   TaskGenerationRequest,
   TaskGenerationResponse,
+  TaskListResponse,
 } from '../types/task.types'
 
 export class TaskApi {
@@ -15,19 +16,29 @@ export class TaskApi {
   /**
    * Get all tasks with filters
    */
-  static async getAll(filters?: TaskFilters): Promise<Task[]> {
+  static async getAll(filters?: TaskFilters, skip: number = 0, limit: number = 1000): Promise<TaskListResponse> {
     const params = new URLSearchParams()
     if (filters?.project_id) params.append('project_id', filters.project_id)
     if (filters?.product_id) params.append('product_id', filters.product_id)
-    if (filters?.assigned_to) params.append('assigned_to', filters.assigned_to)
+    if (filters?.assigned_to) {
+      if (Array.isArray(filters.assigned_to)) {
+        filters.assigned_to.forEach((id) => params.append('assigned_to', id))
+      } else {
+        params.append('assigned_to', filters.assigned_to)
+      }
+    }
     if (filters?.status) params.append('status', filters.status)
+    
+    // Add pagination
+    params.append('skip', skip.toString())
+    params.append('limit', limit.toString())
 
     const queryString = params.toString()
     const url = queryString
       ? `${this.BASE_PATH}?${queryString}`
       : this.BASE_PATH
 
-    const response = await http.get<Task[]>(url)
+    const response = await http.get<TaskListResponse>(url)
     return response.data
   }
 

@@ -115,7 +115,7 @@ export const tasksColumns: ColumnDef<Task>[] = [
       <DataTableColumnHeader column={column} title='Assigned To' />
     ),
     cell: ({ row }) => {
-      const assignedTo = row.getValue('assigned_to') as string | null
+      const assignedTo = row.getValue('assigned_to') as string | string[] | null
 
       return (
         <div className='w-[120px]'>

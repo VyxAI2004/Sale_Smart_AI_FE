@@ -117,8 +117,8 @@ export const SidebarCards = ({
               </SelectTrigger>
               <SelectContent>
                 {PRODUCT_CATEGORIES.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    <span className='truncate'>{category}</span>
+                  <SelectItem key={category.value} value={category.value}>
+                    <span className='truncate'>{category.label}</span>
                   </SelectItem>
                 ))}
               </SelectContent>

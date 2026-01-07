@@ -128,8 +128,8 @@ export function ProjectsTable({ data, search, navigate }: DataTableProps) {
             columnId: 'target_product_category',
             title: 'Category',
             options: PRODUCT_CATEGORIES.map((category) => ({
-              label: category,
-              value: category,
+              label: category.label,
+              value: category.value,
             })),
           },
           {

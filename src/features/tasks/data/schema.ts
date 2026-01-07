@@ -11,7 +11,7 @@ export const taskSchema = z.object({
   priority: z.string(),
   product_id: z.string().optional().nullable(),
   product_name: z.string().optional().nullable(),
-  assigned_to: z.string().optional().nullable(),
+  assigned_to: z.array(z.string()).optional().nullable(),
   project_id: z.string(),
   pipeline_stage: z.string().optional(),
   stage_order: z.number().optional(),

@@ -63,6 +63,40 @@ export const useInviteProjectUser = () => {
 }
 
 /**
+ * Hook to update user role in project
+ */
+export const useUpdateProjectUserRole = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      projectId,
+      userId,
+      role,
+    }: {
+      projectId: string
+      userId: string
+      role: string
+    }) => {
+      return ProjectUserApi.updateUserRole(projectId, userId, role)
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [PROJECT_USERS_QUERY_KEY, variables.projectId],
+      })
+      toast.success('Role updated successfully')
+    },
+    onError: (error: any) => {
+      const message =
+        error.response?.data?.detail || error.message || 'Failed to update role'
+      toast.error('Failed to update role', {
+        description: message,
+      })
+    },
+  })
+}
+
+/**
  * Hook to remove user from project
  */
 export const useRemoveProjectUser = () => {

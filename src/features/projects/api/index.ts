@@ -1,4 +1,3 @@
-/**
- * API Layer Exports
- */
-export * from './project-api'
+// Project API clients
+export { ProjectApi } from './project-api'
+

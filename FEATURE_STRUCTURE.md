@@ -172,6 +172,70 @@ features/products/
 5. **Documentation**: Thêm JSDoc cho public APIs
 6. **Type safety**: Sử dụng TypeScript đầy đủ, tránh `any`
 
+## Code Quality Checks (Bắt buộc trước khi commit)
+
+Sau khi hoàn thiện code, **phải chạy các lệnh sau để đảm bảo chất lượng code**:
+
+### 1. ESLint Check
+```bash
+# Kiểm tra linting issues
+pnpm eslint .
+
+# Tự động fix các linting issues
+pnpm eslint . --fix
+```
+
+**Mục đích**: Phát hiện và sửa các lỗi code style, unused variables, best practices violations
+
+### 2. Format Check (Prettier)
+```bash
+# Kiểm tra formatting
+pnpm format:check
+
+# Tự động fix formatting
+pnpm format
+```
+
+**Mục đích**: Đảm bảo code được format đúng theo Prettier config, nhất quán trong cả project
+
+### 3. Type Check
+```bash
+# Kiểm tra TypeScript errors
+pnpm build
+```
+
+**Mục đích**: Đảm bảo không có TypeScript errors trước khi commit
+
+### ✅ Quy trình trước commit
+
+Chạy tuần tự:
+```bash
+# 1. Fix linting issues
+pnpm eslint . --fix
+
+# 2. Fix formatting issues
+pnpm format
+
+# 3. Check type safety
+pnpm build
+
+# 4. Verify format check passes
+pnpm format:check
+```
+
+Hoặc chạy tất cả cùng lúc (nếu có script trong package.json):
+```bash
+# Chạy tất cả checks
+pnpm ci
+```
+
+### ⚠️ Lưu ý quan trọng
+
+- **Không commit code** nếu `pnpm format:check` báo lỗi
+- **Không commit code** nếu `pnpm build` có TypeScript errors
+- **ESLint warnings** không là blocker nhưng nên fix để code sạch
+- Nếu formatter/linter auto-fix không thành công, sửa manual và commit
+
 ## Data Sync Pattern (Derived State)
 
 ### Problem: Out-of-sync State

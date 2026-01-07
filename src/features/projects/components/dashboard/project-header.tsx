@@ -1,7 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import {
   Calendar,
-  Users,
   Settings,
   Share2,
   Trash2,
@@ -26,7 +25,6 @@ interface ProjectHeaderProps {
   onDelete?: () => void
   onShare?: () => void
   onTriggerCrawl?: () => void
-  onInviteMembers?: () => void
 }
 
 export function ProjectHeader({
@@ -36,7 +34,6 @@ export function ProjectHeader({
   onDelete,
   onShare,
   onTriggerCrawl,
-  onInviteMembers,
 }: ProjectHeaderProps) {
   const { t } = useTranslation()
   const getStatusBadge = (status: string) => {
@@ -190,7 +187,6 @@ export function ProjectHeader({
 
               {project.team_members && project.team_members.length > 0 && (
                 <div className='flex items-center gap-2'>
-                  <Users className='h-4 w-4' />
                   <div className='flex items-center gap-1'>
                     <div className='flex -space-x-2'>
                       {project.team_members.slice(0, 3).map((member) => (
@@ -229,18 +225,6 @@ export function ProjectHeader({
 
         {/* Actions - Same as ProjectsPrimaryButtons style */}
         <div className='flex items-center gap-2'>
-          {onInviteMembers && (
-            <Button
-              size='sm'
-              variant='outline'
-              onClick={onInviteMembers}
-              className='flex items-center gap-2'
-            >
-              <Users className='h-4 w-4' />
-              {t('projects.inviteMembers')}
-            </Button>
-          )}
-
           {onTriggerCrawl && (
             <Button
               size='sm'

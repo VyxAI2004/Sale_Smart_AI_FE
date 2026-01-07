@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, Filter, Download, Grid, List } from 'lucide-react'
+import { Filter, Download, Grid, List } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useViewModePreference } from '@/hooks/use-view-mode-preference'
 import { useProducts } from '../hooks/use-products'
 import { ProductsCardGrid } from './products-card-grid'
 import { ProductsTable } from './products-table'
@@ -25,7 +26,7 @@ export function ProductsList({ projectId }: ProductsListProps) {
   const [platform, setPlatform] = useState<string>('')
   const [category, setCategory] = useState<string>('')
   const [skip, setSkip] = useState(0)
-  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table')
+  const [viewMode, setViewMode] = useViewModePreference('products-view-mode')
   const limit = 20
 
   const { data, isLoading, error, refetch } = useProducts(projectId, {
@@ -74,32 +75,27 @@ export function ProductsList({ projectId }: ProductsListProps) {
   }
 
   return (
-    <div className='space-y-4'>
+    <>
       {/* Header */}
-      <div className='mb-6 flex flex-wrap items-center justify-between space-y-2 gap-x-4'>
-        <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Sản phẩm</h2>
-          <p className='text-muted-foreground'>
-            Quản lý và xem sản phẩm trong dự án này
-          </p>
-        </div>
+      <div>
+        <h2 className='text-2xl font-bold tracking-tight'>Sản phẩm</h2>
+        <p className='text-muted-foreground'>
+          Quản lý và xem sản phẩm trong dự án này
+        </p>
       </div>
 
       {/* Search and Filters */}
-      <div className='mb-6 flex flex-wrap items-center justify-between gap-4'>
+      <div className='my-4 flex flex-wrap items-end justify-between gap-4'>
         <div className='flex flex-wrap items-center gap-2'>
-          <div className='relative w-[280px]'>
-            <Search className='text-muted-foreground absolute top-2.5 left-2 h-4 w-4' />
-            <Input
-              placeholder='Tìm kiếm sản phẩm...'
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value)
-                setSkip(0)
-              }}
-              className='pl-8'
-            />
-          </div>
+          <Input
+            placeholder='Tìm kiếm sản phẩm...'
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value)
+              setSkip(0)
+            }}
+            className='h-9 w-40 lg:w-[250px]'
+          />
           <Select
             value={platform || 'all'}
             onValueChange={(value) => {
@@ -215,6 +211,6 @@ export function ProductsList({ projectId }: ProductsListProps) {
           )}
         </>
       )}
-    </div>
+    </>
   )
 }
