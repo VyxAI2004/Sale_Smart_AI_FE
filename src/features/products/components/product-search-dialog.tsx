@@ -15,10 +15,10 @@ export function ProductSearchDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className='!max-w-[90vw] !w-[90vw] !h-[95vh] overflow-hidden !p-0 !border-0'
-        showCloseButton={false}
+        className='!max-w-[90vw] !w-[90vw] !h-[95vh] !p-0 !border-0 overflow-y-auto'
+        showCloseButton={true}
       >
-        <div className='w-full h-full overflow-hidden flex'>
+        <div className='w-full h-full flex'>
           <ProductSearchInterface projectId={projectId} />
         </div>
       </DialogContent>

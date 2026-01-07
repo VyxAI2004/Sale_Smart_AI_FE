@@ -219,10 +219,7 @@ export function ProjectDetail() {
         <ProductSearchDialog
           projectId={projectId}
           open={isSearchDialogOpen}
-          onOpenChange={(newState) => {
-            console.log('Dialog state changed to:', newState)
-            setIsSearchDialogOpen(newState)
-          }}
+          onOpenChange={setIsSearchDialogOpen}
         />
 
         <ProjectDetailTabs

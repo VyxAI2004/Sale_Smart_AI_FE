@@ -93,6 +93,9 @@ export function TeamManagementCard({
       enabled: selectedTeamIds.size > 0
     }))
   })
+
+  // Extract data array to use as stable dependency
+  const teamMembersData = teamMembersResults.map(r => r.data)
   
   const inviteUserMutation = useInviteProjectUser()
   const removeUserMutation = useRemoveProjectUser()
@@ -129,7 +132,7 @@ export function TeamManagementCard({
     })
 
     return Array.from(memberMap.values())
-  }, [teamMembersResults, selectedTeamIds])
+  }, [teamMembersData, selectedTeamIds])
 
   // Get available members (not already invited to project)
   const getAvailableMembers = () => {
